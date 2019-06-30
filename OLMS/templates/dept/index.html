@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Departments List{% endblock %}</h1>
+  <hr>
+  <a class='btn btn-primary' href="{{ url_for('dept.add') }}">Add</a>
+  <p>
+{% endblock %}
+
+{% block content %}
+  <table class='table table-hover'>
+    <thead>
+      <tr>
+        <th scope='col'>Department</th>
+        <th scope='col'>Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dept in depts %}
+        <tr>
+          <td>{{ dept['dept_name'] }}</td>
+          <td>
+              <a class='btn btn-outline-primary btn-sm' href="{{ url_for('dept.update', id=dept['id']) }}">Edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

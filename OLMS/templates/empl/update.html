@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit Employee{% endblock %}</h1>
+  <hr>
+{% endblock %}
+
+{% block content %}
+  <form method='POST'>
+    <div class='form-group'>
+      <label for='username'>Username</label>
+      <input class='form-control col-3' name='username' id='username' value="{{ request.form['username'] or empl['username'] }}" required>
+    </div>
+    <div class='form-group'>
+      <label for='realname'>Realname</label>
+      <input class='form-control col-3' name='realname' id='realname' value="{{ request.form['realname'] or empl['realname'] }}">
+    </div>
+    <div class='form-group'>
+      <label for='password'>Password</label>
+      <input class='form-control col-3' name='password' id='password' value="{{ request.form['password'] }}">
+      <small id="passwordHelp" class="form-text text-muted">leave blank if you don't want to change it</small>
+    </div>
+    <div class='form-group'>
+      <label for='dept'>Department</label>
+      <select class='form-control col-3' name='dept' id='dept'>
+        {% for dept in depts %}
+        <option value="{{ dept['id'] }}" {% if empl['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class='form-group'>
+      <label for='type'>Type</label>
+      <select class='form-control col-3' name='type' id='type'>
+        <option value='0'>General Employee</option>
+        <option value='1' {% if empl['type'] == 1 %}selected{% endif %}>Administrator</option>
+      </select>
+    </div>
+    <script>
+      $(function () {
+        $(window).on('load', function () {
+          if ($('#type').val() == 0) {
+            $('#permission-selector').prop('hidden', true);
+          };
+        });
+        $('#type').on('change', function () {
+          if ($('#type').val() == 0) {
+            $('#permission-selector').prop('hidden', true);
+            var elements = document.getElementById('permission').options;
+            for (var i = 0; i < elements.length; i++) {
+              elements[i].selected = false;
+            };
+          } else {
+            $('#permission-selector').prop('hidden', false);
+          };
+        });
+      });
+    </script>
+    <div class='form-group' id='permission-selector'>
+      <label for='permission'>Permission</label>
+      <select multiple class='form-control col-3' name='permission' id='permission'>
+        {% for dept in depts %}
+          <option value="{{ dept['id'] }}" {% if dept['id'] in permission %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input type='submit' value='Save' class='btn btn-primary'>
+    <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  </form>
+  <hr>
+  <form action="{{ url_for('empl.delete', id=empl['id']) }}" method='POST'>
+    <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}

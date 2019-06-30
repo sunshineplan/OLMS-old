@@ -1,0 +1,61 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - OLMS</title>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+<nav class='navbar navbar-light bg-light'>
+  <a class='navbar-brand' href="{{ url_for('index') }}">Overtime and Leave Management System</a>
+  <div class='navbar-nav ml-auto flex-row'>
+    {% if g.user %}
+      <a class='nav-link mx-2'>{{ g.user['username'] }}({{ g.user['realname'] }})</a>
+      <a class='nav-link mx-2' href="{{ url_for('auth.setting') }}">Setting</a>
+      <a class='nav-link mx-2' href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+      <a class='nav-link mx-2' href="{{ url_for('auth.login') }}">Log In</a></li>
+    {% endif %}
+  </div>
+</nav>
+<div class='container-fluid'>
+  <div class='row'>
+    <div class='col-sm-4 col-md-3 col-lg-3 col-xl-2 p-0'>
+      {% if g.user %}
+        <nav class='navbar navbar-light bg-light'>
+            <div>
+              <a class='navbar-brand'>Employee Panel</a>
+              <ul class='navbar-nav pl-2'>
+                <li><a class='nav-link' href="{{ url_for('index') }}">Employee Records</a></li>
+                <li><a class='nav-link' href="{{ url_for('stats.empl_index') }}">Employee Statistics</a></li>
+              </ul>
+            </div>
+            {% if g.user['type'] == 1 %}
+              <div>
+                  <a class='navbar-brand'>Department Panel</a>
+                  <ul class='navbar-nav pl-2'>
+                    <li><a class='nav-link' href="{{ url_for('record.dept_index') }}">Department Records</a></li>
+                    <li><a class='nav-link' href="{{ url_for('stats.dept_index') }}">Department Statistics</a></li>
+                  </ul>
+              </div>
+              <div>
+                  <a class='navbar-brand'>Control Panel</a>
+                  <ul class='navbar-nav pl-2'>
+                    <li><a class='nav-link' href="{{ url_for('empl.index') }}">Manage Employee</a></li>
+                    {% if g.user['id'] == 0 %}
+                      <li><a class='nav-link' href="{{ url_for('dept.index') }}">Manage Department</a></li>
+                      <li><a class='nav-link' href="{{ url_for('record.super_index') }}">Manage Records</a></li>
+                    {% endif %}
+                  </ul>
+              </div>
+            {% endif %}
+        </nav>
+      {% endif %}
+    </div>
+    <div class='col-sm-8 col-md-9 col-lg-9 col-xl-10'>
+      <header>
+        {% block header %}{% endblock %}
+      </header>
+      {% for message in get_flashed_messages() %}
+        <div class='alert alert-danger d-inline-flex'>{{ message }}</div>
+      {% endfor %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>

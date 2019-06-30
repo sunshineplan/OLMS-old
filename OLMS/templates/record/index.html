@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {% if mode == 'empl' %}
+    Employee Records
+  {% elif mode == 'dept' %}
+    Department Records
+  {% elif mode == 'super' %}
+    All Records
+  {% endif %}
+{% endblock %}
+
+{% block header %}
+  {% if mode == 'empl' %}
+    <h1>Employee Records</h1>
+  {% elif mode == 'dept' %}
+    <h1>Department Records</h1>
+  {% elif mode == 'super' %}
+    <h1>All Records</h1>
+  {% endif %}
+  <hr>
+  <form class="my-3">
+    {% if mode != 'empl' %}
+      <div class='form-inline mb-2'>
+          <div class='input-group input-group-sm mr-2'>
+            <div class='input-group-prepend'>
+              <label class='input-group-text' for='filter'>Filter by</label> 
+            </div>
+            <select class='custom-select' name='filter' id='filter'>
+              <option value='all'>All</option>
+              <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>Department</option>
+              <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>Employee</option>
+            </select>
+          </div>
+          <script>
+            $(function () {
+              $(window).on('load', function () {
+                if ($('#filter').val() == 'all') {
+                  $('#dept-selector').prop('hidden', true);
+                  $('#empl-selector').prop('hidden', true);
+                } else if ($('#filter').val() == 'dept') {
+                  $('#dept-selector').prop('hidden', false);
+                  $('#empl-selector').prop('hidden', true);
+                } else if ($('#filter').val() == 'empl') {
+                  $('#dept-selector').prop('hidden', true);
+                  $('#empl-selector').prop('hidden', false);
+                };
+              });
+              $('#filter').on('change', function () {
+                unselect('dept');
+                unselect('empl');
+                if ($('#filter').val() == 'all') {
+                  $('#dept-selector').prop('hidden', true);
+                  $('#empl-selector').prop('hidden', true);
+                } else if ($('#filter').val() == 'dept') {
+                  $('#dept-selector').prop('hidden', false);
+                  $('#empl-selector').prop('hidden', true);
+                } else if ($('#filter').val() == 'empl') {
+                  $('#dept-selector').prop('hidden', true);
+                  $('#empl-selector').prop('hidden', false);
+                };
+              });
+            });
+          </script>
+          <div class='input-group input-group-sm mr-2' id='dept-selector'>
+            <div class='input-group-prepend'>
+              <label class='input-group-text' for='dept'>Department</label>
+            </div>
+            <select class='custom-select' name='dept' id='dept'>
+              <option value='all'>All</option>
+              {% for dept in depts %}
+                <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class='input-group input-group-sm mr-2' id='empl-selector'>
+            <div class='input-group-prepend'>
+              <label class='input-group-text' for='empl'>Name</label>
+            </div>
+            <select class='custom-select' name='empl' id='empl'>
+              <option value='all'>All</option>
+              {% for empl in empls %}
+                <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+    {% endif %}
+    <div class='form-inline'>
+      <div class='input-group input-group-sm mr-2'>
+          <div class='input-group-prepend'>
+            <label class='input-group-text' for='year'>Year</label>
+          </div>
+          <select class='custom-select' name='year' id='year'>
+            <option value='all'>All</option>
+            {% for year in years %}
+              <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
+            {% endfor %}
+          </select>
+      </div>
+      <script>
+        $(function () {
+          $(window).on('load', function () {
+            if ($('#year').val() == 'all') {
+              $('#month').prop('disabled', true);
+            };
+          });
+          $('#year').on('change', function () {
+            if ($('#year').val() == 'all') {
+              $('#month').prop('disabled', true);
+              unselect('month')
+            } else {
+              $('#month').prop('disabled', false);
+            };
+          });
+        });
+
+        function unselect(id) {
+          elements = document.getElementById(id).options;
+          for (var i = 0; i < elements.length; i++) {
+            elements[i].selected = false;
+          };
+        }
+      </script>
+      <div class='input-group input-group-sm mr-2'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='month'>Month</label>
+        </div>
+        <select class='custom-select' name='month' id='month'>
+          <option value='all'>All</option>
+          <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
+          <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
+          <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>
+          <option value='04' {% if args['month']|int() == 4 %}selected{% endif %}>4</option>
+          <option value='05' {% if args['month']|int() == 5 %}selected{% endif %}>5</option>
+          <option value='06' {% if args['month']|int() == 6 %}selected{% endif %}>6</option>
+          <option value='07' {% if args['month']|int() == 7 %}selected{% endif %}>7</option>
+          <option value='08' {% if args['month']|int() == 8 %}selected{% endif %}>8</option>
+          <option value='09' {% if args['month']|int() == 9 %}selected{% endif %}>9</option>
+          <option value='10' {% if args['month']|int() == 10 %}selected{% endif %}>10</option>
+          <option value='11' {% if args['month']|int() == 11 %}selected{% endif %}>11</option>
+          <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
+        </select>
+      </div>
+      <div class='input-group input-group-sm mr-2'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='type'>Type</label>
+        </div>
+        <select class='custom-select' name='type' id='type'>
+          <option value='all'>All</option>
+          <option value='1' {% if args['type'] == '1' %}selected{% endif %}>Overtime</option>
+          <option value='0' {% if args['type'] == '0' %}selected{% endif %}>Leave</option>
+        </select>
+      </div>
+      <div class='input-group input-group-sm mr-2'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='status'>Status</label>
+        </div>
+        <select class='custom-select' name='status' id='status'>
+          <option value='all'>All</option>
+          <option value='0' {% if args['status'] == '0' %}selected{% endif %}>Unverified</option>
+          <option value='1' {% if args['status'] == '1' %}selected{% endif %}>Verified</option>
+          <option value='2' {% if args['status'] == '2' %}selected{% endif %}>Rejected</option>
+        </select>
+      </div>
+      <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
+      <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>Clear</a>
+      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='Export'>
+    </div>
+  </form>
+  {% if mode == 'empl' %}
+    <a class='btn btn-primary' href="{{ url_for('record.create') }}">New</a>
+  {% else %}
+    <a class='btn btn-primary' href="{{ url_for('record.manage_create') }}">New</a>
+  {% endif %}
+  <p>
+{% endblock %}
+
+{% block content %}
+  {{ pagination.info }}
+  <table class='table table-hover table-sm'>
+    <thead>
+      <tr>
+        {% if mode != 'empl' %}
+          <th scope='col'>Department</th>
+          <th scope='col'>Realname</th>
+        {% endif %}
+        <th scope='col'>Date</th> 
+        <th scope='col'>Type</th>
+        <th scope='col'>Duration</th>
+        <th scope='col' style='width:30%'>Describe</th>
+        <th scope='col'>Created</th>
+        <th scope='col'>Status</th>
+        <th scope='col'>Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in records %}
+        <tr>
+          {% if mode != 'empl' %}
+            <td>{{ record['dept_name'] }}</td>
+            <td>{{ record['realname'] }}</td>
+          {% endif %}
+          <td>{{ record['date'] }}</td> 
+          <td>
+            {% if record['type'] == 1 %}
+              Overtime
+            {% else %}
+              Leave
+            {% endif %}
+          </td>
+          <td>{{ record['duration'] }} Hour(s)</td>
+          <td>{{ record['describe'] }}</td>
+          <td>{{ record['created'] }}</td>
+          <td>
+            {% if record['status'] == 0 %}
+              <a class='text-muted'>Unverified</a>
+            {% elif record['status'] == 1 %}
+              <a class='text-success'>Verified</a>
+            {% else %}
+              <a class='text-danger'>Rejected</a>
+            {% endif %}
+          </td>
+          <td>
+            {% if mode == 'dept' %}
+              <a class="btn btn-primary btn-sm {% if record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.verify', id=record['id']) }}">Verify</a>
+            {% elif mode == 'super' %}
+              <a class="btn btn-primary btn-sm" href="{{ url_for('record.manage_update', id=record['id']) }}">Edit</a>
+            {% else %}
+              <a class="btn btn-primary btn-sm {% if record['empl_id'] != g.user['id'] or record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.update', id=record['id']) }}">Edit</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {{ pagination.nav }}
+{% endblock %}
