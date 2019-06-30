@@ -1,9 +1,8 @@
 OLMS
 ======
 
-Overtime and Leave Management System `tutorial`_.
-
-.. _tutorial: https://olms.shlib.cf
+Overtime and Leave Management System 
+[Link](https://olms.shlib.cf)
 
 
 Install
@@ -12,13 +11,6 @@ Install
 Install OLMS::
 
     $ pip install -e .
-
-Or if you are using the master branch, install Flask from source before
-installing OLMS::
-
-    $ pip install -e ../..
-    $ pip install -e .
-
 
 Run
 ---
