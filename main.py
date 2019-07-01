@@ -15,15 +15,11 @@ def cli():
 
 
 @cli.command(short_help='Initialize Database')
-@click.option('--auth', prompt='Password', help='For Authentication')
 def init_db(auth):
-    if auth == 'aaa':
-        db = sqlite3.connect(app.config['DATABASE'])
-        with app.open_resource('schema.sql') as f:
-            db.executescript(f.read().decode('utf8'))
-        click.echo('Initialized the database.')
-    else:
-        click.echo('Authentication failed. Bye!')
+    db = sqlite3.connect(app.config['DATABASE'])
+    with app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+    click.echo('Initialized the database.')
 
 
 @cli.command(short_help='Backup Database')
