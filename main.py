@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sqlite3
 from datetime import datetime
@@ -36,7 +38,7 @@ def backup_db():
 @cli.command(short_help='run OLMS')
 @click.option('--port', '-p', default=80, help='Listening Port')
 def run(port):
-    app.run(port=port)
+    app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':
