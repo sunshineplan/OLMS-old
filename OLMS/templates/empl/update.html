@@ -37,11 +37,9 @@
     </div>
     <script>
       $(function () {
-        $(window).on('load', function () {
-          if ($('#type').val() == 0) {
-            $('#permission-selector').prop('hidden', true);
-          };
-        });
+        if ($('#type').val() == 0) {
+          $('#permission-selector').prop('hidden', true);
+        };
         $('#type').on('change', function () {
           if ($('#type').val() == 0) {
             $('#permission-selector').prop('hidden', true);

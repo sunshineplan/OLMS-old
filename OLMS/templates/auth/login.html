@@ -19,13 +19,11 @@
   </form>
   <script>
     $(function() {
+      username = localStorage.getItem('username');
+      if (username != null) $('#username').val(username);
       $('#submit').click(function() {
         if ($('#username').val() != 'admin') localStorage.setItem('username', $('#username').val());
       });
     });
-    window.onload = function() {
-      username = localStorage.getItem('username');
-      if (username != null) $('#username').val(username);
-    }
   </script>
 {% endblock %}

@@ -21,18 +21,16 @@
         </div>
         <script>
           $(function () {
-            $(window).on('load', function () {
-              if ($('#filter').val() == 'all') {
-                $('#dept-selector').prop('hidden', true);
-                $('#empl-selector').prop('hidden', true);
-              } else if ($('#filter').val() == 'dept') {
-                $('#dept-selector').prop('hidden', false);
-                $('#empl-selector').prop('hidden', true);
-              } else if ($('#filter').val() == 'empl') {
-                $('#dept-selector').prop('hidden', true);
-                $('#empl-selector').prop('hidden', false);
-              };
-            });
+            if ($('#filter').val() == 'all') {
+              $('#dept-selector').prop('hidden', true);
+              $('#empl-selector').prop('hidden', true);
+            } else if ($('#filter').val() == 'dept') {
+              $('#dept-selector').prop('hidden', false);
+              $('#empl-selector').prop('hidden', true);
+            } else if ($('#filter').val() == 'empl') {
+              $('#dept-selector').prop('hidden', true);
+              $('#empl-selector').prop('hidden', false);
+            };
             $('#filter').on('change', function () {
               unselect('dept');
               unselect('empl');
@@ -85,16 +83,12 @@
       </div>
       <script>
         $(function () {
-          $(window).on('load', function () {
-            if ($('#period').val() == 'year') {
-              $('#month-selector').prop('hidden', true);
-            };
-          });
-          $(window).on('load', function () {
-            if ($('#year').val() == 'all') {
-              $('#month').prop('disabled', true);
-            };
-          });
+          if ($('#period').val() == 'year') {
+            $('#month-selector').prop('hidden', true);
+          };
+          if ($('#year').val() == 'all') {
+            $('#month').prop('disabled', true);
+          };
           $('#period').on('change', function () {
             if ($('#period').val() == 'year') {
               $('#month-selector').prop('hidden', true);
