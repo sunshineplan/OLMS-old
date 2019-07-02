@@ -70,8 +70,12 @@ def login():
         password = request.form.get('password')
         db = get_db()
         error = None
-        user = db.execute('SELECT * FROM employee WHERE username = ?',
-                          (username,)).fetchone()
+        try:
+            user = db.execute('SELECT * FROM employee WHERE username = ?',
+                              (username,)).fetchone()
+        except:
+            flash('Critical Error! Please contact your system administrator.')
+            return render_template('auth/login.html')
 
         if user is None:
             error = 'Incorrect username.'
