@@ -39,8 +39,9 @@ def backup_db():
 
 @cli.command(short_help='run OLMS')
 @click.option('--port', '-p', default=80, help='Listening Port')
-def run(port):
-    app.run(host='0.0.0.0', port=port)
+@click.option('--debug', is_flag=True, hidden=True)
+def run(port, debug):
+    app.run(host='0.0.0.0', port=port, debug=debug)
 
 
 if __name__ == '__main__':
