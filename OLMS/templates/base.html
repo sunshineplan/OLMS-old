@@ -7,7 +7,7 @@
   <div class='navbar-nav ml-auto flex-row'>
     {% if g.user %}
       <a class='nav-link mx-2'>{{ g.user['username'] }}({{ g.user['realname'] }})</a>
-      <a class='nav-link mx-2' href="{{ url_for('auth.setting') }}">Setting</a>
+      <a class="nav-link mx-2 {% if request.endpoint == 'auth.setting' %}active{% endif %}" href="{{ url_for('auth.setting') }}">Setting</a>
       <a class='nav-link mx-2' href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
       <a class='nav-link mx-2' href="{{ url_for('auth.login') }}">Log In</a></li>
@@ -22,25 +22,25 @@
             <div>
               <a class='navbar-brand'>Employee Panel</a>
               <ul class='navbar-nav pl-2'>
-                <li><a class='nav-link' href="{{ url_for('index') }}">Employee Records</a></li>
-                <li><a class='nav-link' href="{{ url_for('stats.empl_index') }}">Employee Statistics</a></li>
+                <li><a class="nav-link {% if request.endpoint == 'record.empl_index' %}active{% endif %}" href="{{ url_for('index') }}">Employee Records</a></li>
+                <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">Employee Statistics</a></li>
               </ul>
             </div>
             {% if g.user['type'] == 1 %}
               <div>
                   <a class='navbar-brand'>Department Panel</a>
                   <ul class='navbar-nav pl-2'>
-                    <li><a class='nav-link' href="{{ url_for('record.dept_index') }}">Department Records</a></li>
-                    <li><a class='nav-link' href="{{ url_for('stats.dept_index') }}">Department Statistics</a></li>
+                    <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">Department Records</a></li>
+                    <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">Department Statistics</a></li>
                   </ul>
               </div>
               <div>
                   <a class='navbar-brand'>Control Panel</a>
                   <ul class='navbar-nav pl-2'>
-                    <li><a class='nav-link' href="{{ url_for('empl.index') }}">Manage Employee</a></li>
+                    <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">Manage Employee</a></li>
                     {% if g.user['id'] == 0 %}
-                      <li><a class='nav-link' href="{{ url_for('dept.index') }}">Manage Department</a></li>
-                      <li><a class='nav-link' href="{{ url_for('record.super_index') }}">Manage Records</a></li>
+                      <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">Manage Department</a></li>
+                      <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">Manage Records</a></li>
                     {% endif %}
                   </ul>
               </div>
