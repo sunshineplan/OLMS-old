@@ -1,20 +1,35 @@
 import os
+import sys
 from datetime import timedelta
 
 from flask import Flask
 
 
-def create_app():
+def create_app(mode=None):
     '''Create and configure an instance of the Flask application.'''
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        # a default secret that should be overridden by instance config
-        SECRET_KEY='dev',
-        # default expiration date of a permanent session
-        PERMANENT_SESSION_LIFETIME=timedelta(minutes=5),
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, 'OLMS.db'),
-    )
+    if not mode:
+        app = Flask(__name__, instance_relative_config=True)
+        app.config.from_mapping(
+            # a default secret that should be overridden by instance config
+            SECRET_KEY='dev',
+            # default expiration date of a permanent session
+            PERMANENT_SESSION_LIFETIME=timedelta(minutes=5),
+            # store the database in the instance folder
+            DATABASE=os.path.join(app.instance_path, 'OLMS.db'),
+        )
+    else:
+        template_folder = os.path.join(sys._MEIPASS, 'templates')
+        instance_path = os.path.join(os.environ['LOCALAPPDATA'], 'webapp')
+        app = Flask('webapp', template_folder=template_folder,
+                    instance_path=instance_path)
+        app.config.from_mapping(
+            # a default secret that should be overridden by instance config
+            SECRET_KEY='webapp',
+            # default expiration date of a permanent session
+            PERMANENT_SESSION_LIFETIME=timedelta(minutes=5),
+            # store the database in the instance folder
+            DATABASE=os.path.join(app.instance_path, 'database'),
+        )
 
     # ensure the instance folder exists
     try:

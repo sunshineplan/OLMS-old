@@ -2,13 +2,17 @@
 
 import os
 import sqlite3
+import sys
 from datetime import datetime
 
 import click
 
 import OLMS
 
-app = OLMS.create_app()
+if getattr(sys, 'frozen', False):
+    app = OLMS.create_app(mode='exe')
+else:
+    app = OLMS.create_app()
 
 
 @click.group(invoke_without_command=True)
@@ -21,8 +25,12 @@ def cli(ctx):
 @cli.command(short_help='Initialize Database')
 def init_db():
     db = sqlite3.connect(app.config['DATABASE'])
-    with app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+    try:
+        with open(os.path.join(sys._MEIPASS, 'templates', 'schema.sql')) as f:
+            db.executescript(f.read())
+    except:
+        with app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
     click.echo('Initialized the database.')
 
 
@@ -37,7 +45,7 @@ def backup_db():
     click.echo('Backup done.')
 
 
-@cli.command(short_help='run OLMS')
+@cli.command(short_help='Run Server')
 @click.option('--port', '-p', default=80, help='Listening Port')
 @click.option('--debug', is_flag=True, hidden=True)
 def run(port, debug):
