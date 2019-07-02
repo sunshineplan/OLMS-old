@@ -19,7 +19,7 @@ def cli(ctx):
 
 
 @cli.command(short_help='Initialize Database')
-def init_db(auth):
+def init_db():
     db = sqlite3.connect(app.config['DATABASE'])
     with app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
