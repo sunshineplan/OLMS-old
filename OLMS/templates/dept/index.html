@@ -11,6 +11,7 @@
   <table class='table table-hover'>
     <thead>
       <tr>
+        <th scope='col'>ID</th>
         <th scope='col'>Department</th>
         <th scope='col'>Operation</th>
       </tr>
@@ -18,6 +19,7 @@
     <tbody>
       {% for dept in depts %}
         <tr>
+          <td>{{ dept['id'] }}</td>
           <td>{{ dept['dept_name'] }}</td>
           <td>
               <a class='btn btn-outline-primary btn-sm' href="{{ url_for('dept.update', id=dept['id']) }}">Edit</a>
