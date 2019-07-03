@@ -21,8 +21,8 @@
   <hr>
   <form class="my-3">
     {% if mode != 'empl' %}
-      <div class='form-inline mb-2'>
-          <div class='input-group input-group-sm mr-2'>
+      <div class='form-inline'>
+          <div class='input-group input-group-sm mr-2 mb-1'>
             <div class='input-group-prepend'>
               <label class='input-group-text' for='filter'>Filter by</label> 
             </div>
@@ -60,7 +60,7 @@
               });
             });
           </script>
-          <div class='input-group input-group-sm mr-2' id='dept-selector'>
+          <div class='input-group input-group-sm mr-2 mb-1' id='dept-selector'>
             <div class='input-group-prepend'>
               <label class='input-group-text' for='dept'>Department</label>
             </div>
@@ -71,7 +71,7 @@
               {% endfor %}
             </select>
           </div>
-          <div class='input-group input-group-sm mr-2' id='empl-selector'>
+          <div class='input-group input-group-sm mr-2 mb-1' id='empl-selector'>
             <div class='input-group-prepend'>
               <label class='input-group-text' for='empl'>Name</label>
             </div>
@@ -85,7 +85,7 @@
         </div>
     {% endif %}
     <div class='form-inline'>
-      <div class='input-group input-group-sm mr-2'>
+      <div class='input-group input-group-sm mr-2 my-1'>
           <div class='input-group-prepend'>
             <label class='input-group-text' for='year'>Year</label>
           </div>
@@ -117,7 +117,7 @@
           };
         }
       </script>
-      <div class='input-group input-group-sm mr-2'>
+      <div class='input-group input-group-sm mr-2 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='month'>Month</label>
         </div>
@@ -137,7 +137,7 @@
           <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
         </select>
       </div>
-      <div class='input-group input-group-sm mr-2'>
+      <div class='input-group input-group-sm mr-2 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='type'>Type</label>
         </div>
@@ -147,7 +147,7 @@
           <option value='0' {% if args['type'] == '0' %}selected{% endif %}>Leave</option>
         </select>
       </div>
-      <div class='input-group input-group-sm mr-2'>
+      <div class='input-group input-group-sm mr-2 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='status'>Status</label>
         </div>
@@ -158,9 +158,11 @@
           <option value='2' {% if args['status'] == '2' %}selected{% endif %}>Rejected</option>
         </select>
       </div>
-      <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
-      <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>Clear</a>
-      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='Export'>
+      <div class='input-group my-1'>
+        <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
+        <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>Clear</a>
+        <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='Export'>
+      </div>
     </div>
   </form>
   {% if mode == 'empl' %}
@@ -173,61 +175,63 @@
 
 {% block content %}
   {{ pagination.info }}
-  <table class='table table-hover table-sm'>
-    <thead>
-      <tr>
-        {% if mode != 'empl' %}
-          <th scope='col'>Department</th>
-          <th scope='col'>Realname</th>
-        {% endif %}
-        <th scope='col'>Date</th> 
-        <th scope='col'>Type</th>
-        <th scope='col'>Duration</th>
-        <th scope='col' style='width:30%'>Describe</th>
-        <th scope='col'>Created</th>
-        <th scope='col'>Status</th>
-        <th scope='col'>Operation</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for record in records %}
+  <div class='table-responsive'>
+    <table class='table table-hover table-sm'>
+      <thead>
         <tr>
           {% if mode != 'empl' %}
-            <td>{{ record['dept_name'] }}</td>
-            <td>{{ record['realname'] }}</td>
+            <th scope='col'>Department</th>
+            <th scope='col'>Realname</th>
           {% endif %}
-          <td>{{ record['date'] }}</td> 
-          <td>
-            {% if record['type'] == 1 %}
-              Overtime
-            {% else %}
-              Leave
-            {% endif %}
-          </td>
-          <td>{{ record['duration'] }} Hour(s)</td>
-          <td>{{ record['describe'] }}</td>
-          <td>{{ record['created'] }}</td>
-          <td>
-            {% if record['status'] == 0 %}
-              <a class='text-muted'>Unverified</a>
-            {% elif record['status'] == 1 %}
-              <a class='text-success'>Verified</a>
-            {% else %}
-              <a class='text-danger'>Rejected</a>
-            {% endif %}
-          </td>
-          <td>
-            {% if mode == 'dept' %}
-              <a class="btn btn-primary btn-sm {% if record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.verify', id=record['id']) }}">Verify</a>
-            {% elif mode == 'super' %}
-              <a class="btn btn-primary btn-sm" href="{{ url_for('record.manage_update', id=record['id']) }}">Edit</a>
-            {% else %}
-              <a class="btn btn-primary btn-sm {% if record['empl_id'] != g.user['id'] or record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.update', id=record['id']) }}">Edit</a>
-            {% endif %}
-          </td>
+          <th scope='col'>Date</th> 
+          <th scope='col'>Type</th>
+          <th scope='col'>Duration</th>
+          <th scope='col' style='min-width:160px;max-width:30%'>Describe</th>
+          <th scope='col'>Created</th>
+          <th scope='col'>Status</th>
+          <th scope='col'>Operation</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            {% if mode != 'empl' %}
+              <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
+              <td style='white-space:nowrap'>{{ record['realname'] }}</td>
+            {% endif %}
+            <td style='white-space:nowrap'>{{ record['date'] }}</td> 
+            <td>
+              {% if record['type'] == 1 %}
+                Overtime
+              {% else %}
+                Leave
+              {% endif %}
+            </td>
+            <td style='white-space:nowrap'>{{ record['duration'] }} Hour(s)</td>
+            <td>{{ record['describe'] }}</td>
+            <td style='white-space:nowrap'>{{ record['created'] }}</td>
+            <td>
+              {% if record['status'] == 0 %}
+                <a class='text-muted'>Unverified</a>
+              {% elif record['status'] == 1 %}
+                <a class='text-success'>Verified</a>
+              {% else %}
+                <a class='text-danger'>Rejected</a>
+              {% endif %}
+            </td>
+            <td>
+              {% if mode == 'dept' %}
+                <a class="btn btn-primary btn-sm {% if record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.verify', id=record['id']) }}">Verify</a>
+              {% elif mode == 'super' %}
+                <a class="btn btn-primary btn-sm" href="{{ url_for('record.manage_update', id=record['id']) }}">Edit</a>
+              {% else %}
+                <a class="btn btn-primary btn-sm {% if record['empl_id'] != g.user['id'] or record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.update', id=record['id']) }}">Edit</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {{ pagination.nav }}
 {% endblock %}

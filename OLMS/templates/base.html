@@ -18,7 +18,7 @@
   <div class='row'>
     <div class='col-sm-4 col-md-3 col-lg-3 col-xl-2 p-0'>
       {% if g.user %}
-        <nav class='navbar navbar-light bg-light'>
+        <nav class='nav flex-column navbar-light bg-light pl-3'>
             <div>
               <a class='navbar-brand'>Employee Panel</a>
               <ul class='navbar-nav pl-2'>
@@ -28,21 +28,21 @@
             </div>
             {% if g.user['type'] == 1 %}
               <div>
-                  <a class='navbar-brand'>Department Panel</a>
-                  <ul class='navbar-nav pl-2'>
-                    <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">Department Records</a></li>
-                    <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">Department Statistics</a></li>
-                  </ul>
+                <a class='navbar-brand'>Department Panel</a>
+                <ul class='navbar-nav pl-2'>
+                  <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">Department Records</a></li>
+                  <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">Department Statistics</a></li>
+                </ul>
               </div>
               <div>
-                  <a class='navbar-brand'>Control Panel</a>
-                  <ul class='navbar-nav pl-2'>
-                    <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">Manage Employee</a></li>
-                    {% if g.user['id'] == 0 %}
-                      <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">Manage Department</a></li>
-                      <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">Manage Records</a></li>
-                    {% endif %}
-                  </ul>
+                <a class='navbar-brand'>Control Panel</a>
+                <ul class='navbar-nav pl-2'>
+                  <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">Manage Employee</a></li>
+                  {% if g.user['id'] == 0 %}
+                    <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">Manage Department</a></li>
+                    <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">Manage Records</a></li>
+                  {% endif %}
+                </ul>
               </div>
             {% endif %}
         </nav>

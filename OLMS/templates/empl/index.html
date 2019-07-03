@@ -3,9 +3,9 @@
 {% block header %}
   <h3>{% block title %}Employees List{% endblock %}</h3>
   <hr>
-  <form class='my-3'>
+  <form class='my-2'>
     <div class='form-inline'>
-      <div class='input-group input-group-sm mr-3'>
+      <div class='input-group input-group-sm mr-3 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='dept'>Department</label>
         </div>
@@ -17,7 +17,7 @@
         </select>
       </div>
       {% if g.user['id'] == 0 %}
-        <div class='input-group input-group-sm mr-3'>
+        <div class='input-group input-group-sm mr-3 my-1'>
           <div class='input-group-prepend'>
             <label class='input-group-text' for='type'>Type</label>
           </div>
@@ -28,8 +28,10 @@
           </select>
         </div>
       {% endif %}
-      <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
-      <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>Clear</a>
+      <div class='input-group my-1'>
+        <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
+        <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>Clear</a>
+      </div>
     </div>
   </form>
   <a class='btn btn-primary' href="{{ url_for('empl.add') }}">Add</a>
@@ -38,35 +40,37 @@
 
 {% block content %}
   {{ pagination.info }}
-  <table class='table table-hover table-sm'>
-    <thead>
-      <tr>
-        <th scope='col'>Username</th>
-        <th scope='col'>Realname</th>
-        <th scope='col'>Department</th>
-        {% if g.user['id'] == 0 %}
-          <th scope='col'>Type</th>
-          <th scope='col'>Permission</th>
-          <th scope='col'>Operation</th>
-        {% endif %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for empl in empls %}
+  <div class='table-responsive'>
+    <table class='table table-hover table-sm'>
+      <thead>
         <tr>
-          <td>{{ empl['username'] }}</td>
-          <td>{{ empl['realname'] }}</td> 
-          <td>{{ empl['dept_name'] }}</td>
+          <th scope='col'>Username</th>
+          <th scope='col'>Realname</th>
+          <th scope='col'>Department</th>
           {% if g.user['id'] == 0 %}
-            <td>{% if empl['type'] == 0 %}General Employee{% else %}Administrator{% endif %}</td>
-            <td>{{ empl['permission'] }}</td>
-            <td>
-              <a class='btn btn-outline-primary btn-sm' href='{{ url_for('empl.update', id=empl['id']) }}'>Edit</a>
-            </td>
+            <th scope='col'>Type</th>
+            <th scope='col'>Permission</th>
+            <th scope='col'>Operation</th>
           {% endif %}
         </tr>
-      {% endfor %}
-    </tbody>
-</table>
+      </thead>
+      <tbody>
+        {% for empl in empls %}
+          <tr>
+            <td>{{ empl['username'] }}</td>
+            <td>{{ empl['realname'] }}</td> 
+            <td style='white-space:nowrap'>{{ empl['dept_name'] }}</td>
+            {% if g.user['id'] == 0 %}
+              <td style='white-space:nowrap'>{% if empl['type'] == 0 %}General Employee{% else %}Administrator{% endif %}</td>
+              <td style='white-space:nowrap'>{{ empl['permission'] }}</td>
+              <td>
+                <a class='btn btn-outline-primary btn-sm' href='{{ url_for('empl.update', id=empl['id']) }}'>Edit</a>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</div>
 {{ pagination.nav }}
 {% endblock %}

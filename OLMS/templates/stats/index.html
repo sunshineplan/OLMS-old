@@ -8,8 +8,8 @@
 {% block content %}
   <form class='my-3'>
     {% if mode == 'dept' %}
-      <div class='form-inline mb-2'>
-        <div class='input-group input-group-sm mr-2'>
+      <div class='form-inline'>
+        <div class='input-group input-group-sm mr-2 mb-1'>
           <div class='input-group-prepend'>
             <label class='input-group-text' for='filter'>Filter by</label> 
           </div>
@@ -47,7 +47,7 @@
             });
           });
         </script>
-        <div class='input-group input-group-sm mr-2' id='dept-selector'>
+        <div class='input-group input-group-sm mr-2 mb-1' id='dept-selector'>
           <div class='input-group-prepend'>
             <label class='input-group-text' for='dept'>Department</label>
           </div>
@@ -58,7 +58,7 @@
             {% endfor %}
           </select>
         </div>
-        <div class='input-group input-group-sm mr-2' id='empl-selector'>
+        <div class='input-group input-group-sm mr-2 mb-1' id='empl-selector'>
           <div class='input-group-prepend'>
             <label class='input-group-text' for='empl'>Name</label>
           </div>
@@ -71,8 +71,8 @@
         </div>
       </div>
     {% endif %}
-    <div class='form-inline mb-2'>
-      <div class='input-group input-group-sm mr-2'>
+    <div class='form-inline'>
+      <div class='input-group input-group-sm mr-2 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='period'>Period</label>
         </div>
@@ -116,7 +116,7 @@
           };
         }
       </script>
-      <div class='input-group input-group-sm mr-2'>
+      <div class='input-group input-group-sm mr-2 my-1'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='year'>Year</label>
         </div>
@@ -127,7 +127,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class='input-group input-group-sm mr-2' id='month-selector'>
+      <div class='input-group input-group-sm mr-2 my-1' id='month-selector'>
         <div class='input-group-prepend'>
           <label class='input-group-text' for='month'>Month</label>
         </div>
@@ -147,35 +147,39 @@
           <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
         </select>
       </div>
-      <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
-      <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>Clear</a>
-      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'dept' %}{{ url_for('export.dept_stats') }}{% else %}{{ url_for('export.empl_stats') }}{% endif %}" value='Export'>
+      <div class='input-group my-1'>
+        <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
+        <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>Clear</a>
+        <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'dept' %}{{ url_for('export.dept_stats') }}{% else %}{{ url_for('export.empl_stats') }}{% endif %}" value='Export'>
+      </div>
     </div>
   </form>
   {{ pagination.info }}
-  <table class='table table-hover table-sm'>
-    <thead>
-      <tr>
-        <th scope='col'>Period</th>
-        {% if mode == 'dept' %}
-          <th scope='col'>Department</th>
-          <th scope='col'>Realname</th>
-        {% endif %}
-        <th scope='col'>Summary</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for record in records %}
+  <div class='table-responsive'>
+    <table class='table table-hover table-sm'>
+      <thead>
         <tr>
-          <td>{{ record['period'] or record['year'] }}</td>
+          <th scope='col'>Period</th>
           {% if mode == 'dept' %}
-            <td>{{ record['dept_name'] }}</td>
-            <td>{{ record['realname'] }}</td>
+            <th scope='col'>Department</th>
+            <th scope='col'>Realname</th>
           {% endif %}
-          <td>{{ record['summary'] }} Hour(s)</td>
+          <th scope='col'>Summary</th>
         </tr>
-      {% endfor %}
-    </tbody>
-</table>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            <td style='white-space:nowrap'>{{ record['period'] or record['year'] }}</td>
+            {% if mode == 'dept' %}
+              <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
+              <td style='white-space:nowrap'>{{ record['realname'] }}</td>
+            {% endif %}
+            <td style='white-space:nowrap'>{{ record['summary'] }} Hour(s)</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</div>
 {{ pagination.nav }}
 {% endblock %}
