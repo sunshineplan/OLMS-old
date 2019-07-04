@@ -1,8 +1,9 @@
-Overtime and Leave Management System加班休假管理系统
+﻿Overtime and Leave Management System加班休假管理系统
 OLMS加班休假管理系统
 Current Password当前密码
 New Password新密码
 Confirm Password确认密码
+Log In登入
 Log Out退出
 All Records记录列表
 Employee Panel员工面板
