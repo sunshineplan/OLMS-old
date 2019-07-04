@@ -27,6 +27,8 @@ Edit Record修改记录
 Verify Record审核记录
 Filter by过滤方式
 General Employee一般员工
+Confirm acceptance?确认通过？
+Confirm rejection?确认拒绝？
 Department部门
 Realname姓名
 Date日期
