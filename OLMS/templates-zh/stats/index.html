@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h3>{% block title %}{% if mode == 'dept' %}部门{% else %}员工{% endif %}统计{% endblock %}</h3>
+  <hr>
+{% endblock %}
+
+{% block content %}
+  <form class='my-3'>
+    {% if mode == 'dept' %}
+      <div class='form-inline'>
+        <div class='input-group input-group-sm mr-2 mb-1'>
+          <div class='input-group-prepend'>
+            <label class='input-group-text' for='filter'>过滤方式</label> 
+          </div>
+          <select class='custom-select' name='filter' id='filter'>
+            <option value='all'>所有</option>
+            <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>部门</option>
+            <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>员工</option>
+          </select>
+        </div>
+        <script>
+          $(function () {
+            if ($('#filter').val() == 'all') {
+              $('#dept-selector').prop('hidden', true);
+              $('#empl-selector').prop('hidden', true);
+            } else if ($('#filter').val() == 'dept') {
+              $('#dept-selector').prop('hidden', false);
+              $('#empl-selector').prop('hidden', true);
+            } else if ($('#filter').val() == 'empl') {
+              $('#dept-selector').prop('hidden', true);
+              $('#empl-selector').prop('hidden', false);
+            };
+            $('#filter').on('change', function () {
+              unselect('dept');
+              unselect('empl');
+              if ($('#filter').val() == 'all') {
+                $('#dept-selector').prop('hidden', true);
+                $('#empl-selector').prop('hidden', true);
+              } else if ($('#filter').val() == 'dept') {
+                $('#dept-selector').prop('hidden', false);
+                $('#empl-selector').prop('hidden', true);
+              } else if ($('#filter').val() == 'empl') {
+                $('#dept-selector').prop('hidden', true);
+                $('#empl-selector').prop('hidden', false);
+              };
+            });
+          });
+        </script>
+        <div class='input-group input-group-sm mr-2 mb-1' id='dept-selector'>
+          <div class='input-group-prepend'>
+            <label class='input-group-text' for='dept'>部门</label>
+          </div>
+          <select class='custom-select' name='dept' id='dept'>
+            <option value='all'>所有</option>
+            {% for dept in depts %}
+              <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class='input-group input-group-sm mr-2 mb-1' id='empl-selector'>
+          <div class='input-group-prepend'>
+            <label class='input-group-text' for='empl'>姓名</label>
+          </div>
+          <select class='custom-select' name='empl' id='empl'>
+            <option value='all'>所有</option>
+            {% for empl in empls %}
+              <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    {% endif %}
+    <div class='form-inline'>
+      <div class='input-group input-group-sm mr-2 my-1'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='period'>周期</label>
+        </div>
+        <select class='custom-select' name='period' id='period'>
+          <option value='month'>月</option>
+          <option value='year' {% if args['period'] == 'year' %}selected{% endif %}>年</option>
+        </select>
+      </div>
+      <script>
+        $(function () {
+          if ($('#period').val() == 'year') {
+            $('#month-selector').prop('hidden', true);
+          };
+          if ($('#year').val() == 'all') {
+            $('#month').prop('disabled', true);
+          };
+          $('#period').on('change', function () {
+            if ($('#period').val() == 'year') {
+              $('#month-selector').prop('hidden', true);
+              unselect('year');
+              unselect('month');
+            } else {
+              $('#month-selector').prop('hidden', false);
+              unselect('year');
+            };
+          });
+          $('#year').on('change', function () {
+            if ($('#year').val() == 'all') {
+              $('#month').prop('disabled', true);
+              unselect('month');
+            } else {
+              $('#month').prop('disabled', false);
+            };
+          });
+        });
+
+        function unselect(id) {
+          elements = document.getElementById(id).options;
+          for (var i = 0; i < elements.length; i++) {
+            elements[i].selected = false;
+          };
+        }
+      </script>
+      <div class='input-group input-group-sm mr-2 my-1'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='year'>年</label>
+        </div>
+        <select class='custom-select' name='year' id='year'>
+          <option value='all'>所有</option>
+          {% for year in years %}
+            <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class='input-group input-group-sm mr-2 my-1' id='month-selector'>
+        <div class='input-group-prepend'>
+          <label class='input-group-text' for='month'>月</label>
+        </div>
+        <select class='custom-select' name='month' id='month'>
+          <option value='all'>所有</option>
+          <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
+          <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
+          <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>
+          <option value='04' {% if args['month']|int() == 4 %}selected{% endif %}>4</option>
+          <option value='05' {% if args['month']|int() == 5 %}selected{% endif %}>5</option>
+          <option value='06' {% if args['month']|int() == 6 %}selected{% endif %}>6</option>
+          <option value='07' {% if args['month']|int() == 7 %}selected{% endif %}>7</option>
+          <option value='08' {% if args['month']|int() == 8 %}selected{% endif %}>8</option>
+          <option value='09' {% if args['month']|int() == 9 %}selected{% endif %}>9</option>
+          <option value='10' {% if args['month']|int() == 10 %}selected{% endif %}>10</option>
+          <option value='11' {% if args['month']|int() == 11 %}selected{% endif %}>11</option>
+          <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
+        </select>
+      </div>
+      <div class='input-group my-1'>
+        <input class='btn btn-primary btn-sm mr-1' type='submit' value='过滤'>
+        <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>清除</a>
+        <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'dept' %}{{ url_for('export.dept_stats') }}{% else %}{{ url_for('export.empl_stats') }}{% endif %}" value='导出'>
+      </div>
+    </div>
+  </form>
+  {{ pagination.info }}
+  <div class='table-responsive'>
+    <table class='table table-hover table-sm'>
+      <thead>
+        <tr>
+          <th scope='col'>周期</th>
+          {% if mode == 'dept' %}
+            <th scope='col'>部门</th>
+            <th scope='col'>姓名</th>
+          {% endif %}
+          <th scope='col'>汇总</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            <td style='white-space:nowrap'>{{ record['period'] or record['year'] }}</td>
+            {% if mode == 'dept' %}
+              <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
+              <td style='white-space:nowrap'>{{ record['realname'] }}</td>
+            {% endif %}
+            <td style='white-space:nowrap'>{{ record['summary'] }} 小时</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</div>
+{{ pagination.nav }}
+{% endblock %}

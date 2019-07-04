@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h3>{% block title %}审核记录{% endblock %}</h3>
+  <hr>
+{% endblock %}
+
+{% block content %}
+  <form method='POST'>
+    <div class='form-group'>
+      <label for='date'>日期</label>
+      <input class='form-control col-3' id='date' value="{{ record['date'] }}" readonly>
+    </div>
+    <div class='form-group'>
+        <label for='type'>类型</label>
+        <input class='form-control col-3' id='type' value="{% if record['type'] == 1 %}加班{% else %}休假{% endif %}" readonly>
+      </div>
+    <div class='form-group'>
+      <label for='duration'>时长</label>
+      <input class='form-control col-3' id='duration' value="{{ record['duration'] }}" readonly>
+    </div>
+    <div class='form-group'>
+      <label for='describe'>描述</label>
+      <textarea class='form-control col-3' id='describe' rows='3' readonly>{{ record['describe'] }}</textarea>
+    </div>
+    <input type='submit' name='status' value='审核' class='btn btn-success' onclick="return confirm('Are you sure?');">
+    <input type='submit' name='status' value='Reject' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+    <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
+  </form>
+{% endblock %}

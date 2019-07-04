@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h3>{% block title %}修改部门{% endblock %}</h3>
+  <hr>
+{% endblock %}
+
+{% block content %}
+  <form method='POST'>
+    <div class='form-group'>
+        <label for='dept'>部门</label>
+        <input class='form-control col-3' name='dept' id='dept' value="{{ request.form['dept'] or dept['dept_name'] }}" required>
+    </div>
+    <input type='submit' value='保存' class='btn btn-primary'>
+    <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
+  </form>
+  <hr>
+  <form action="{{ url_for('dept.delete', id=dept['id']) }}" method='POST'>
+    <input type='submit' value='删除' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}
