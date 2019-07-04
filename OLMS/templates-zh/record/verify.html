@@ -23,8 +23,8 @@
       <label for='describe'>描述</label>
       <textarea class='form-control col-3' id='describe' rows='3' readonly>{{ record['describe'] }}</textarea>
     </div>
-    <input type='submit' name='status' value='审核' class='btn btn-success' onclick="return confirm('Are you sure?');">
-    <input type='submit' name='status' value='Reject' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+    <button type='submit' name='status' value='1' class='btn btn-success' onclick="return confirm('确认通过？');">通过</button>
+    <button type='submit' name='status' value='2' class='btn btn-danger' onclick="return confirm('确认驳回？');">驳回</button>
     <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
   </form>
 {% endblock %}

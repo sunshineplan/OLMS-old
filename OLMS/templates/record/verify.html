@@ -23,8 +23,8 @@
       <label for='describe'>Describe</label>
       <textarea class='form-control col-3' id='describe' rows='3' readonly>{{ record['describe'] }}</textarea>
     </div>
-    <input type='submit' name='status' value='Verify' class='btn btn-success' onclick="return confirm('Are you sure?');">
-    <input type='submit' name='status' value='Reject' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+    <button type='submit' name='status' value='1' class='btn btn-success' onclick="return confirm('Confirm acceptance?');">Accept</button>
+    <button type='submit' name='status' value='2' class='btn btn-danger' onclick="return confirm('Confirm rejection?');">Reject</button>
     <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
   </form>
 {% endblock %}

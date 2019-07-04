@@ -355,9 +355,9 @@ def verify(id):
     if request.method == 'POST':
         ip = request.remote_addr
         error = None
-        if request.form.get('status') == 'Verify':
+        if request.form.get('status') == '1':
             status = 1
-        elif request.form.get('status') == 'Reject':
+        elif request.form.get('status') == '2':
             status = 2
         else:
             error = 'Unknow status.'
