@@ -10,7 +10,7 @@
     {% if mode == 'super' %}
       <div class='form-group'>
         <label for='empl'>员工</label>
-        <select class='form-control col-3' name='empl' id='empl'>
+        <select class='form-control' style='width:15em' name='empl' id='empl'>
           {% for empl in empls %}
             <option value="{{ empl['id'] }}"{% if record['empl_id'] == empl['id'] %}selected{% endif %}>{{ empl['realname'] }}</option>
           {% endfor %}
@@ -18,7 +18,7 @@
       </div>
       <div class='form-group'>
         <label for='dept'>部门</label>
-        <select class='form-control col-3' name='dept' id='dept'>
+        <select class='form-control' style='width:15em' name='dept' id='dept'>
           {% for dept in depts %}
             <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
           {% endfor %}
@@ -27,23 +27,23 @@
     {% endif %}
     <div class='form-group'>
       <label for='date'>日期</label>
-      <input class='form-control col-3' type='date' name='date' id='date' value="{{ request.form['date'] or record['date'] }}" required>
+      <input class='form-control' style='width:15em' type='date' name='date' id='date' value="{{ request.form['date'] or record['date'] }}" required>
     </div>
     <div class='form-group'>
       <label for='type'>类型</label>
-      <select class='form-control col-3' name='type' id='type'>
+      <select class='form-control' style='width:15em' name='type' id='type'>
         <option value='1'>加班</option>
         <option value='0' {% if record['type'] == 0 %}selected{% endif %}>休假</option>
       </select>
     </div>
     <div class='form-group'>
       <label for='duration'>时长</label>
-      <input class='form-control col-3' name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
+      <input class='form-control' style='width:15em' name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
     </div>
     {% if mode == 'super' %}
       <div class='form-group'>
         <label for='status'>状态</label>
-        <select class='form-control col-3' name='status' id='status'>
+        <select class='form-control' style='width:15em' name='status' id='status'>
           <option value='0' {% if record['status'] == 0 %}selected{% endif %}>未审核</option>
           <option value='1' {% if record['status'] == 1 %}selected{% endif %}>已通过</option>
           <option value='2' {% if record['status'] == 2 %}selected{% endif %}>已驳回</option>
@@ -52,7 +52,7 @@
     {% endif %}
     <div class='form-group'>
       <label for='describe'>描述</label>
-      <textarea class='form-control col-3' name='describe' id='describe' rows='3'>{{ request.form['describe'] or record['describe'] }}</textarea>
+      <textarea class='form-control' style='width:15em' name='describe' id='describe' rows='3'>{{ request.form['describe'] or record['describe'] }}</textarea>
     </div>
     <input type='submit' value='保存' class='btn btn-primary'>
     <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>

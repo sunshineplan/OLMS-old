@@ -9,7 +9,7 @@
   <form method='POST'>
     <div class='form-group'>
         <label for='dept'>部门</label>
-        <input class='form-control col-3' name='dept' id='dept' value="{{ request.form['dept'] or dept['dept_name'] }}" required>
+        <input class='form-control' style='width:15em' name='dept' id='dept' value="{{ request.form['dept'] or dept['dept_name'] }}" required>
     </div>
     <input type='submit' value='保存' class='btn btn-primary'>
     <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
