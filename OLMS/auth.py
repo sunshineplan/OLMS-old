@@ -104,7 +104,7 @@ def setting():
         password2 = request.form.get('password2')
         db = get_db()
         error = None
-        user = db.execute('SELECT password FROM empl WHERE id = ?',
+        user = db.execute('SELECT password FROM employee WHERE id = ?',
                           (g.user['id'],)).fetchone()
 
         if not check_password_hash(user['password'], password):
