@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import os
+import smtplib
 import sqlite3
 import sys
 from datetime import datetime
+from email.message import EmailMessage
 
 import click
 
@@ -35,14 +37,29 @@ def init_db():
 
 
 @cli.command(short_help='Backup Database')
-def backup_db():
+@click.option('--location', '-l', default=app.instance_path, help='Backup file location')
+@click.option('--email', '-e', default=None, help='Send backup file as mail attachment to specified account')
+def backup_db(location, email):
     db = sqlite3.connect(app.config['DATABASE'])
-    bck = sqlite3.connect(os.path.join(
-        app.instance_path, 'backup'+datetime.today().strftime('-%Y%m%d')))
+    bckfn = 'backup' + datetime.today().strftime('%Y%m%d')
+    bckf = os.path.join(location, bckfn)
+    bck = sqlite3.connect(bckf)
     db.backup(bck)
     db.close()
     bck.close()
     click.echo('Backup done.')
+    if email:
+        msg = EmailMessage()
+        msg['Subject'] = bckfn.upper()
+        msg['From'] = 'no-reply@shlib.cf'
+        msg['To'] = email
+        with open(bckf, 'rb') as f:
+            msg.add_attachment(f.read(), maintype='application',
+                               subtype='octet-stream', filename=bckfn)
+        with smtplib.SMTP('smtp.shlib.cf') as s:
+            s.send_message(msg)
+        os.remove(bckf)
+        click.echo('Email done.')
 
 
 @cli.command(short_help='Run Server')
