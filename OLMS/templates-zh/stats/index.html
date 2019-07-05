@@ -164,6 +164,8 @@
             <th scope='col'>部门</th>
             <th scope='col'>姓名</th>
           {% endif %}
+          <th scope='col'>加班</th>
+          <th scope='col'>休假</th>
           <th scope='col'>汇总</th>
         </tr>
       </thead>
@@ -175,6 +177,8 @@
               <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
               <td style='white-space:nowrap'>{{ record['realname'] }}</td>
             {% endif %}
+            <td style='white-space:nowrap'>{{ record['overtime'] }} 小时</td>
+            <td style='white-space:nowrap'>{{ record['leave'] }} 小时</td>
             <td style='white-space:nowrap'>{{ record['summary'] }} 小时</td>
           </tr>
         {% endfor %}

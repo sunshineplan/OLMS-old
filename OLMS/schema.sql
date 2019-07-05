@@ -1,5 +1,5 @@
 -- Initialize the database.
--- Drop any existing data and create empty tables.
+-- Drop any existing data and create empty tables and view.
 
 DROP TABLE IF EXISTS employee;
 DROP TABLE IF EXISTS department;
@@ -39,7 +39,10 @@ CREATE TABLE record (
 );
 
 CREATE VIEW statistics AS
-  SELECT strftime('%Y-%m', date) period, r.dept_id, dept_name, empl_id, realname, sum(duration) summary
+  SELECT strftime('%Y-%m', date) period, r.dept_id, dept_name, empl_id, realname,
+  sum(CASE WHEN r.type = 1 THEN duration ELSE 0 END) overtime,
+  sum(CASE WHEN r.type = 0 THEN 0 - duration ELSE 0 END) leave,
+  sum(duration) summary
   FROM record r
   JOIN department d ON d.id = r.dept_id
   JOIN employee e ON e.id = empl_id

@@ -31,7 +31,7 @@ def empl_index():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) year, dept_id, dept_name, empl_id, realname, sum(summary) summary'
+        query = ('SELECT substr(period,1,4) year, dept_name, realname, sum(overtime) overtime, sum(leave) leave, sum(summary) summary'
                  ' FROM statistics WHERE empl_id = ? {}'
                  ' GROUP BY year, dept_id, empl_id'
                  ' ORDER BY year DESC')
@@ -87,7 +87,7 @@ def dept_index():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) year, dept_id, dept_name, empl_id, realname, sum(summary) summary'
+        query = ('SELECT substr(period,1,4) year, dept_name, realname, sum(overtime) overtime, sum(leave) leave, sum(summary) summary'
                  ' FROM statistics WHERE 1=1 {}'
                  ' GROUP BY year, dept_id, empl_id'
                  ' ORDER BY year DESC')

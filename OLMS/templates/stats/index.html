@@ -164,6 +164,8 @@
             <th scope='col'>Department</th>
             <th scope='col'>Realname</th>
           {% endif %}
+          <th scope='col'>Overtime</th>
+          <th scope='col'>Leave</th>
           <th scope='col'>Summary</th>
         </tr>
       </thead>
@@ -175,6 +177,8 @@
               <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
               <td style='white-space:nowrap'>{{ record['realname'] }}</td>
             {% endif %}
+            <td style='white-space:nowrap'>{{ record['overtime'] }} Hour(s)</td>
+            <td style='white-space:nowrap'>{{ record['leave'] }} Hour(s)</td>
             <td style='white-space:nowrap'>{{ record['summary'] }} Hour(s)</td>
           </tr>
         {% endfor %}
