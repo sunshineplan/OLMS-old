@@ -10,7 +10,7 @@
       <a class="nav-link mx-2 {% if request.endpoint == 'auth.setting' %}active{% endif %}" href="{{ url_for('auth.setting') }}">修改密码</a>
       <a class='nav-link mx-2' href="{{ url_for('auth.logout') }}">退出</a>
     {% else %}
-      <a class='nav-link mx-2' href="{{ url_for('auth.login') }}">Log In</a></li>
+      <a class='nav-link mx-2' href="{{ url_for('auth.login') }}">登入</a></li>
     {% endif %}
   </div>
 </nav>
