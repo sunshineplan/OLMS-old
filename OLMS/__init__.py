@@ -1,8 +1,11 @@
+import logging
 import os
 import sys
 from datetime import timedelta
+from logging.handlers import RotatingFileHandler
 
 from flask import Flask
+from flask.logging import default_handler
 
 
 def create_app(mode=None):
@@ -30,6 +33,14 @@ def create_app(mode=None):
             # store the database in the instance folder
             DATABASE=os.path.join(app.instance_path, 'database'),
         )
+
+    # Add custom logger
+    app.logger.removeHandler(default_handler)
+    app.logger.setLevel(logging.INFO)
+    handler = RotatingFileHandler(os.path.join(
+        app.instance_path, 'admin.log'), maxBytes=10*1024*1024, backupCount=100)
+    handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
+    app.logger.addHandler(handler)
 
     # ensure the instance folder exists
     try:

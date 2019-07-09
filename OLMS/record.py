@@ -1,5 +1,5 @@
-from flask import (Blueprint, abort, flash, g, redirect, render_template,
-                   request, url_for)
+from flask import (Blueprint, abort, current_app, flash, g, redirect,
+                   render_template, request, url_for)
 
 from OLMS.auth import admin_required, login_required, super_required
 from OLMS.db import get_db
@@ -160,6 +160,7 @@ def get_record(id, mode='normal'):
 def create():
     '''Create a new record for the current user.'''
     if request.method == 'POST':
+        ip = request.remote_addr
         date = request.form.get('date')
         error = None
         try:
@@ -174,7 +175,6 @@ def create():
         except:
             error = 'Duration is required.'
         describe = request.form.get('describe')
-        ip = request.remote_addr
 
         if not date:
             error = 'Date is required.'
@@ -189,6 +189,8 @@ def create():
                 (date, type, duration, describe, g.user['dept_id'],
                  g.user['id'], f"{g.user['id']}-{ip}"))
             db.commit()
+            current_app.logger.info('UID:%s(%s)-%s create record{%s,%s,%s}',
+                                    g.user['id'], g.user['realname'], ip, date, type, duration)
             return redirect(url_for('record.empl_index'))
 
     return render_template('record/create.html')
@@ -210,6 +212,7 @@ def manage_create():
         ' WHERE p.id IN ({})'
         ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
     if request.method == 'POST':
+        ip = request.remote_addr
         empl_id = request.form.get('empl')
         date = request.form.get('date')
         error = None
@@ -225,7 +228,6 @@ def manage_create():
         except:
             error = 'Duration is required.'
         describe = request.form.get('describe')
-        ip = request.remote_addr
 
         if not date:
             error = 'Date is required.'
@@ -247,6 +249,8 @@ def manage_create():
                 (date, type, duration, describe, dept_id, empl_id,
                  1, f"{g.user['id']}-{ip}", f"{g.user['id']}-{ip}"))
             db.commit()
+            current_app.logger.info('UID:%s(%s)-%s manage create record for UID:%s{%s,%s,%s}',
+                                    g.user['id'], g.user['realname'], ip, empl_id, date, type, duration)
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/create.html', empls=empls, mode='admin')
@@ -262,6 +266,7 @@ def update(id):
     record = get_record(id)
 
     if request.method == 'POST':
+        ip = request.remote_addr
         date = request.form.get('date')
         error = None
         try:
@@ -290,6 +295,8 @@ def update(id):
                 'UPDATE record SET date = ?, type = ?, duration = ?, describe = ? WHERE id = ?',
                 (date, type, duration, describe, id))
             db.commit()
+            current_app.logger.info('UID:%s(%s)-%s update RID:%s{%s,%s,%s}',
+                                    g.user['id'], g.user['realname'], ip, id, date, type, duration)
             return redirect(url_for('record.empl_index'))
 
     return render_template('record/update.html', record=record)
@@ -304,6 +311,7 @@ def manage_update(id):
     empls = db.execute('SELECT * FROM employee WHERE id != 0').fetchall()
     depts = db.execute('SELECT * FROM department').fetchall()
     if request.method == 'POST':
+        ip = request.remote_addr
         empl_id = request.form.get('empl')
         dept_id = request.form.get('dept')
         date = request.form.get('date')
@@ -338,6 +346,8 @@ def manage_update(id):
                 'UPDATE record SET empl_id = ?, dept_id = ?, date = ?, type = ?, duration = ?, status = ?, describe = ? WHERE id = ?',
                 (empl_id, dept_id, date, type, duration, status, describe, id))
             db.commit()
+            current_app.logger.info('UID:%s(%s)-%s manage update RID:%s{%s,%s,%s}',
+                                    g.user['id'], g.user['realname'], ip, id, date, type, duration)
             return redirect(url_for('record.super_index'))
 
     return render_template('record/update.html', record=record, empls=empls, depts=depts, mode='super')
@@ -372,6 +382,8 @@ def verify(id):
                 'UPDATE record SET status = ?, verifiedby = ? WHERE id = ?',
                 (status, f"{g.user['id']}-{ip}", id))
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s verify RID:%s{%s}', g.user['id'], g.user['realname'], ip, id, status)
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/verify.html', record=record)
@@ -385,6 +397,7 @@ def delete(id):
     Ensures that the record is not verified.
     '''
     record = get_record(id)
+    ip = request.remote_addr
     error = None
     if record['status'] != 0:
         error = 'You can only delete record which is not verified.'
@@ -394,6 +407,8 @@ def delete(id):
         db = get_db()
         db.execute('DELETE FROM record WHERE id = ?', (id,))
         db.commit()
+        current_app.logger.info(
+            'UID:%s(%s)-%s delete RID:%s', g.user['id'], g.user['realname'], ip, id)
         return redirect(url_for('record.empl_index'))
 
     return render_template('record/update.html', record=record)
@@ -404,7 +419,10 @@ def delete(id):
 def manage_delete(id):
     '''Delete a record by Super Administrator.'''
     get_record(id, mode='super')
+    ip = request.remote_addr
     db = get_db()
     db.execute('DELETE FROM record WHERE id = ?', (id,))
     db.commit()
+    current_app.logger.info(
+        'UID:%s(%s)-%s manage delete RID:%s', g.user['id'], g.user['realname'], ip, id)
     return redirect(url_for('record.super_index'))
