@@ -117,7 +117,8 @@ def empl_stats():
     year = request.args.get('year')
     month = request.args.get('month')
     if not period or period == 'month':
-        query = ('SELECT period Period, dept_name Department, realname Realname, summary Summary'
+        query = ('SELECT period Period, dept_name Department, realname Realname,'
+                 ' overtime Overtime, leave Leave, summary Summary'
                  ' FROM statistics WHERE empl_id = {} {}')
         if not month or month == 'all':
             if not year or year == 'all':
@@ -127,7 +128,8 @@ def empl_stats():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname, sum(summary) Summary'
+        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
+                 ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
                  ' FROM statistics WHERE empl_id = {} {}'
                  ' GROUP BY Period, dept_id, empl_id'
                  ' ORDER BY Period DESC')
@@ -135,7 +137,7 @@ def empl_stats():
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
-    fieldnames = ['Period', 'Department', 'Realname', 'Summary']
+    fieldnames = ['Period', 'Department', 'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(
         g.user['id'], condition), fieldnames)
     empl_name = g.user['realname']
@@ -159,7 +161,9 @@ def dept_stats():
     except ValueError:
         permission_list = []
     if not period or period == 'month':
-        query = 'SELECT period Period, dept_name Department, realname Realname, summary Summary FROM statistics WHERE 1=1 {}'
+        query = ('SELECT period Period, dept_name Department, realname Realname,'
+                 ' overtime Overtime, leave Leave, summary Summary'
+                 ' FROM statistics WHERE 1=1 {}')
         if not month or month == 'all':
             if not year or year == 'all':
                 condition = ''
@@ -168,7 +172,8 @@ def dept_stats():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname, sum(summary) Summary'
+        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
+                 ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
                  ' FROM statistics WHERE 1=1 {}'
                  ' GROUP BY Period, dept_id, empl_id'
                  ' ORDER BY Period DESC')
@@ -190,7 +195,7 @@ def dept_stats():
     else:
         prefix = ''
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
-    fieldnames = ['Period', 'Department', 'Realname', 'Summary']
+    fieldnames = ['Period', 'Department', 'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(condition), fieldnames)
     filename = f'DeptStats{prefix}{year}{month}.csv'.replace(
         'all', '').replace('None', '')
