@@ -1,5 +1,5 @@
-from flask import (Blueprint, abort, flash, g, redirect, render_template,
-                   request, url_for)
+from flask import (Blueprint, abort, current_app, flash, g, redirect,
+                   render_template, request, url_for)
 from werkzeug.security import generate_password_hash
 
 from OLMS.auth import admin_required, super_required
@@ -85,6 +85,7 @@ def add():
     depts = db.execute(
         'SELECT * FROM department where id IN ({})'.format(','.join(permission_list))).fetchall()
     if request.method == 'POST':
+        ip = request.remote_addr
         username = request.form.get('username').strip()
         realname = request.form.get('realname').strip()
         if realname == '':
@@ -123,6 +124,8 @@ def add():
                     (username, realname, generate_password_hash('123456'),
                      dept_id, type, permission))
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s add user{%s,%s,%s}', g.user['id'], g.user['realname'], ip, username, realname, dept_id)
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -145,6 +148,7 @@ def update(id):
     db = get_db()
     depts = db.execute('SELECT * from department').fetchall()
     if request.method == 'POST':
+        ip = request.remote_addr
         username = request.form.get('username').strip()
         realname = request.form.get('realname').strip()
         if realname == '':
@@ -179,6 +183,8 @@ def update(id):
                 db.execute('UPDATE employee SET password = ? WHERE id = ?',
                            (generate_password_hash(password), id))
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s update UID:%s{%s,%s,%s}', g.user['id'], g.user['realname'], ip, id, username, realname, dept_id)
             return redirect(url_for('empl.index'))
 
     return render_template('empl/update.html', empl=empl, permission=permission_list, depts=depts)
@@ -192,7 +198,10 @@ def delete(id):
     Ensures that the employee exists.
     '''
     get_empl(id)
+    ip = request.remote_addr
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
     db.commit()
+    current_app.logger.info('UID:%s(%s)-%s delete UID:%s',
+                            g.user['id'], g.user['realname'], ip, id)
     return redirect(url_for('empl.index'))

@@ -1,5 +1,5 @@
-from flask import (Blueprint, abort, flash, g, redirect, render_template,
-                   request, url_for)
+from flask import (Blueprint, abort, current_app, flash, g, redirect,
+                   render_template, request, url_for)
 from werkzeug.security import generate_password_hash
 
 from OLMS.auth import super_required
@@ -40,6 +40,7 @@ def add():
     Validates that the department name is not already taken.
     '''
     if request.method == 'POST':
+        ip = request.remote_addr
         department = request.form.get('dept').strip()
         db = get_db()
         error = None
@@ -59,6 +60,8 @@ def add():
             db.execute(
                 'UPDATE employee SET permission = (SELECT group_concat(id) FROM department) WHERE id = 0')
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s add department{%s}', g.user['id'], g.user['realname'], ip, department)
             return redirect(url_for('dept.index'))
 
     return render_template('dept/add.html')
@@ -73,6 +76,7 @@ def update(id):
     '''
     dept = get_dept(id)
     if request.method == 'POST':
+        ip = request.remote_addr
         department = request.form.get('dept').strip()
         error = None
         db = get_db()
@@ -90,6 +94,8 @@ def update(id):
             db.execute('UPDATE department SET dept_name = ? WHERE id = ?',
                        (department, id))
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s update DID:%s{%s}', g.user['id'], g.user['realname'], ip, id, department)
             return redirect(url_for('dept.index'))
 
     return render_template('dept/update.html', dept=dept)
@@ -103,7 +109,10 @@ def delete(id):
     Ensures that the department exists.
     '''
     get_dept(id)
+    ip = request.remote_addr
     db = get_db()
     db.execute('DELETE FROM department WHERE id = ?', (id,))
     db.commit()
+    current_app.logger.info('UID:%s(%s)-%s delete DID:%s',
+                            g.user['id'], g.user['realname'], ip, id)
     return redirect(url_for('dept.index'))
