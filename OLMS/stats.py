@@ -71,7 +71,7 @@ def dept_index():
     depts = db.execute('SELECT * FROM department'
                        ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     empls = db.execute(
-        "SELECT e.id, dept_name || '|' || realname name"
+        "SELECT e.id, dept_name || ' | ' || realname name"
         ' FROM employee e JOIN department p ON e.dept_id = p.id'
         ' WHERE p.id IN ({})'
         ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
