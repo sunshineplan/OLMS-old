@@ -1,7 +1,7 @@
 import functools
 
-from flask import (Blueprint, abort, flash, g, redirect, render_template,
-                   request, session, url_for)
+from flask import (Blueprint, abort, current_app, flash, g, redirect,
+                   render_template, request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from OLMS.db import get_db
@@ -66,6 +66,7 @@ def load_logged_in_user():
 def login():
     '''Log in a user by adding the user id to the session.'''
     if request.method == 'POST':
+        ip = request.remote_addr
         username = request.form.get('username')
         password = request.form.get('password')
         db = get_db()
@@ -87,6 +88,8 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             session.permanent = True
+            current_app.logger.info(
+                'UID:%s(%s)-%s log in', user['id'], user['realname'], ip)
             return redirect(url_for('index'))
 
         flash(error)
@@ -99,6 +102,7 @@ def login():
 def setting():
     '''Change current user's password.'''
     if request.method == 'POST':
+        ip = request.remote_addr
         password = request.form.get('password')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
@@ -124,6 +128,8 @@ def setting():
                 (generate_password_hash(password1), g.user['id']),
             )
             db.commit()
+            current_app.logger.info(
+                'UID:%s(%s)-%s change password', g.user['id'], g.user['realname'], ip)
             session.clear()
             flash('Password Changed successfully. Please Re-login')
             return render_template('auth/login.html')
@@ -136,5 +142,8 @@ def setting():
 @bp.route('/logout')
 def logout():
     '''Clear the current session, including the stored user id.'''
+    ip = request.remote_addr
+    current_app.logger.info('UID:%s(%s)-%s log out',
+                            g.user['id'], g.user['realname'], ip)
     session.clear()
     return redirect(url_for('auth.login'))
