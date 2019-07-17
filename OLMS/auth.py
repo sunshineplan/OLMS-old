@@ -140,6 +140,7 @@ def setting():
 
 
 @bp.route('/logout')
+@login_required
 def logout():
     '''Clear the current session, including the stored user id.'''
     ip = request.remote_addr
