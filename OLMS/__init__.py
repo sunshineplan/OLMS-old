@@ -35,6 +35,12 @@ def create_app(mode=None):
             DATABASE=os.path.join(app.instance_path, 'database'),
         )
 
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
     # Add custom logger
     app.logger.removeHandler(default_handler)
     app.logger.setLevel(logging.INFO)
@@ -42,12 +48,6 @@ def create_app(mode=None):
         app.instance_path, 'admin.log'), maxBytes=10*1024*1024, backupCount=100)
     handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
     app.logger.addHandler(handler)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
     # register the database commands
     from OLMS import db
