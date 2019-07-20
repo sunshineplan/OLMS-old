@@ -1,30 +1,30 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}审核记录{% endblock %}</h3>
-  <hr>
+<h3>{% block title %}审核记录{% endblock %}</h3>
+<hr>
 {% endblock %}
 
 {% block content %}
-  <form method='POST'>
-    <div class='form-group'>
-      <label for='date'>日期</label>
-      <input class='form-control' style='width:15em' id='date' value="{{ record['date'] }}" readonly>
-    </div>
-    <div class='form-group'>
-        <label for='type'>类型</label>
-        <input class='form-control' style='width:15em' id='type' value="{% if record['type'] == 1 %}加班{% else %}休假{% endif %}" readonly>
-      </div>
-    <div class='form-group'>
-      <label for='duration'>时长</label>
-      <input class='form-control' style='width:15em' id='duration' value="{{ record['duration'] }}" readonly>
-    </div>
-    <div class='form-group'>
-      <label for='describe'>描述</label>
-      <textarea class='form-control' style='width:15em' id='describe' rows='3' readonly>{{ record['describe'] }}</textarea>
-    </div>
-    <button type='submit' name='status' value='1' class='btn btn-success' onclick="return confirm('确认通过？');">通过</button>
-    <button type='submit' name='status' value='2' class='btn btn-danger' onclick="return confirm('确认驳回？');">驳回</button>
-    <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
-  </form>
+<form method='POST'>
+  <div class='form-group'>
+    <label for='date'>日期</label>
+    <input class='form-control' id='date' value="{{ record['date'] }}" readonly>
+  </div>
+  <div class='form-group'>
+    <label for='type'>类型</label>
+    <input class='form-control' id='type' value="{% if record['type'] == 1 %}加班{% else %}休假{% endif %}" readonly>
+  </div>
+  <div class='form-group'>
+    <label for='duration'>时长</label>
+    <input class='form-control' id='duration' value="{{ record['duration'] }}" readonly>
+  </div>
+  <div class='form-group'>
+    <label for='describe'>描述</label>
+    <textarea class='form-control' id='describe' rows='3' readonly>{{ record['describe'] }}</textarea>
+  </div>
+  <button type='submit' name='status' value='1' class='btn btn-success' onclick="return confirm('确认通过？');">通过</button>
+  <button type='submit' name='status' value='2' class='btn btn-danger' onclick="return confirm('确认驳回？');">驳回</button>
+  <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
+</form>
 {% endblock %}

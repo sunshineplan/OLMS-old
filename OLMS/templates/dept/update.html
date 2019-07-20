@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}Edit Department{% endblock %}</h3>
-  <hr>
+<h3>{% block title %}Edit Department{% endblock %}</h3>
+<hr>
 {% endblock %}
 
 {% block content %}
-  <form method='POST'>
-    <div class='form-group'>
-        <label for='dept'>Department</label>
-        <input class='form-control' style='width:15em' name='dept' id='dept' value="{{ request.form['dept'] or dept['dept_name'] }}" required>
-    </div>
-    <input type='submit' value='Save' class='btn btn-primary'>
-    <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
-  </form>
-  <hr>
-  <form action="{{ url_for('dept.delete', id=dept['id']) }}" method='POST'>
-    <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
-  </form>
+<form method='POST'>
+  <div class='form-group'>
+    <label for='dept'>Department</label>
+    <input class='form-control' name='dept' id='dept' value="{{ request.form['dept'] or dept['dept_name'] }}" required>
+  </div>
+  <input type='submit' value='Save' class='btn btn-primary'>
+  <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+</form>
+<hr>
+<form action="{{ url_for('dept.delete', id=dept['id']) }}" method='POST'>
+  <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+</form>
 {% endblock %}

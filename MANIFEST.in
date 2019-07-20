@@ -1,4 +1,5 @@
 include LICENSE
 include OLMS/schema.sql
+graft OLMS/static
 graft OLMS/templates
 global-exclude *.pyc

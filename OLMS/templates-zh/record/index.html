@@ -1,237 +1,237 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  {% if mode == 'empl' %}
-    员工记录
-  {% elif mode == 'dept' %}
-    部门记录
-  {% elif mode == 'super' %}
-    记录列表
-  {% endif %}
+{% if mode == 'empl' %}
+员工记录
+{% elif mode == 'dept' %}
+部门记录
+{% elif mode == 'super' %}
+记录列表
+{% endif %}
 {% endblock %}
 
 {% block header %}
-  {% if mode == 'empl' %}
-    <h3>员工记录</h3>
-  {% elif mode == 'dept' %}
-    <h3>部门记录</h3>
-  {% elif mode == 'super' %}
-    <h3>记录列表</h3>
-  {% endif %}
-  <hr>
-  <form class="my-3">
-    {% if mode != 'empl' %}
-      <div class='form-inline'>
-          <div class='input-group input-group-sm mr-2 mb-1'>
-            <div class='input-group-prepend'>
-              <label class='input-group-text' for='filter'>过滤方式</label> 
-            </div>
-            <select class='custom-select' name='filter' id='filter'>
-              <option value='all'>所有</option>
-              <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>部门</option>
-              <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>员工</option>
-            </select>
-          </div>
-          <script>
-            $(function () {
-              if ($('#filter').val() == 'all') {
-                $('#dept-selector').prop('hidden', true);
-                $('#empl-selector').prop('hidden', true);
-              } else if ($('#filter').val() == 'dept') {
-                $('#dept-selector').prop('hidden', false);
-                $('#empl-selector').prop('hidden', true);
-              } else if ($('#filter').val() == 'empl') {
-                $('#dept-selector').prop('hidden', true);
-                $('#empl-selector').prop('hidden', false);
-              };
-              $('#filter').on('change', function () {
-                unselect('dept');
-                unselect('empl');
-                if ($('#filter').val() == 'all') {
-                  $('#dept-selector').prop('hidden', true);
-                  $('#empl-selector').prop('hidden', true);
-                } else if ($('#filter').val() == 'dept') {
-                  $('#dept-selector').prop('hidden', false);
-                  $('#empl-selector').prop('hidden', true);
-                } else if ($('#filter').val() == 'empl') {
-                  $('#dept-selector').prop('hidden', true);
-                  $('#empl-selector').prop('hidden', false);
-                };
-              });
-            });
-          </script>
-          <div class='input-group input-group-sm mr-2 mb-1' id='dept-selector'>
-            <div class='input-group-prepend'>
-              <label class='input-group-text' for='dept'>部门</label>
-            </div>
-            <select class='custom-select' name='dept' id='dept'>
-              <option value='all'>所有</option>
-              {% for dept in depts %}
-                <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class='input-group input-group-sm mr-2 mb-1' id='empl-selector'>
-            <div class='input-group-prepend'>
-              <label class='input-group-text' for='empl'>姓名</label>
-            </div>
-            <select class='custom-select' name='empl' id='empl'>
-              <option value='all'>所有</option>
-              {% for empl in empls %}
-                <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-    {% endif %}
-    <div class='form-inline'>
-      <div class='input-group input-group-sm mr-2 my-1'>
-          <div class='input-group-prepend'>
-            <label class='input-group-text' for='year'>年</label>
-          </div>
-          <select class='custom-select' name='year' id='year'>
-            <option value='all'>所有</option>
-            {% for year in years %}
-              <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
-            {% endfor %}
-          </select>
+{% if mode == 'empl' %}
+<h3>员工记录</h3>
+{% elif mode == 'dept' %}
+<h3>部门记录</h3>
+{% elif mode == 'super' %}
+<h3>记录列表</h3>
+{% endif %}
+<hr>
+<form class='toolbar'>
+  {% if mode != 'empl' %}
+  <div class='form-inline'>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='filter'>过滤方式</label> 
       </div>
-      <script>
-        $(function () {
+      <select class='custom-select' name='filter' id='filter'>
+        <option value='all'>所有</option>
+        <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>部门</option>
+        <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>员工</option>
+      </select>
+    </div>
+    <script>
+      $(function () {
+        if ($('#filter').val() == 'all') {
+          $('#dept-selector').prop('hidden', true);
+          $('#empl-selector').prop('hidden', true);
+        } else if ($('#filter').val() == 'dept') {
+          $('#dept-selector').prop('hidden', false);
+          $('#empl-selector').prop('hidden', true);
+        } else if ($('#filter').val() == 'empl') {
+          $('#dept-selector').prop('hidden', true);
+          $('#empl-selector').prop('hidden', false);
+        };
+        $('#filter').on('change', function () {
+          unselect('dept');
+          unselect('empl');
+          if ($('#filter').val() == 'all') {
+            $('#dept-selector').prop('hidden', true);
+            $('#empl-selector').prop('hidden', true);
+          } else if ($('#filter').val() == 'dept') {
+            $('#dept-selector').prop('hidden', false);
+            $('#empl-selector').prop('hidden', true);
+          } else if ($('#filter').val() == 'empl') {
+            $('#dept-selector').prop('hidden', true);
+            $('#empl-selector').prop('hidden', false);
+          };
+        });
+      });
+    </script>
+    <div class='input-group input-group-sm' id='dept-selector'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='dept'>部门</label>
+      </div>
+      <select class='custom-select' name='dept' id='dept'>
+        <option value='all'>所有</option>
+        {% for dept in depts %}
+        <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class='input-group input-group-sm' id='empl-selector'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='empl'>姓名</label>
+      </div>
+      <select class='custom-select' name='empl' id='empl'>
+        <option value='all'>所有</option>
+        {% for empl in empls %}
+        <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  {% endif %}
+  <div class='form-inline'>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='year'>年</label>
+      </div>
+      <select class='custom-select' name='year' id='year'>
+        <option value='all'>所有</option>
+        {% for year in years %}
+        <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <script>
+      $(function () {
+        if ($('#year').val() == 'all') {
+          $('#month').prop('disabled', true);
+        };
+        $('#year').on('change', function () {
           if ($('#year').val() == 'all') {
             $('#month').prop('disabled', true);
+            unselect('month')
+          } else {
+            $('#month').prop('disabled', false);
           };
-          $('#year').on('change', function () {
-            if ($('#year').val() == 'all') {
-              $('#month').prop('disabled', true);
-              unselect('month')
-            } else {
-              $('#month').prop('disabled', false);
-            };
-          });
         });
-        function unselect(id) {
-          elements = document.getElementById(id).options;
-          for (var i = 0; i < elements.length; i++) {
-            elements[i].selected = false;
-          };
-        }
-      </script>
-      <div class='input-group input-group-sm mr-2 my-1'>
-        <div class='input-group-prepend'>
-          <label class='input-group-text' for='month'>月</label>
-        </div>
-        <select class='custom-select' name='month' id='month'>
-          <option value='all'>所有</option>
-          <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
-          <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
-          <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>
-          <option value='04' {% if args['month']|int() == 4 %}selected{% endif %}>4</option>
-          <option value='05' {% if args['month']|int() == 5 %}selected{% endif %}>5</option>
-          <option value='06' {% if args['month']|int() == 6 %}selected{% endif %}>6</option>
-          <option value='07' {% if args['month']|int() == 7 %}selected{% endif %}>7</option>
-          <option value='08' {% if args['month']|int() == 8 %}selected{% endif %}>8</option>
-          <option value='09' {% if args['month']|int() == 9 %}selected{% endif %}>9</option>
-          <option value='10' {% if args['month']|int() == 10 %}selected{% endif %}>10</option>
-          <option value='11' {% if args['month']|int() == 11 %}selected{% endif %}>11</option>
-          <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
-        </select>
+      });
+      function unselect(id) {
+        elements = document.getElementById(id).options;
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].selected = false;
+        };
+      }
+    </script>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='month'>月</label>
       </div>
-      <div class='input-group input-group-sm mr-2 my-1'>
-        <div class='input-group-prepend'>
-          <label class='input-group-text' for='type'>类型</label>
-        </div>
-        <select class='custom-select' name='type' id='type'>
-          <option value='all'>所有</option>
-          <option value='1' {% if args['type'] == '1' %}selected{% endif %}>加班</option>
-          <option value='0' {% if args['type'] == '0' %}selected{% endif %}>休假</option>
-        </select>
-      </div>
-      <div class='input-group input-group-sm mr-2 my-1'>
-        <div class='input-group-prepend'>
-          <label class='input-group-text' for='status'>状态</label>
-        </div>
-        <select class='custom-select' name='status' id='status'>
-          <option value='all'>所有</option>
-          <option value='0' {% if args['status'] == '0' %}selected{% endif %}>未审核</option>
-          <option value='1' {% if args['status'] == '1' %}selected{% endif %}>已通过</option>
-          <option value='2' {% if args['status'] == '2' %}selected{% endif %}>已驳回</option>
-        </select>
-      </div>
-      <div class='input-group my-1'>
-        <input class='btn btn-primary btn-sm mr-1' type='submit' value='过滤'>
-        <a class='btn btn-primary btn-sm mr-3' href='{{ url_for(request.endpoint) }}'>清除</a>
-        <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='导出'>
-      </div>
+      <select class='custom-select' name='month' id='month'>
+        <option value='all'>所有</option>
+        <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
+        <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
+        <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>
+        <option value='04' {% if args['month']|int() == 4 %}selected{% endif %}>4</option>
+        <option value='05' {% if args['month']|int() == 5 %}selected{% endif %}>5</option>
+        <option value='06' {% if args['month']|int() == 6 %}selected{% endif %}>6</option>
+        <option value='07' {% if args['month']|int() == 7 %}selected{% endif %}>7</option>
+        <option value='08' {% if args['month']|int() == 8 %}selected{% endif %}>8</option>
+        <option value='09' {% if args['month']|int() == 9 %}selected{% endif %}>9</option>
+        <option value='10' {% if args['month']|int() == 10 %}selected{% endif %}>10</option>
+        <option value='11' {% if args['month']|int() == 11 %}selected{% endif %}>11</option>
+        <option value='12' {% if args['month']|int() == 12 %}selected{% endif %}>12</option>
+      </select>
     </div>
-  </form>
-  {% if mode == 'empl' %}
-    <a class='btn btn-primary' href="{{ url_for('record.create') }}">新建</a>
-  {% else %}
-    <a class='btn btn-primary' href="{{ url_for('record.manage_create') }}">新建</a>
-  {% endif %}
-  <p>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='type'>类型</label>
+      </div>
+      <select class='custom-select' name='type' id='type'>
+        <option value='all'>所有</option>
+        <option value='1' {% if args['type'] == '1' %}selected{% endif %}>加班</option>
+        <option value='0' {% if args['type'] == '0' %}selected{% endif %}>休假</option>
+      </select>
+    </div>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='status'>状态</label>
+      </div>
+      <select class='custom-select' name='status' id='status'>
+        <option value='all'>所有</option>
+        <option value='0' {% if args['status'] == '0' %}selected{% endif %}>未审核</option>
+        <option value='1' {% if args['status'] == '1' %}selected{% endif %}>已通过</option>
+        <option value='2' {% if args['status'] == '2' %}selected{% endif %}>已驳回</option>
+      </select>
+    </div>
+    <div class='input-group'>
+      <input class='btn btn-primary btn-sm' type='submit' value='过滤'>
+      <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>清除</a>
+      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='导出'>
+    </div>
+  </div>
+</form>
+{% if mode == 'empl' %}
+<a class='btn btn-primary' href="{{ url_for('record.create') }}">新建</a>
+{% else %}
+<a class='btn btn-primary' href="{{ url_for('record.manage_create') }}">新建</a>
+{% endif %}
+<p>
 {% endblock %}
 
 {% block content %}
-  {{ pagination.info }}
-  <div class='table-responsive'>
-    <table class='table table-hover table-sm'>
-      <thead>
-        <tr>
-          {% if mode != 'empl' %}
-            <th scope='col'>部门</th>
-            <th scope='col'>姓名</th>
-          {% endif %}
-          <th scope='col'>日期</th> 
-          <th scope='col'>类型</th>
-          <th scope='col'>时长</th>
-          <th scope='col' style='min-width:160px;max-width:30%'>描述</th>
-          <th scope='col'>创建时间</th>
-          <th scope='col'>状态</th>
-          <th scope='col'>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for record in records %}
-          <tr>
-            {% if mode != 'empl' %}
-              <td style='white-space:nowrap'>{{ record['dept_name'] }}</td>
-              <td style='white-space:nowrap'>{{ record['realname'] }}</td>
-            {% endif %}
-            <td style='white-space:nowrap'>{{ record['date'] }}</td> 
-            <td>
-              {% if record['type'] == 1 %}
-                加班
-              {% else %}
-                休假
-              {% endif %}
-            </td>
-            <td style='white-space:nowrap'>{{ record['duration'] }} 小时</td>
-            <td>{{ record['describe'] }}</td>
-            <td style='white-space:nowrap'>{{ record['created'] }}</td>
-            <td>
-              {% if record['status'] == 0 %}
-                <a class='text-muted'>未审核</a>
-              {% elif record['status'] == 1 %}
-                <a class='text-success'>已通过</a>
-              {% else %}
-                <a class='text-danger'>已驳回</a>
-              {% endif %}
-            </td>
-            <td>
-              {% if mode == 'dept' %}
-                <a class="btn btn-primary btn-sm {% if record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.verify', id=record['id']) }}">审核</a>
-              {% elif mode == 'super' %}
-                <a class="btn btn-primary btn-sm" href="{{ url_for('record.manage_update', id=record['id']) }}">修改</a>
-              {% else %}
-                <a class="btn btn-primary btn-sm {% if record['empl_id'] != g.user['id'] or record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.update', id=record['id']) }}">修改</a>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {{ pagination.nav }}
+{{ pagination.info }}
+<div class='table-responsive'>
+  <table class='table table-hover table-sm'>
+    <thead>
+      <tr>
+        {% if mode != 'empl' %}
+        <th scope='col'>部门</th>
+        <th scope='col'>姓名</th>
+        {% endif %}
+        <th scope='col'>日期</th> 
+        <th scope='col'>类型</th>
+        <th scope='col'>时长</th>
+        <th scope='col'>描述</th>
+        <th scope='col'>创建时间</th>
+        <th scope='col'>状态</th>
+        <th scope='col'>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for record in records %}
+    <tr>
+      {% if mode != 'empl' %}
+      <td>{{ record['dept_name'] }}</td>
+      <td>{{ record['realname'] }}</td>
+      {% endif %}
+      <td>{{ record['date'] }}</td> 
+      <td>
+      {% if record['type'] == 1 %}
+      加班
+      {% else %}
+      休假
+      {% endif %}
+      </td>
+      <td>{{ record['duration'] }} 小时</td>
+      <td class='describe'>{{ record['describe'] }}</td>
+      <td>{{ record['created'] }}</td>
+      <td>
+        {% if record['status'] == 0 %}
+        <a class='text-muted'>未审核</a>
+        {% elif record['status'] == 1 %}
+        <a class='text-success'>已通过</a>
+        {% else %}
+        <a class='text-danger'>已驳回</a>
+        {% endif %}
+      </td>
+      <td>
+        {% if mode == 'dept' %}
+        <a class="btn btn-primary btn-sm {% if record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.verify', id=record['id']) }}">审核</a>
+        {% elif mode == 'super' %}
+        <a class='btn btn-primary btn-sm' href="{{ url_for('record.manage_update', id=record['id']) }}">修改</a>
+        {% else %}
+        <a class="btn btn-primary btn-sm {% if record['empl_id'] != g.user['id'] or record['status'] != 0 %}disabled{% endif %}" href="{{ url_for('record.update', id=record['id']) }}">修改</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{{ pagination.nav }}
 {% endblock %}

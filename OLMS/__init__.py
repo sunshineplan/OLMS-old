@@ -21,10 +21,11 @@ def create_app(mode=None):
             DATABASE=os.path.join(app.instance_path, 'OLMS.db'),
         )
     else:
+        static_folder = os.path.join(sys._MEIPASS, 'static')
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         instance_path = os.path.join(os.environ['LOCALAPPDATA'], 'webapp')
-        app = Flask('webapp', template_folder=template_folder,
-                    instance_path=instance_path)
+        app = Flask('webapp', static_folder=static_folder,
+                    template_folder=template_folder, instance_path=instance_path)
         app.config.from_mapping(
             # a default secret that should be overridden by instance config
             SECRET_KEY='webapp',

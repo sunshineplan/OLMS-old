@@ -1,0 +1,71 @@
+.topbar {
+    min-height: 70px;
+    background-color: #f8f9fa;
+}
+
+.brand {
+    font-size: 25px;
+    color: black;
+}
+
+.brand:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.topbar .nav-link {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+.sidebar {
+    min-width: 200px;
+    max-width: 200px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-right: 1px solid #e9ecef;
+}
+
+.sidebar .navbar-nav {
+    padding-left: 10px;
+}
+
+.content {
+    width: 100%;
+    padding: 20px;
+}
+
+.toolbar{
+    padding-bottom: 10px;
+}
+
+.input-group {
+    padding: 5px 10px 5px 0px;
+}
+
+.form-control {
+    width: 250px;
+}
+
+td {
+    white-space: nowrap;
+}
+
+.describe {
+    white-space: normal;
+    min-width: 160px;
+    max-width: 480px;
+}
+
+.btn-primary {
+    margin-right: 4px;
+}
+
+.btn-info {
+    margin-left: 8px;
+}

@@ -1,43 +1,43 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}新建记录{% endblock %}</h3>
-  <hr>
+<h3>{% block title %}新建记录{% endblock %}</h3>
+<hr>
 {% endblock %}
 
 {% block content %}
-  <form method='POST'>
-    {% if mode == 'admin' %}
-    <div class='form-group'>
-      <label for='empl'>员工</label>
-      <select class='form-control' style='width:15em' name='empl' id='empl'>
-        <option disabled selected value> -- select an employee -- </option>
-        {% for empl in empls %}
-          <option value="{{ empl['id'] }}">{{ empl['name'] }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    {% endif %}
-    <div class='form-group'>
-      <label for='date'>日期</label>
-      <input class='form-control' style='width:15em' type='date' name='date' id='date' value='{{ request.form['date'] }}' required>
-    </div>
-    <div class='form-group'>
-      <label for='type'>类型</label>
-      <select class='form-control' style='width:15em' name='type' id='type'>
-        <option value='1'>加班</option>
-        <option value='0'>休假</option>
-      </select>
-    </div>
-    <div class='form-group'>
-      <label for='duration'>时长</label>
-      <input class='form-control' style='width:15em' name='duration' id='duration' value='{{ request.form['duration'] }}' required>
-    </div>
-    <div class='form-group'>
-      <label for='describe'>描述</label>
-      <textarea class='form-control' style='width:15em' name='describe' id='describe' rows='3'>{{ request.form['describe'] }}</textarea>
-    </div>
-    <input type='submit' value='创建' class='btn btn-primary'>
-    <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
-  </form>
+<form method='POST'>
+  {% if mode == 'admin' %}
+  <div class='form-group'>
+    <label for='empl'>员工</label>
+    <select class='form-control' name='empl' id='empl'>
+      <option disabled selected value> -- select an employee -- </option>
+      {% for empl in empls %}
+        <option value="{{ empl['id'] }}">{{ empl['name'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+  <div class='form-group'>
+    <label for='date'>日期</label>
+    <input class='form-control' type='date' name='date' id='date' value='{{ request.form['date'] }}' required>
+  </div>
+  <div class='form-group'>
+    <label for='type'>类型</label>
+    <select class='form-control' name='type' id='type'>
+      <option value='1'>加班</option>
+      <option value='0'>休假</option>
+    </select>
+  </div>
+  <div class='form-group'>
+    <label for='duration'>时长</label>
+    <input class='form-control' name='duration' id='duration' value='{{ request.form['duration'] }}' required>
+  </div>
+  <div class='form-group'>
+    <label for='describe'>描述</label>
+    <textarea class='form-control' name='describe' id='describe' rows='3'>{{ request.form['describe'] }}</textarea>
+  </div>
+  <input type='submit' value='创建' class='btn btn-primary'>
+  <a class='btn btn-primary' href='javascript:history.go(-1);'>取消</a>
+</form>
 {% endblock %}

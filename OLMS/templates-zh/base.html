@@ -1,61 +1,60 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - 加班休假管理系统</title>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
-<nav class='navbar navbar-light bg-light'>
-  <a class='navbar-brand' href="{{ url_for('index') }}">加班休假管理系统</a>
-  <div class='navbar-nav ml-auto flex-row'>
+<!--          https://code.jquery.com/jquery-3.4.1.min.js         -->
+<script src="{{ url_for('static', filename='jquery.js') }}"></script>
+<!-- https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css-->
+<link rel='stylesheet' href="{{ url_for('static', filename='bootstrap.css') }}">
+<link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
+<nav class='navbar navbar-light topbar'>
+  <a class='brand' href="{{ url_for('index') }}">加班休假管理系统</a>
+  <div class='navbar-nav flex-row'>
     {% if g.user %}
-      <a class='nav-link mx-2'>{{ g.user['username'] }}({{ g.user['realname'] }})</a>
-      <a class="nav-link mx-2 {% if request.endpoint == 'auth.setting' %}active{% endif %}" href="{{ url_for('auth.setting') }}">修改密码</a>
-      <a class='nav-link mx-2' href="{{ url_for('auth.logout') }}">退出</a>
+    <a class='nav-link'>{{ g.user['username'] }}({{ g.user['realname'] }})</a>
+    <a class="nav-link {% if request.endpoint == 'auth.setting' %}active{% endif %}" href="{{ url_for('auth.setting') }}">修改密码</a>
+    <a class='nav-link' href="{{ url_for('auth.logout') }}">退出</a>
     {% else %}
-      <a class='nav-link mx-2' href="{{ url_for('auth.login') }}">登入</a></li>
+    <a class='nav-link' href="{{ url_for('auth.login') }}">登入</a></li>
     {% endif %}
   </div>
 </nav>
-<div class='container-fluid'>
-  <div class='row'>
-    <div class='col-sm-4 col-md-3 col-lg-2 p-0'>
-      {% if g.user %}
-        <nav class='nav flex-column navbar-light bg-light pl-3'>
-            <div>
-              <a class='navbar-brand'>员工面板</a>
-              <ul class='navbar-nav pl-2'>
-                <li><a class="nav-link {% if request.endpoint == 'record.empl_index' %}active{% endif %}" href="{{ url_for('index') }}">员工记录</a></li>
-                <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">员工统计</a></li>
-              </ul>
-            </div>
-            {% if g.user['type'] == 1 %}
-              <div>
-                <a class='navbar-brand'>部门面板</a>
-                <ul class='navbar-nav pl-2'>
-                  <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">部门记录</a></li>
-                  <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">部门统计</a></li>
-                </ul>
-              </div>
-              <div>
-                <a class='navbar-brand'>控制面板</a>
-                <ul class='navbar-nav pl-2'>
-                  <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">管理员工</a></li>
-                  {% if g.user['id'] == 0 %}
-                    <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">管理部门</a></li>
-                    <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">管理记录</a></li>
-                  {% endif %}
-                </ul>
-              </div>
-            {% endif %}
-        </nav>
-      {% endif %}
+<div class='wrapper'>
+  <nav class='nav flex-column navbar-light sidebar'>
+    {% if g.user %}
+    <div>
+      <a class='navbar-brand'>员工面板</a>
+      <ul class='navbar-nav'>
+        <li><a class="nav-link {% if request.endpoint == 'record.empl_index' %}active{% endif %}" href="{{ url_for('index') }}">员工记录</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">员工统计</a></li>
+      </ul>
     </div>
-    <div class='col-sm-8 col-md-9 col-lg-10'>
-      <header>
-        {% block header %}{% endblock %}
-      </header>
-      {% for message in get_flashed_messages() %}
-        <div class='alert alert-danger d-inline-flex'>{{ message }}</div>
-      {% endfor %}
-      {% block content %}{% endblock %}
+    {% if g.user['type'] == 1 %}
+    <div>
+      <a class='navbar-brand'>部门面板</a>
+      <ul class='navbar-nav'>
+        <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">部门记录</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">部门统计</a></li>
+      </ul>
     </div>
+    <div>
+      <a class='navbar-brand'>控制面板</a>
+      <ul class='navbar-nav'>
+        <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">管理员工</a></li>
+        {% if g.user['id'] == 0 %}
+        <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">管理部门</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">管理记录</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endif %}
+  </nav>
+  <div class='content'>
+    <header>
+    {% block header %}{% endblock %}
+    </header>
+    {% for message in get_flashed_messages() %}
+    <div class='alert alert-danger d-inline-flex'>{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
   </div>
 </div>

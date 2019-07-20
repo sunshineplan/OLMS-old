@@ -1,59 +1,59 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}Add Employee{% endblock %}</h3>
-  <hr>
+<h3>{% block title %}Add Employee{% endblock %}</h3>
+<hr>
 {% endblock %}
 
 {% block content %}
-  <form method='POST'>
-    <div class='form-group'>
-      <label for='username'>Username</label>
-      <input class='form-control' style='width:15em' name='username' id='username' required>
-    </div>
-    <div class='form-group'>
-      <label for='realname'>Realname</label>
-      <input class='form-control' style='width:15em' name='realname' id='realname'>
-    </div>
-    <div class='form-group'>
-      <label for='dept'>Department</label>
-      <select class='form-control' style='width:15em' name='dept' id='dept'>
-        <option disabled selected value> -- select a department -- </option>
-        {% for dept in depts %}
-          <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    {% if g.user['id'] == 0 %}
-      <div class='form-group'>
-        <label for='type'>Type</label>
-        <select class='form-control' style='width:15em' name='type' id='type'>
-          <option disabled selected value> -- select type -- </option>
-          <option value='0'>General Employee</option>
-          <option value='1'>Administrator</option>
-        </select>
-      </div>
-      <script>
-        $(function () {
-          $('#type').on('change', function () {
-            if ($('#type').val() == 0) {
-              $('#permission-selector').attr('hidden', true);
-            } else {
-              $('#permission-selector').attr('hidden', false);
-            };
-          });
-        });
-      </script>
-      <div class='form-group' id='permission-selector' hidden>
-        <label for='permission'>Permission</label>
-        <select multiple class='form-control' style='width:15em' name='permission' id='permission'>
-          {% for dept in depts %}
-            <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
-          {% endfor %}
-        </select>
-      </div>
-    {% endif %}
-    <input type='submit' value='Add' class='btn btn-primary'>
-    <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
-  </form>
+<form method='POST'>
+  <div class='form-group'>
+    <label for='username'>Username</label>
+    <input class='form-control' name='username' id='username' required>
+  </div>
+  <div class='form-group'>
+    <label for='realname'>Realname</label>
+    <input class='form-control' name='realname' id='realname'>
+  </div>
+  <div class='form-group'>
+    <label for='dept'>Department</label>
+    <select class='form-control' name='dept' id='dept'>
+      <option disabled selected value> -- select a department -- </option>
+      {% for dept in depts %}
+      <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% if g.user['id'] == 0 %}
+  <div class='form-group'>
+    <label for='type'>Type</label>
+    <select class='form-control' name='type' id='type'>
+      <option disabled selected value> -- select type -- </option>
+      <option value='0'>General Employee</option>
+      <option value='1'>Administrator</option>
+    </select>
+  </div>
+  <script>
+    $(function () {
+      $('#type').on('change', function () {
+        if ($('#type').val() == 0) {
+          $('#permission-selector').attr('hidden', true);
+        } else {
+          $('#permission-selector').attr('hidden', false);
+        };
+      });
+    });
+  </script>
+  <div class='form-group' id='permission-selector' hidden>
+    <label for='permission'>Permission</label>
+    <select multiple class='form-control' name='permission' id='permission'>
+      {% for dept in depts %}
+      <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+  <input type='submit' value='Add' class='btn btn-primary'>
+  <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+</form>
 {% endblock %}

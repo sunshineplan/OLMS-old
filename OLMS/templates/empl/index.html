@@ -1,75 +1,73 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}Employees List{% endblock %}</h3>
-  <hr>
-  <form class='my-2'>
-    <div class='form-inline'>
-      <div class='input-group input-group-sm mr-3 my-1'>
-        <div class='input-group-prepend'>
-          <label class='input-group-text' for='dept'>Department</label>
-        </div>
-        <select class='custom-select' name='dept' id='dept'>
-          <option value='all'>All</option>
-          {% for dept in depts %}
-            <option value="{{ dept['id'] }}" {% if args['dept_id'] == dept['id']|string() %}selected{% endif %}>{{ dept['dept_name'] }}</option>
-          {% endfor %}
-        </select>
+<h3>{% block title %}Employees List{% endblock %}</h3>
+<hr>
+<form class='toolbar'>
+  <div class='form-inline'>
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='dept'>Department</label>
       </div>
-      {% if g.user['id'] == 0 %}
-        <div class='input-group input-group-sm mr-3 my-1'>
-          <div class='input-group-prepend'>
-            <label class='input-group-text' for='type'>Type</label>
-          </div>
-          <select class='custom-select' name='type' id='type'>
-            <option value='all'>All</option>
-            <option value='0' {% if args['type'] == '0' %}selected{% endif %}>General Employee</option>
-            <option value='1' {% if args['type'] == '1' %}selected{% endif %}>Administrator</option>
-          </select>
-        </div>
-      {% endif %}
-      <div class='input-group my-1'>
-        <input class='btn btn-primary btn-sm mr-1' type='submit' value='Filter'>
-        <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>Clear</a>
-      </div>
+      <select class='custom-select' name='dept' id='dept'>
+        <option value='all'>All</option>
+        {% for dept in depts %}
+        <option value="{{ dept['id'] }}" {% if args['dept_id'] == dept['id']|string() %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        {% endfor %}
+      </select>
     </div>
-  </form>
-  <a class='btn btn-primary' href="{{ url_for('empl.add') }}">Add</a>
-  <p>
+    {% if g.user['id'] == 0 %}
+    <div class='input-group input-group-sm'>
+      <div class='input-group-prepend'>
+        <label class='input-group-text' for='type'>Type</label>
+      </div>
+      <select class='custom-select' name='type' id='type'>
+        <option value='all'>All</option>
+        <option value='0' {% if args['type'] == '0' %}selected{% endif %}>General Employee</option>
+        <option value='1' {% if args['type'] == '1' %}selected{% endif %}>Administrator</option>
+      </select>
+    </div>
+    {% endif %}
+    <div class='input-group'>
+      <input class='btn btn-primary btn-sm' type='submit' value='Filter'>
+      <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>Clear</a>
+    </div>
+  </div>
+</form>
+<a class='btn btn-primary' href="{{ url_for('empl.add') }}">Add</a>
+<p>
 {% endblock %}
 
 {% block content %}
-  {{ pagination.info }}
-  <div class='table-responsive'>
-    <table class='table table-hover table-sm'>
-      <thead>
-        <tr>
-          <th scope='col'>Username</th>
-          <th scope='col'>Realname</th>
-          <th scope='col'>Department</th>
-          {% if g.user['id'] == 0 %}
-            <th scope='col'>Type</th>
-            <th scope='col'>Permission</th>
-            <th scope='col'>Operation</th>
-          {% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for empl in empls %}
-          <tr>
-            <td>{{ empl['username'] }}</td>
-            <td>{{ empl['realname'] }}</td> 
-            <td style='white-space:nowrap'>{{ empl['dept_name'] }}</td>
-            {% if g.user['id'] == 0 %}
-              <td style='white-space:nowrap'>{% if empl['type'] == 0 %}General Employee{% else %}Administrator{% endif %}</td>
-              <td style='white-space:nowrap'>{{ empl['permission'] }}</td>
-              <td>
-                <a class='btn btn-outline-primary btn-sm' href='{{ url_for('empl.update', id=empl['id']) }}'>Edit</a>
-              </td>
-            {% endif %}
-          </tr>
-        {% endfor %}
-      </tbody>
+{{ pagination.info }}
+<div class='table-responsive'>
+  <table class='table table-hover table-sm'>
+    <thead>
+      <tr>
+        <th scope='col'>Username</th>
+        <th scope='col'>Realname</th>
+        <th scope='col'>Department</th>
+        {% if g.user['id'] == 0 %}
+        <th scope='col'>Type</th>
+        <th scope='col'>Permission</th>
+        <th scope='col'>Operation</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for empl in empls %}
+      <tr>
+        <td>{{ empl['username'] }}</td>
+        <td>{{ empl['realname'] }}</td> 
+        <td>{{ empl['dept_name'] }}</td>
+        {% if g.user['id'] == 0 %}
+        <td>{% if empl['type'] == 0 %}General Employee{% else %}Administrator{% endif %}</td>
+        <td>{{ empl['permission'] }}</td>
+        <td><a class='btn btn-outline-primary btn-sm' href='{{ url_for('empl.update', id=empl['id']) }}'>Edit</a></td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 {{ pagination.nav }}

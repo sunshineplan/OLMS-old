@@ -1,31 +1,29 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>{% block title %}部门列表{% endblock %}</h3>
-  <hr>
-  <a class='btn btn-primary' href="{{ url_for('dept.add') }}">添加</a>
-  <p>
+<h3>{% block title %}部门列表{% endblock %}</h3>
+<hr>
+<a class='btn btn-primary' href="{{ url_for('dept.add') }}">添加</a>
+<p>
 {% endblock %}
 
 {% block content %}
-  <table class='table table-hover'>
-    <thead>
-      <tr>
-        <th scope='col'>ID</th>
-        <th scope='col'>部门</th>
-        <th scope='col'>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for dept in depts %}
-        <tr>
-          <td>{{ dept['id'] }}</td>
-          <td>{{ dept['dept_name'] }}</td>
-          <td>
-              <a class='btn btn-outline-primary btn-sm' href="{{ url_for('dept.update', id=dept['id']) }}">修改</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
+<table class='table table-hover'>
+  <thead>
+    <tr>
+      <th scope='col'>ID</th>
+      <th scope='col'>部门</th>
+      <th scope='col'>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dept in depts %}
+    <tr>
+      <td>{{ dept['id'] }}</td>
+      <td>{{ dept['dept_name'] }}</td>
+      <td><a class='btn btn-outline-primary btn-sm' href="{{ url_for('dept.update', id=dept['id']) }}">修改</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
