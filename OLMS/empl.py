@@ -115,14 +115,12 @@ def add():
             if g.user['id'] != 0:
                 db.execute(
                     'INSERT INTO employee (username, realname, password, dept_id) VALUES (?, ?, ?, ?)',
-                    (username, realname, generate_password_hash('123456'),
-                     dept_id))
+                    (username, realname, '123456', dept_id))
             else:
                 db.execute(
                     'INSERT INTO employee (username, realname, password, dept_id, type, permission)'
                     ' VALUES (?, ?, ?, ?, ?, ?)',
-                    (username, realname, generate_password_hash('123456'),
-                     dept_id, type, permission))
+                    (username, realname, '123456', dept_id, type, permission))
             db.commit()
             current_app.logger.info(
                 'UID:%s(%s)-%s add user{%s,%s,%s}', g.user['id'], g.user['realname'], ip, username, realname, dept_id)

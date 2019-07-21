@@ -51,4 +51,4 @@ CREATE VIEW statistics AS
   ORDER BY period DESC;
 
 INSERT INTO employee (id, username, realname, password, type, dept_id)
-  VALUES (0, 'admin', 'admin', 'pbkdf2:sha256:50000$UlmUcYy1$5331b54a654bb31f10098cbe566a50a30f0aad0b13a9a8ce1ce6efaf14bb6959', 1, 0);
+  VALUES (0, 'admin', 'admin', '123456', 1, 0);
