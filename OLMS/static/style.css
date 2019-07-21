@@ -21,6 +21,7 @@
 .wrapper {
     display: flex;
     align-items: stretch;
+    min-height: 80vh;
 }
 
 .login {
