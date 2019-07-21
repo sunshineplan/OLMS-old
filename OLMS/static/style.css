@@ -11,6 +11,7 @@ body {
 .brand {
     padding-left: 20px;
     font-size: 25px;
+    letter-spacing: .3px;
     color: black;
 }
 
