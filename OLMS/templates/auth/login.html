@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h3>{% block title %}Log In{% endblock %}</h3>
+<h3 class='d-flex justify-content-center'>{% block title %}Log In{% endblock %}</h3>
 <p>
 {% endblock %}
 
 {% block content %}
-<form method='POST'>
+<form class='login' method='POST'>
   <div class='form-group'>
     <label for='username'>Username</label>
     <input class='form-control' name='username' id='username' placeholder='Username' required>
@@ -15,7 +15,7 @@
     <label for='password'>Password</label>
     <input class='form-control' type='password' name='password' id='password' placeholder='Password' required>
   </div>
-  <input type='submit' id='submit' value='Log In' class='btn btn-primary'>
+  <input type='submit' id='submit' value='Log In' class='btn btn-primary login'>
 </form>
 <script>
   $(function() {

@@ -18,8 +18,8 @@
   </div>
 </nav>
 <div class='wrapper'>
+  {% if g.user %}
   <nav class='nav flex-column navbar-light sidebar'>
-    {% if g.user %}
     <div>
       <a class='navbar-brand'>Employee Panel</a>
       <ul class='navbar-nav'>
@@ -46,8 +46,8 @@
       </ul>
     </div>
     {% endif %}
-    {% endif %}
   </nav>
+  {% endif %}
   <div class='content'>
     <header>
     {% block header %}{% endblock %}

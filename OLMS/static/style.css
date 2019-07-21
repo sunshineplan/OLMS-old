@@ -23,6 +23,14 @@
     align-items: stretch;
 }
 
+.login {
+    width: 250px;
+}
+
+form.login {
+    margin: 0 auto;
+}
+
 .sidebar {
     min-width: 200px;
     max-width: 200px;
