@@ -37,15 +37,27 @@ body {
 }
 
 .sidebar {
-    min-width: 200px;
-    max-width: 200px;
+    width: 190px;
     padding-top: 10px;
-    padding-left: 20px;
+    text-indent: 6px;
     border-right: 1px solid #e9ecef;
 }
 
 .sidebar .navbar-nav {
-    padding-left: 10px;
+    text-indent: 20px;
+}
+
+.sidebar .nav-link {
+    color: rgba(0,0,0,.7) !important;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgb(232, 232, 232);
+}
+
+.sidebar .nav-link.active {
+    background-color: rgba(161,194,250,.16);
+    color: #3367d6 !important;
 }
 
 .content {
