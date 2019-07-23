@@ -5,24 +5,30 @@ body {
 
 .topbar {
     min-height: 70px;
-    background-color: #f8f9fa;
+    background-color: #1a73e8;
 }
 
 .brand {
     padding-left: 20px;
     font-size: 25px;
     letter-spacing: .3px;
-    color: black;
+    color: white;
 }
 
 .brand:hover {
-    color: black;
+    color: white;
     text-decoration: none;
 }
 
 .topbar .nav-link {
     padding-left: 8px;
     padding-right: 8px;
+    color: white !important;
+}
+
+.topbar .link:hover {
+    background: rgba(255,255,255,.2);
+    border-radius: 5px;
 }
 
 .wrapper {

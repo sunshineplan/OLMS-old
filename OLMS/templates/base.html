@@ -11,10 +11,10 @@
   <div class='navbar-nav flex-row'>
     {% if g.user %}
     <a class='nav-link'>{{ g.user['username'] }}({{ g.user['realname'] }})</a>
-    <a class="nav-link {% if request.endpoint == 'auth.setting' %}active{% endif %}" href="{{ url_for('auth.setting') }}">Setting</a>
-    <a class='nav-link' href="{{ url_for('auth.logout') }}">Log Out</a>
+    <a class='nav-link link' href="{{ url_for('auth.setting') }}">Setting</a>
+    <a class='nav-link link' href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
-    <a class='nav-link' href="{{ url_for('auth.login') }}">Log In</a></li>
+    <a class='nav-link'>Log In</a></li>
     {% endif %}
   </div>
 </nav>
