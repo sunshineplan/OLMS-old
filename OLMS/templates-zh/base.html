@@ -24,25 +24,25 @@
     <div>
       <a class='navbar-brand'>员工面板</a>
       <ul class='navbar-nav'>
-        <li><a class="nav-link {% if request.endpoint == 'record.empl_index' %}active{% endif %}" href="{{ url_for('index') }}">员工记录</a></li>
-        <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">员工统计</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'record.empl_index' %}active{% endif %}" href="{{ url_for('index') }}">员工个人记录</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">员工个人统计</a></li>
       </ul>
     </div>
     {% if g.user['type'] == 1 %}
     <div>
       <a class='navbar-brand'>部门面板</a>
       <ul class='navbar-nav'>
-        <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">部门记录</a></li>
-        <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">部门统计</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'record.dept_index' %}active{% endif %}" href="{{ url_for('record.dept_index') }}">部门员工记录</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'stats.dept_index' %}active{% endif %}" href="{{ url_for('stats.dept_index') }}">部门员工统计</a></li>
       </ul>
     </div>
     <div>
       <a class='navbar-brand'>控制面板</a>
       <ul class='navbar-nav'>
-        <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">管理员工</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'empl.index' %}active{% endif %}" href="{{ url_for('empl.index') }}">管理员工信息</a></li>
         {% if g.user['id'] == 0 %}
-        <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">管理部门</a></li>
-        <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">管理记录</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'dept.index' %}active{% endif %}" href="{{ url_for('dept.index') }}">管理部门信息</a></li>
+        <li><a class="nav-link {% if request.endpoint == 'record.super_index' %}active{% endif %}" href="{{ url_for('record.super_index') }}">管理所有记录</a></li>
         {% endif %}
       </ul>
     </div>

@@ -2,9 +2,9 @@
 
 {% block title %}
 {% if mode == 'empl' %}
-员工记录
+员工个人记录
 {% elif mode == 'dept' %}
-部门记录
+部门员工记录
 {% elif mode == 'super' %}
 记录列表
 {% endif %}
@@ -12,9 +12,9 @@
 
 {% block header %}
 {% if mode == 'empl' %}
-<h3>员工记录</h3>
+<h3>员工个人记录</h3>
 {% elif mode == 'dept' %}
-<h3>部门记录</h3>
+<h3>部门员工记录</h3>
 {% elif mode == 'super' %}
 <h3>记录列表</h3>
 {% endif %}
