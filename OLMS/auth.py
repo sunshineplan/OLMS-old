@@ -66,6 +66,9 @@ def load_logged_in_user():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     '''Log in a user by adding the user id to the session.'''
+    if g.user:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         ip = request.remote_addr
         username = request.form.get('username')
