@@ -54,7 +54,7 @@
     });
   </script>
   <div class='form-group' id='permission-selector'>
-    <label for='permission'>权限</label>
+    <label for='permission'>权限 (可多选)</label>
     <select multiple class='form-control' name='permission' id='permission'>
       {% for dept in depts %}
       <option value="{{ dept['id'] }}" {% if dept['id'] in permission %}selected{% endif %}>{{ dept['dept_name'] }}</option>

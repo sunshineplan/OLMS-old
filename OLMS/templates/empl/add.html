@@ -45,7 +45,7 @@
     });
   </script>
   <div class='form-group' id='permission-selector' hidden>
-    <label for='permission'>Permission</label>
+    <label for='permission'>Permission (multiple choice)</label>
     <select multiple class='form-control' name='permission' id='permission'>
       {% for dept in depts %}
       <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
