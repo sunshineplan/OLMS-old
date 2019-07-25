@@ -9,18 +9,18 @@
 <form method='POST'>
   {% if mode == 'super' %}
   <div class='form-group'>
-    <label for='empl'>Employee</label>
-    <select class='form-control' name='empl' id='empl'>
-      {% for empl in empls %}
-      <option value="{{ empl['id'] }}"{% if record['empl_id'] == empl['id'] %}selected{% endif %}>{{ empl['realname'] }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class='form-group'>
     <label for='dept'>Department</label>
     <select class='form-control' name='dept' id='dept'>
       {% for dept in depts %}
         <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class='form-group'>
+    <label for='empl'>Employee</label>
+    <select class='form-control' name='empl' id='empl'>
+      {% for empl in empls %}
+      <option value="{{ empl['id'] }}"{% if record['empl_id'] == empl['id'] %}selected{% endif %}>{{ empl['realname'] }}</option>
       {% endfor %}
     </select>
   </div>
