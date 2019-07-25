@@ -83,6 +83,10 @@ body {
     width: 250px;
 }
 
+.input-group select {
+    max-width: 200px;
+}
+
 td {
     white-space: nowrap;
 }
@@ -99,4 +103,13 @@ td {
 
 .btn-info {
     margin-left: 8px;
+}
+
+.form-row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.form-row .form-group {
+    padding-right: 30px;
 }

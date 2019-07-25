@@ -8,37 +8,41 @@
 {% block content %}
 <form method='POST'>
   {% if mode == 'super' %}
-  <div class='form-group'>
-    <label for='dept'>部门</label>
-    <select class='form-control' name='dept' id='dept'>
-      {% for dept in depts %}
-        <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class='form-group'>
-    <label for='empl'>员工</label>
-    <select class='form-control' name='empl' id='empl'>
-      {% for empl in empls %}
-      <option value="{{ empl['id'] }}"{% if record['empl_id'] == empl['id'] %}selected{% endif %}>{{ empl['realname'] }}</option>
-      {% endfor %}
-    </select>
+  <div class='form-row'>
+    <div class='form-group'>
+      <label for='dept'>部门</label>
+      <select class='form-control' name='dept' id='dept'>
+        {% for dept in depts %}
+          <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class='form-group'>
+      <label for='empl'>员工</label>
+      <select class='form-control' name='empl' id='empl'>
+        {% for empl in empls %}
+        <option value="{{ empl['id'] }}"{% if record['empl_id'] == empl['id'] %}selected{% endif %}>{{ empl['realname'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
   </div>
   {% endif %}
   <div class='form-group'>
     <label for='date'>日期</label>
     <input class='form-control' type='date' name='date' id='date' value="{{ request.form['date'] or record['date'] }}" required>
   </div>
-  <div class='form-group'>
-    <label for='type'>类型</label>
-    <select class='form-control' name='type' id='type'>
-      <option value='1'>加班</option>
-      <option value='0' {% if record['type'] == 0 %}selected{% endif %}>休假</option>
-    </select>
-  </div>
-  <div class='form-group'>
-    <label for='duration'>时长</label>
-    <input class='form-control' name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
+  <div class='form-row'>
+    <div class='form-group'>
+      <label for='type'>类型</label>
+      <select class='form-control' name='type' id='type'>
+        <option value='1'>加班</option>
+        <option value='0' {% if record['type'] == 0 %}selected{% endif %}>休假</option>
+      </select>
+    </div>
+    <div class='form-group'>
+      <label for='duration'>时长</label>
+      <input class='form-control' name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
+    </div>
   </div>
   {% if mode == 'super' %}
   <div class='form-group'>
