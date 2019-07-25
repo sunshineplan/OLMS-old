@@ -1,4 +1,5 @@
 import functools
+from datetime import timedelta
 
 from flask import (Blueprint, abort, current_app, flash, g, redirect,
                    render_template, request, session, url_for)
@@ -69,6 +70,7 @@ def login():
         ip = request.remote_addr
         username = request.form.get('username')
         password = request.form.get('password')
+        rememberme = request.form.get('rememberme')
         db = get_db()
         error = None
         try:
@@ -87,6 +89,10 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session['user_id'] = user['id']
+            if rememberme == 'on':
+                current_app.permanent_session_lifetime = timedelta(days=365*10)
+            else:
+                current_app.permanent_session_lifetime = timedelta(minutes=10)
             session.permanent = True
             current_app.logger.info(
                 'UID:%s(%s)-%s log in', user['id'], user['realname'], ip)

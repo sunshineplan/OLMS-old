@@ -4,6 +4,7 @@ Current Password=当前密码
 New Password=新密码
 Confirm Password=确认密码
 Log In=登入
+Remember Me=记住我
 Log Out=退出
 All Records=记录列表
 Employee Panel=员工面板
