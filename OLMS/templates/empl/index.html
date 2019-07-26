@@ -10,7 +10,7 @@
         <label class='input-group-text' for='dept'>Department</label>
       </div>
       <select class='custom-select' name='dept' id='dept'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         {% for dept in depts %}
         <option value="{{ dept['id'] }}" {% if args['dept_id'] == dept['id']|string() %}selected{% endif %}>{{ dept['dept_name'] }}</option>
         {% endfor %}
@@ -22,7 +22,7 @@
         <label class='input-group-text' for='type'>Type</label>
       </div>
       <select class='custom-select' name='type' id='type'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         <option value='0' {% if args['type'] == '0' %}selected{% endif %}>General Employee</option>
         <option value='1' {% if args['type'] == '1' %}selected{% endif %}>Administrator</option>
       </select>

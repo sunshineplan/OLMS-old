@@ -37,21 +37,20 @@ def empl_records():
              ' WHERE r.empl_id = {} {}'
              ' ORDER BY created DESC')
     condition = ''
-    if year and year != 'all':
-        if not month or month == 'all':
+    if year and year != '':
+        if not month or month == '':
             condition += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != 'all':
+    if type and type != '':
         condition += ' AND r.type = {}'.format(type)
-    if status and status != 'all':
+    if status and status != '':
         condition += ' AND status = {}'.format(status)
     fieldnames = ['Date', 'Type', 'Duration', 'Describe', 'Created', 'Status']
     download_file = exportCSV(query.format(
         g.user['id'], condition), fieldnames)
     empl_name = g.user['realname']
-    filename = f'EmplRecords{empl_name}{year}{month}.csv'.replace(
-        'all', '').replace('None', '')
+    filename = f'EmplRecords{empl_name}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -79,12 +78,12 @@ def dept_records():
              ' WHERE {} {}'
              ' ORDER BY created DESC')
     db = get_db()
-    if filter and filter != 'all':
-        if filter == 'dept' and dept_id and dept_id != 'all':
+    if filter and filter != '':
+        if filter == 'dept' and dept_id and dept_id != '':
             prefix = db.execute('SELECT dept_name FROM department'
                                 ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != 'all':
+        elif filter == 'empl' and empl_id and empl_id != '':
             prefix = db.execute('SELECT realname FROM employee'
                                 ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition1 = 'empl_id = {}'.format(empl_id)
@@ -92,20 +91,19 @@ def dept_records():
         prefix = ''
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     condition2 = ''
-    if year and year != 'all':
-        if not month or month == 'all':
+    if year and year != '':
+        if not month or month == '':
             condition2 += "AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition2 += "AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != 'all':
+    if type and type != '':
         condition2 += ' AND r.type = {}'.format(type)
-    if status and status != 'all':
+    if status and status != '':
         condition2 += ' AND status = {}'.format(status)
     fieldnames = ['Department', 'Realname', 'Date', 'Type',
                   'Duration', 'Describe', 'Created', 'Status']
     download_file = exportCSV(query.format(condition1, condition2), fieldnames)
-    filename = f'DeptRecords{prefix}{year}{month}.csv'.replace(
-        'all', '').replace('None', '')
+    filename = f'DeptRecords{prefix}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -120,8 +118,8 @@ def empl_stats():
         query = ('SELECT period Period, dept_name Department, realname Realname,'
                  ' overtime Overtime, leave Leave, summary Summary'
                  ' FROM statistics WHERE empl_id = {} {}')
-        if not month or month == 'all':
-            if not year or year == 'all':
+        if not month or month == '':
+            if not year or year == '':
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -133,16 +131,16 @@ def empl_stats():
                  ' FROM statistics WHERE empl_id = {} {}'
                  ' GROUP BY Period, dept_id, empl_id'
                  ' ORDER BY Period DESC')
-        if not year or year == 'all':
+        if not year or year == '':
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
-    fieldnames = ['Period', 'Department', 'Realname', 'Overtime', 'Leave', 'Summary']
+    fieldnames = ['Period', 'Department',
+                  'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(
         g.user['id'], condition), fieldnames)
     empl_name = g.user['realname']
-    filename = f'EmplStats{empl_name}{year}{month}.csv'.replace(
-        'all', '').replace('None', '')
+    filename = f'EmplStats{empl_name}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -164,8 +162,8 @@ def dept_stats():
         query = ('SELECT period Period, dept_name Department, realname Realname,'
                  ' overtime Overtime, leave Leave, summary Summary'
                  ' FROM statistics WHERE 1=1 {}')
-        if not month or month == 'all':
-            if not year or year == 'all':
+        if not month or month == '':
+            if not year or year == '':
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -178,25 +176,25 @@ def dept_stats():
                  ' GROUP BY Period, dept_id, empl_id'
                  ' ORDER BY Period DESC')
         fieldnames = []
-        if not year or year == 'all':
+        if not year or year == '':
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
     db = get_db()
-    if filter and filter != 'all':
-        if filter == 'dept' and dept_id and dept_id != 'all':
+    if filter and filter != '':
+        if filter == 'dept' and dept_id and dept_id != '':
             prefix = db.execute('SELECT dept_name FROM department'
                                 ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition += 'AND dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != 'all':
+        elif filter == 'empl' and empl_id and empl_id != '':
             prefix = db.execute('SELECT realname FROM employee'
                                 ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition += 'AND empl_id = {}'.format(empl_id)
     else:
         prefix = ''
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
-    fieldnames = ['Period', 'Department', 'Realname', 'Overtime', 'Leave', 'Summary']
+    fieldnames = ['Period', 'Department',
+                  'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(condition), fieldnames)
-    filename = f'DeptStats{prefix}{year}{month}.csv'.replace(
-        'all', '').replace('None', '')
+    filename = f'DeptStats{prefix}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)

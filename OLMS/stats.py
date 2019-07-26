@@ -23,8 +23,8 @@ def empl_index():
                        ' WHERE empl_id = ? ORDER BY year DESC', (g.user['id'],)).fetchall()
     if not period or period == 'month':
         query = 'SELECT * FROM statistics WHERE empl_id = ? {}'
-        if not month or month == 'all':
-            if not year or year == 'all':
+        if not month or month == '':
+            if not year or year == '':
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -35,7 +35,7 @@ def empl_index():
                  ' FROM statistics WHERE empl_id = ? {}'
                  ' GROUP BY year, dept_id, empl_id'
                  ' ORDER BY year DESC')
-        if not year or year == 'all':
+        if not year or year == '':
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
@@ -79,8 +79,8 @@ def dept_index():
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if not period or period == 'month':
         query = 'SELECT * FROM statistics WHERE 1=1 {}'
-        if not month or month == 'all':
-            if not year or year == 'all':
+        if not month or month == '':
+            if not year or year == '':
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -91,14 +91,14 @@ def dept_index():
                  ' FROM statistics WHERE 1=1 {}'
                  ' GROUP BY year, dept_id, empl_id'
                  ' ORDER BY year DESC')
-        if not year or year == 'all':
+        if not year or year == '':
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
-    if filter and filter != 'all':
-        if filter == 'dept' and dept_id and dept_id != 'all':
+    if filter and filter != '':
+        if filter == 'dept' and dept_id and dept_id != '':
             condition += 'AND dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != 'all':
+        elif filter == 'empl' and empl_id and empl_id != '':
             condition += 'AND empl_id = {}'.format(empl_id)
         else:
             condition += 'AND dept_id IN ({})'.format(

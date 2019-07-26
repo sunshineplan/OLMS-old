@@ -24,14 +24,14 @@ def empl_index():
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE empl_id = ? ORDER BY year DESC', (g.user['id'],)).fetchall()
     condition = ''
-    if year and year != 'all':
-        if not month or month == 'all':
+    if year and year != '':
+        if not month or month == '':
             condition += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != 'all':
+    if type and type != '':
         condition += ' AND r.type = {}'.format(type)
-    if status and status != 'all':
+    if status and status != '':
         condition += ' AND status = {}'.format(status)
     record = len(db.execute(
         'SELECT r.id, date, ABS(duration) duration, r.type, describe, d.dept_name, empl_id, realname, created, status'
@@ -75,24 +75,24 @@ def admin_index(mode=None):
         ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
-    if filter and filter != 'all':
-        if filter == 'dept' and dept_id and dept_id != 'all':
+    if filter and filter != '':
+        if filter == 'dept' and dept_id and dept_id != '':
             condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != 'all':
+        elif filter == 'empl' and empl_id and empl_id != '':
             condition1 = 'empl_id = {}'.format(empl_id)
         else:
             condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     else:
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     condition2 = ''
-    if year and year != 'all':
-        if not month or month == 'all':
+    if year and year != '':
+        if not month or month == '':
             condition2 += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition2 += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != 'all':
+    if type and type != '':
         condition2 += ' AND r.type = {}'.format(type)
-    if status and status != 'all':
+    if status and status != '':
         condition2 += ' AND status = {}'.format(status)
     record = len(db.execute(
         'SELECT r.id, date, ABS(duration) duration, r.type, describe, d.dept_name, empl_id, realname, created, status'

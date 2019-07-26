@@ -14,14 +14,14 @@
         <label class='input-group-text' for='filter'>Filter by</label> 
       </div>
       <select class='custom-select' name='filter' id='filter'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>Department</option>
         <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>Employee</option>
       </select>
     </div>
     <script>
       $(function () {
-        if ($('#filter').val() == 'all') {
+        if ($('#filter').val() == '') {
           $('#dept-selector').prop('hidden', true);
           $('#empl-selector').prop('hidden', true);
         } else if ($('#filter').val() == 'dept') {
@@ -34,7 +34,7 @@
         $('#filter').on('change', function () {
           unselect('dept');
           unselect('empl');
-          if ($('#filter').val() == 'all') {
+          if ($('#filter').val() == '') {
             $('#dept-selector').prop('hidden', true);
             $('#empl-selector').prop('hidden', true);
           } else if ($('#filter').val() == 'dept') {
@@ -52,7 +52,7 @@
         <label class='input-group-text' for='dept'>Department</label>
       </div>
       <select class='custom-select' name='dept' id='dept'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         {% for dept in depts %}
         <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
         {% endfor %}
@@ -63,7 +63,7 @@
         <label class='input-group-text' for='empl'>Name</label>
       </div>
       <select class='custom-select' name='empl' id='empl'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         {% for empl in empls %}
         <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
         {% endfor %}
@@ -86,7 +86,7 @@
         if ($('#period').val() == 'year') {
           $('#month-selector').prop('hidden', true);
         };
-        if ($('#year').val() == 'all') {
+        if ($('#year').val() == '') {
           $('#month').prop('disabled', true);
         };
         $('#period').on('change', function () {
@@ -100,7 +100,7 @@
           };
         });
         $('#year').on('change', function () {
-          if ($('#year').val() == 'all') {
+          if ($('#year').val() == '') {
             $('#month').prop('disabled', true);
             unselect('month');
           } else {
@@ -121,7 +121,7 @@
         <label class='input-group-text' for='year'>Year</label>
       </div>
       <select class='custom-select' name='year' id='year'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         {% for year in years %}
         <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
         {% endfor %}
@@ -132,7 +132,7 @@
         <label class='input-group-text' for='month'>Month</label>
       </div>
       <select class='custom-select' name='month' id='month'>
-        <option value='all'>All</option>
+        <option value=''>All</option>
         <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
         <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
         <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>

@@ -27,14 +27,14 @@
         <label class='input-group-text' for='filter'>过滤方式</label> 
       </div>
       <select class='custom-select' name='filter' id='filter'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>部门</option>
         <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>员工</option>
       </select>
     </div>
     <script>
       $(function () {
-        if ($('#filter').val() == 'all') {
+        if ($('#filter').val() == '') {
           $('#dept-selector').prop('hidden', true);
           $('#empl-selector').prop('hidden', true);
         } else if ($('#filter').val() == 'dept') {
@@ -47,7 +47,7 @@
         $('#filter').on('change', function () {
           unselect('dept');
           unselect('empl');
-          if ($('#filter').val() == 'all') {
+          if ($('#filter').val() == '') {
             $('#dept-selector').prop('hidden', true);
             $('#empl-selector').prop('hidden', true);
           } else if ($('#filter').val() == 'dept') {
@@ -65,7 +65,7 @@
         <label class='input-group-text' for='dept'>部门</label>
       </div>
       <select class='custom-select' name='dept' id='dept'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         {% for dept in depts %}
         <option value="{{ dept['id'] }}" {% if args['dept_id']|int() == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
         {% endfor %}
@@ -76,7 +76,7 @@
         <label class='input-group-text' for='empl'>姓名</label>
       </div>
       <select class='custom-select' name='empl' id='empl'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         {% for empl in empls %}
         <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
         {% endfor %}
@@ -90,7 +90,7 @@
         <label class='input-group-text' for='year'>年</label>
       </div>
       <select class='custom-select' name='year' id='year'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         {% for year in years %}
         <option value="{{ year['year'] }}" {% if args['year'] == year['year'] %}selected{% endif %}>{{ year['year'] }}</option>
         {% endfor %}
@@ -98,11 +98,11 @@
     </div>
     <script>
       $(function () {
-        if ($('#year').val() == 'all') {
+        if ($('#year').val() == '') {
           $('#month').prop('disabled', true);
         };
         $('#year').on('change', function () {
-          if ($('#year').val() == 'all') {
+          if ($('#year').val() == '') {
             $('#month').prop('disabled', true);
             unselect('month')
           } else {
@@ -122,7 +122,7 @@
         <label class='input-group-text' for='month'>月</label>
       </div>
       <select class='custom-select' name='month' id='month'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         <option value='01' {% if args['month']|int() == 1 %}selected{% endif %}>1</option>
         <option value='02' {% if args['month']|int() == 2 %}selected{% endif %}>2</option>
         <option value='03' {% if args['month']|int() == 3 %}selected{% endif %}>3</option>
@@ -142,7 +142,7 @@
         <label class='input-group-text' for='type'>类型</label>
       </div>
       <select class='custom-select' name='type' id='type'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         <option value='1' {% if args['type'] == '1' %}selected{% endif %}>加班</option>
         <option value='0' {% if args['type'] == '0' %}selected{% endif %}>休假</option>
       </select>
@@ -152,7 +152,7 @@
         <label class='input-group-text' for='status'>状态</label>
       </div>
       <select class='custom-select' name='status' id='status'>
-        <option value='all'>所有</option>
+        <option value=''>所有</option>
         <option value='0' {% if args['status'] == '0' %}selected{% endif %}>未审核</option>
         <option value='1' {% if args['status'] == '1' %}selected{% endif %}>已通过</option>
         <option value='2' {% if args['status'] == '2' %}selected{% endif %}>已驳回</option>
