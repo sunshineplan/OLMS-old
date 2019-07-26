@@ -7,6 +7,11 @@
 <link rel='stylesheet' href="{{ url_for('static', filename='bootstrap.css') }}">
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <script>
+  $(function () {
+    $('form').submit(function() {
+      $(this).find(":selected[value='']").attr('disabled', true);
+    });
+  });
   function unselect(id) {
     elements = document.getElementById(id).options;
     for (var i = 0; i < elements.length; i++) {
