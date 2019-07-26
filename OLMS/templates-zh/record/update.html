@@ -41,7 +41,7 @@
     </div>
     <div class='form-group'>
       <label for='duration'>时长</label>
-      <input class='form-control' name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
+      <input class='form-control' type='number' min=1 name='duration' id='duration' value="{{ request.form['duration'] or record['duration'] }}" required>
     </div>
   </div>
   {% if mode == 'super' %}

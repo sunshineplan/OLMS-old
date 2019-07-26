@@ -31,7 +31,7 @@
   </div>
   <div class='form-group'>
     <label for='duration'>Duration</label>
-    <input class='form-control' name='duration' id='duration' value='{{ request.form['duration'] }}' required>
+    <input class='form-control' type='number' min=1 name='duration' id='duration' value='{{ request.form['duration'] }}' required>
   </div>
   <div class='form-group'>
     <label for='describe'>Describe</label>

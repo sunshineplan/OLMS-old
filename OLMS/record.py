@@ -170,8 +170,12 @@ def create():
         try:
             if type == 1:
                 duration = int(request.form.get('duration'))
+                if duration < 1:
+                    raise ValueError
             else:
                 duration = 0 - int(request.form.get('duration'))
+                if duration > -1:
+                    raise ValueError
         except:
             error = 'Duration is required.'
         describe = request.form.get('describe')
@@ -223,8 +227,12 @@ def manage_create():
         try:
             if type == 1:
                 duration = int(request.form.get('duration'))
+                if duration < 1:
+                    raise ValueError
             else:
                 duration = 0 - int(request.form.get('duration'))
+                if duration > -1:
+                    raise ValueError
         except:
             error = 'Duration is required.'
         describe = request.form.get('describe')
@@ -276,8 +284,12 @@ def update(id):
         try:
             if type == 1:
                 duration = int(request.form.get('duration'))
+                if duration < 1:
+                    raise ValueError
             else:
                 duration = 0 - int(request.form.get('duration'))
+                if duration > -1:
+                    raise ValueError
         except:
             error = 'Duration is required.'
         describe = request.form.get('describe')
@@ -323,8 +335,12 @@ def manage_update(id):
         try:
             if type == 1:
                 duration = int(request.form.get('duration'))
+                if duration < 1:
+                    raise ValueError
             else:
                 duration = 0 - int(request.form.get('duration'))
+                if duration > -1:
+                    raise ValueError
         except:
             error = 'Duration is required.'
         status = request.form.get('status')
