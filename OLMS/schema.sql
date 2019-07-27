@@ -9,7 +9,7 @@ DROP VIEW IF EXISTS statistics;
 CREATE TABLE employee (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
+  password TEXT NOT NULL DEFAULT '123456',
   type BOOLEAN NOT NULL DEFAULT 0,
   realname TEXT NOT NULL,
   dept_id INTEGER NOT NULL,
@@ -50,5 +50,5 @@ CREATE VIEW statistics AS
   GROUP BY period, r.dept_id, empl_id
   ORDER BY period DESC;
 
-INSERT INTO employee (id, username, realname, password, type, dept_id)
-  VALUES (0, 'admin', 'admin', '123456', 1, 0);
+INSERT INTO employee (id, username, realname, type, dept_id)
+  VALUES (0, 'admin', 'admin', 1, 0);

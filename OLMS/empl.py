@@ -114,13 +114,13 @@ def add():
             # the name is available, store it in the database
             if g.user['id'] != 0:
                 db.execute(
-                    'INSERT INTO employee (username, realname, password, dept_id) VALUES (?, ?, ?, ?)',
-                    (username, realname, '123456', dept_id))
+                    'INSERT INTO employee (username, realname, dept_id) VALUES (?, ?, ?)',
+                    (username, realname, dept_id))
             else:
                 db.execute(
-                    'INSERT INTO employee (username, realname, password, dept_id, type, permission)'
-                    ' VALUES (?, ?, ?, ?, ?, ?)',
-                    (username, realname, '123456', dept_id, type, permission))
+                    'INSERT INTO employee (username, realname, dept_id, type, permission)'
+                    ' VALUES (?, ?, ?, ?, ?)',
+                    (username, realname, dept_id, type, permission))
             db.commit()
             current_app.logger.info(
                 'UID:%s(%s)-%s add user{%s,%s,%s}', g.user['id'], g.user['realname'], ip, username, realname, dept_id)
