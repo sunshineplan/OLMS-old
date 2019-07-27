@@ -26,8 +26,6 @@ def create_app(mode=None):
         app.config.from_mapping(
             # a default secret that should be overridden by instance config
             SECRET_KEY='webapp',
-            # default expiration date of a permanent session
-            PERMANENT_SESSION_LIFETIME=timedelta(minutes=5),
             # store the database in the instance folder
             DATABASE=os.path.join(app.instance_path, 'database'),
         )
