@@ -1,6 +1,7 @@
 *.egg-info/
 __pycache__/
 instance/
+templates-zh/
 bootstrap*
 jquery*
 dist/
