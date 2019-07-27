@@ -9,7 +9,7 @@
 <script>
   $(function () {
     $('form').submit(function() {
-      $(this).find(":selected[value='']").attr('disabled', true);
+      $(this).find(":selected[value='']").prop('disabled', true);
     });
   });
   function show_empl(element, dept_id, value='') {

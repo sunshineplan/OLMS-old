@@ -39,9 +39,9 @@
     $(function () {
       $('#type').on('change', function () {
         if ($('#type').val() == 0) {
-          $('#permission-selector').attr('hidden', true);
+          $('#permission-selector').prop('hidden', true);
         } else {
-          $('#permission-selector').attr('hidden', false);
+          $('#permission-selector').prop('hidden', false);
         };
       });
     });
