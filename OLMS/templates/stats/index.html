@@ -28,12 +28,18 @@
           $('#dept-selector').prop('hidden', false);
           $('#empl-selector').prop('hidden', true);
         } else if ($('#filter').val() == 'empl') {
-          $('#dept-selector').prop('hidden', true);
+          $('#dept-selector').prop('hidden', false);
           $('#empl-selector').prop('hidden', false);
+          if ($('#dept').val() == '') {
+            $('#empl').prop('disabled', true);
+          } else {
+            init_selector('#empl');
+            show_empl('#empl', "{{ args['dept_id'] }}", "{{ args['empl_id'] }}");
+          };
         };
         $('#filter').on('change', function () {
-          unselect('dept');
-          unselect('empl');
+          init_selector('#dept', 'unselect');
+          init_selector('#empl');
           if ($('#filter').val() == '') {
             $('#dept-selector').prop('hidden', true);
             $('#empl-selector').prop('hidden', true);
@@ -41,8 +47,19 @@
             $('#dept-selector').prop('hidden', false);
             $('#empl-selector').prop('hidden', true);
           } else if ($('#filter').val() == 'empl') {
-            $('#dept-selector').prop('hidden', true);
+            $('#dept-selector').prop('hidden', false);
             $('#empl-selector').prop('hidden', false);
+          };
+        });
+        $('#dept').on('change', function () {
+          init_selector('#empl');
+          if ($('#filter').val() == 'empl') {
+            if ($('#dept').val() == '') {
+              $('#empl').prop('disabled', true);
+            } else {
+              $('#empl').prop('disabled', false);
+              show_empl('#empl', $('#dept').val());
+            };
           };
         });
       });
@@ -92,17 +109,17 @@
         $('#period').on('change', function () {
           if ($('#period').val() == 'year') {
             $('#month-selector').prop('hidden', true);
-            unselect('year');
-            unselect('month');
+            init_selector('#year', 'unselect');
+            init_selector('#month', 'unselect');
           } else {
             $('#month-selector').prop('hidden', false);
-            unselect('year');
+            init_selector('#year', 'unselect');
           };
         });
         $('#year').on('change', function () {
           if ($('#year').val() == '') {
             $('#month').prop('disabled', true);
-            unselect('month');
+            init_selector('#month', 'unselect');
           } else {
             $('#month').prop('disabled', false);
           };

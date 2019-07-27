@@ -70,11 +70,6 @@ def dept_index():
         permission_list = []
     depts = db.execute('SELECT * FROM department'
                        ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
-    empls = db.execute(
-        "SELECT e.id, dept_name || ' | ' || realname name"
-        ' FROM employee e JOIN department p ON e.dept_id = p.id'
-        ' WHERE p.id IN ({})'
-        ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
     years = db.execute('SELECT DISTINCT substr(period,1,4) year FROM statistics'
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if not period or period == 'month':
@@ -96,7 +91,7 @@ def dept_index():
         else:
             condition = "AND year = '{}'".format(year)
     if filter and filter != '':
-        if filter == 'dept' and dept_id and dept_id != '':
+        if (filter == 'dept' and dept_id) or (filter == 'empl' and dept_id and not empl_id):
             condition += 'AND dept_id = {}'.format(dept_id)
         elif filter == 'empl' and empl_id and empl_id != '':
             condition += 'AND empl_id = {}'.format(empl_id)
@@ -110,4 +105,4 @@ def dept_index():
     records = db.execute(query.format(condition)+limit).fetchall()
     pagination = Pagination(per_page=int(per_page),
                             page=int(page), record=record)
-    return render_template('stats/index.html', records=records, depts=depts, empls=empls, years=years, args=args, pagination=pagination, mode='dept')
+    return render_template('stats/index.html', records=records, depts=depts, years=years, args=args, pagination=pagination, mode='dept')

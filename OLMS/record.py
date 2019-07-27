@@ -53,7 +53,7 @@ def admin_index(mode=None):
     db = get_db()
     filter = request.args.get('filter')
     dept_id = request.args.get('dept')
-    empl_id = request.args.get('empl')
+    empl_id = request.args.get('empl') or ''
     year = request.args.get('year')
     month = request.args.get('month')
     type = request.args.get('type')
@@ -68,15 +68,10 @@ def admin_index(mode=None):
         permission_list = []
     depts = db.execute('SELECT * FROM department'
                        ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
-    empls = db.execute(
-        "SELECT e.id, dept_name || ' | ' || realname name"
-        ' FROM employee e JOIN department p ON e.dept_id = p.id'
-        ' WHERE p.id IN ({})'
-        ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if filter and filter != '':
-        if filter == 'dept' and dept_id and dept_id != '':
+        if (filter == 'dept' and dept_id) or (filter == 'empl' and dept_id and not empl_id):
             condition1 = 'r.dept_id = {}'.format(dept_id)
         elif filter == 'empl' and empl_id and empl_id != '':
             condition1 = 'empl_id = {}'.format(empl_id)
@@ -107,7 +102,7 @@ def admin_index(mode=None):
         ' ORDER BY created DESC {}'.format(condition1, condition2, limit)).fetchall()
     pagination = Pagination(per_page=int(per_page),
                             page=int(page), record=record)
-    return render_template('record/index.html', records=records, depts=depts, empls=empls, years=years, args=args, pagination=pagination, mode=mode)
+    return render_template('record/index.html', records=records, depts=depts, years=years, args=args, pagination=pagination, mode=mode)
 
 
 @bp.route('/dept')

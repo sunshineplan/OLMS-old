@@ -1,5 +1,5 @@
 from flask import (Blueprint, abort, current_app, flash, g, redirect,
-                   render_template, request, url_for)
+                   render_template, request, url_for, jsonify)
 from werkzeug.security import generate_password_hash
 
 from OLMS.auth import admin_required, super_required
@@ -66,6 +66,23 @@ def get_empl(id):
         abort(404, "Employee id {0} doesn't exist.".format(id))
 
     return empl
+
+
+@bp.route('/get', methods=('POST',))
+@admin_required
+def get():
+    dept_id = request.form.get('dept')
+    try:
+        permission_list = g.user['permission'].split(',')
+    except ValueError:
+        permission_list = []
+    if dept_id not in permission_list:
+        abort(403)
+    db = get_db()
+    empl = db.execute(
+        'SELECT id, realname FROM employee where dept_id = ?', (dept_id,)).fetchall()
+    empl = dict((i['id'], i['realname']) for i in empl)
+    return jsonify(empl)
 
 
 @bp.route('/add', methods=('GET', 'POST'))
