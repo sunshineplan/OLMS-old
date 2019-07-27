@@ -26,13 +26,13 @@ def index():
     depts = db.execute(
         'SELECT * FROM department WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     condition = ''
-    if dept_id and dept_id != '':
+    if dept_id:
         if str(dept_id) not in permission_list:
             abort(403)
         condition += 'e.dept_id = {}'.format(dept_id)
     else:
         condition += 'e.dept_id IN ({})'.format(','.join(permission_list))
-    if type and type != '':
+    if type:
         condition += ' AND type = {}'.format(type)
     else:
         condition += ''

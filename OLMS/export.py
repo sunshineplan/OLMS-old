@@ -51,14 +51,14 @@ def empl_records():
     else:
         query = '{}{}'
     condition = ''
-    if year and year != '':
-        if not month or month == '':
+    if year:
+        if not month:
             condition += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != '':
+    if type:
         condition += ' AND r.type = {}'.format(type)
-    if status and status != '':
+    if status:
         condition += ' AND status = {}'.format(status)
     if action == '导出':
         fieldnames = ['日期', '类型', '时长', '描述', '创建日期', '状态']
@@ -112,12 +112,12 @@ def dept_records():
     else:
         query = '{}{}'
     db = get_db()
-    if filter and filter != '':
-        if filter == 'dept' and dept_id and dept_id != '':
+    if filter:
+        if filter == 'dept' and dept_id:
             prefix = '-' + db.execute('SELECT dept_name FROM department'
                                       ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != '':
+        elif filter == 'empl' and empl_id:
             prefix = '-' + db.execute('SELECT realname FROM employee'
                                       ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition1 = 'empl_id = {}'.format(empl_id)
@@ -125,14 +125,14 @@ def dept_records():
         prefix = ''
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     condition2 = ''
-    if year and year != '':
-        if not month or month == '':
+    if year:
+        if not month:
             condition2 += "AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition2 += "AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != '':
+    if type:
         condition2 += ' AND r.type = {}'.format(type)
-    if status and status != '':
+    if status:
         condition2 += ' AND status = {}'.format(status)
     if action == '导出':
         fieldnames = ['部门', '姓名', '日期', '类型', '时长', '描述', '创建日期', '状态']
@@ -166,8 +166,8 @@ def empl_stats():
                      ' FROM statistics WHERE empl_id = {} {}')
         else:
             query = '{}{}'
-        if not month or month == '':
-            if not year or year == '':
+        if not month:
+            if not year:
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -188,7 +188,7 @@ def empl_stats():
                      ' ORDER BY 周期 DESC')
         else:
             query = '{}{}'
-        if not year or year == '':
+        if not year:
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
@@ -234,8 +234,8 @@ def dept_stats():
                      ' FROM statistics WHERE 1=1 {}')
         else:
             query = '{}'
-        if not month or month == '':
-            if not year or year == '':
+        if not month:
+            if not year:
                 condition = ''
             else:
                 condition = "AND substr(period,1,4) = '{}'".format(year)
@@ -256,17 +256,17 @@ def dept_stats():
                      ' ORDER BY Period DESC')
         else:
             query = '{}'
-        if not year or year == '':
+        if not year:
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
     db = get_db()
-    if filter and filter != '':
-        if filter == 'dept' and dept_id and dept_id != '':
+    if filter:
+        if filter == 'dept' and dept_id:
             prefix = '-' + db.execute('SELECT dept_name FROM department'
                                       ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition += 'AND dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != '':
+        elif filter == 'empl' and empl_id:
             prefix = '-' + db.execute('SELECT realname FROM employee'
                                       ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition += 'AND empl_id = {}'.format(empl_id)

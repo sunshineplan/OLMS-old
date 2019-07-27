@@ -24,14 +24,14 @@ def empl_index():
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE empl_id = ? ORDER BY year DESC', (g.user['id'],)).fetchall()
     condition = ''
-    if year and year != '':
-        if not month or month == '':
+    if year:
+        if not month:
             condition += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != '':
+    if type:
         condition += ' AND r.type = {}'.format(type)
-    if status and status != '':
+    if status:
         condition += ' AND status = {}'.format(status)
     record = len(db.execute(
         'SELECT r.id, date, ABS(duration) duration, r.type, describe, d.dept_name, empl_id, realname, created, status'
@@ -70,24 +70,24 @@ def admin_index(mode=None):
                        ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
-    if filter and filter != '':
+    if filter:
         if (filter == 'dept' and dept_id) or (filter == 'empl' and dept_id and not empl_id):
             condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id and empl_id != '':
+        elif filter == 'empl' and empl_id:
             condition1 = 'empl_id = {}'.format(empl_id)
         else:
             condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     else:
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     condition2 = ''
-    if year and year != '':
-        if not month or month == '':
+    if year:
+        if not month:
             condition2 += " AND strftime('%Y', date) = '{}'".format(year)
         else:
             condition2 += " AND strftime('%Y%m', date) = '{}'".format(year+month)
-    if type and type != '':
+    if type:
         condition2 += ' AND r.type = {}'.format(type)
-    if status and status != '':
+    if status:
         condition2 += ' AND status = {}'.format(status)
     record = len(db.execute(
         'SELECT r.id, date, ABS(duration) duration, r.type, describe, d.dept_name, empl_id, realname, created, status'
@@ -137,7 +137,7 @@ def get_record(id, mode='normal'):
         ' FROM record r JOIN employee e ON r.empl_id = e.id JOIN department d ON r.dept_id = d.id'
         ' WHERE r.id = ?', (id,)).fetchone()
 
-    if record is None:
+    if not record:
         abort(404, "Record id {0} doesn't exist.".format(id))
 
     if mode == 'normal':
@@ -180,7 +180,7 @@ def create():
         if g.user['id'] == 0:
             error = 'Super Administrator cannot create personal record.'
 
-        if error is not None:
+        if not error:
             flash(error)
         else:
             db = get_db()
@@ -243,7 +243,7 @@ def manage_create():
             empls_id.append(str(i['id']))
         if empl_id not in empls_id:
             abort(403)
-        if error is not None:
+        if not error:
             flash(error)
         else:
             dept_id = db.execute('SELECT dept_id FROM employee WHERE id = ?',
@@ -296,7 +296,7 @@ def update(id):
         if record['status'] != 0:
             error = 'You can only update record which is not verified.'
 
-        if error is not None:
+        if not error:
             flash(error)
         else:
             db = get_db()
@@ -352,7 +352,7 @@ def manage_update(id):
         if not status:
             error = 'Status is required.'
 
-        if error is not None:
+        if not error:
             flash(error)
         else:
             db.execute(
@@ -387,7 +387,7 @@ def verify(id):
 
         if record['status'] != 0:
             error = 'The record is already verified.'
-        if error is not None:
+        if not error:
             flash(error)
         else:
             db = get_db()
@@ -414,7 +414,7 @@ def delete(id):
     error = None
     if record['status'] != 0:
         error = 'You can only delete record which is not verified.'
-    if error is not None:
+    if not error:
         flash(error)
     else:
         db = get_db()
