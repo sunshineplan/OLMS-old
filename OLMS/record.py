@@ -180,7 +180,7 @@ def create():
         if g.user['id'] == 0:
             error = 'Super Administrator cannot create personal record.'
 
-        if not error:
+        if error:
             flash(error)
         else:
             db = get_db()
@@ -243,7 +243,7 @@ def manage_create():
             empls_id.append(str(i['id']))
         if empl_id not in empls_id:
             abort(403)
-        if not error:
+        if error:
             flash(error)
         else:
             dept_id = db.execute('SELECT dept_id FROM employee WHERE id = ?',
@@ -296,7 +296,7 @@ def update(id):
         if record['status'] != 0:
             error = 'You can only update record which is not verified.'
 
-        if not error:
+        if error:
             flash(error)
         else:
             db = get_db()
@@ -352,7 +352,7 @@ def manage_update(id):
         if not status:
             error = 'Status is required.'
 
-        if not error:
+        if error:
             flash(error)
         else:
             db.execute(
@@ -387,7 +387,7 @@ def verify(id):
 
         if record['status'] != 0:
             error = 'The record is already verified.'
-        if not error:
+        if error:
             flash(error)
         else:
             db = get_db()
@@ -414,7 +414,7 @@ def delete(id):
     error = None
     if record['status'] != 0:
         error = 'You can only delete record which is not verified.'
-    if not error:
+    if error:
         flash(error)
     else:
         db = get_db()
