@@ -143,7 +143,7 @@
     <div class='input-group'>
       <input class='btn btn-primary btn-sm' type='submit' value='过滤'>
       <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>清除</a>
-      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'dept' %}{{ url_for('export.dept_stats') }}{% else %}{{ url_for('export.empl_stats') }}{% endif %}" value='导出'>
+      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'dept' %}{{ url_for('export.dept_stats') }}{% else %}{{ url_for('export.empl_stats') }}{% endif %}" name='action' value='导出'>
     </div>
   </div>
 </form>

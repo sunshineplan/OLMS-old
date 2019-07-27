@@ -11,7 +11,10 @@ bp = Blueprint('export', __name__, url_prefix='/export')
 
 def exportCSV(query, fieldnames):
     db = get_db()
-    rows = db.execute(query).fetchall()
+    try:
+        rows = db.execute(query).fetchall()
+    except:
+        rows = []
     stringIO = StringIO(newline='')
     csv = DictWriter(stringIO, fieldnames, extrasaction='ignore')
     csv.writeheader()
@@ -30,12 +33,23 @@ def empl_records():
     month = request.args.get('month')
     type = request.args.get('type')
     status = request.args.get('status')
-    query = ("SELECT date Date, CASE r.type WHEN 1 THEN 'Overtime' WHEN 0 THEN 'Leave' END Type,"
-             ' ABS(duration) Duration, describe Describe, created Created,'
-             " CASE status WHEN 0 THEN 'Unverified' WHEN 1 THEN 'Verified' WHEN 2 THEN 'Rejected' END Status"
-             ' FROM record r JOIN employee e ON r.empl_id = e.id LEFT JOIN department d ON r.dept_id = d.id'
-             ' WHERE r.empl_id = {} {}'
-             ' ORDER BY created DESC')
+    action = request.args.get('action')
+    if action == 'Export':
+        query = ("SELECT date Date, CASE r.type WHEN 1 THEN 'Overtime' WHEN 0 THEN 'Leave' END Type,"
+                 ' ABS(duration) Duration, describe Describe, created Created,'
+                 " CASE status WHEN 0 THEN 'Unverified' WHEN 1 THEN 'Verified' WHEN 2 THEN 'Rejected' END Status"
+                 ' FROM record r JOIN employee e ON r.empl_id = e.id LEFT JOIN department d ON r.dept_id = d.id'
+                 ' WHERE r.empl_id = {} {}'
+                 ' ORDER BY created DESC')
+    elif action == '导出':
+        query = ("SELECT date 日期, CASE r.type WHEN 1 THEN '加班' WHEN 0 THEN '休假' END 类型,"
+                 ' ABS(duration) 时长, describe 描述, created 创建日期,'
+                 " CASE status WHEN 0 THEN '未审核' WHEN 1 THEN '已通过' WHEN 2 THEN '已驳回' END 状态"
+                 ' FROM record r JOIN employee e ON r.empl_id = e.id LEFT JOIN department d ON r.dept_id = d.id'
+                 ' WHERE r.empl_id = {} {}'
+                 ' ORDER BY created DESC')
+    else:
+        query = '{}{}'
     condition = ''
     if year and year != '':
         if not month or month == '':
@@ -46,11 +60,19 @@ def empl_records():
         condition += ' AND r.type = {}'.format(type)
     if status and status != '':
         condition += ' AND status = {}'.format(status)
-    fieldnames = ['Date', 'Type', 'Duration', 'Describe', 'Created', 'Status']
+    if action == '导出':
+        fieldnames = ['日期', '类型', '时长', '描述', '创建日期', '状态']
+    else:
+        fieldnames = ['Date', 'Type', 'Duration',
+                      'Describe', 'Created', 'Status']
     download_file = exportCSV(query.format(
         g.user['id'], condition), fieldnames)
     empl_name = g.user['realname']
-    filename = f'EmplRecords{empl_name}{year}{month}.csv'.replace('None', '')
+    if action == '导出':
+        filename = f'员工记录-{empl_name}{year}{month}.csv'.replace('None', '')
+    else:
+        filename = f'EmplRecords-{empl_name}{year}{month}.csv'.replace(
+            'None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -66,26 +88,38 @@ def dept_records():
     month = request.args.get('month')
     type = request.args.get('type')
     status = request.args.get('status')
+    action = request.args.get('action')
     try:
         permission_list = g.user['permission'].split(',')
     except ValueError:
         permission_list = []
-    query = ('SELECT d.dept_name Department, realname Realname, date Date,'
-             " CASE r.type WHEN 1 THEN 'Overtime' WHEN 0 THEN 'Leave' END Type,"
-             ' ABS(duration) Duration, describe Describe, created Created,'
-             " CASE status WHEN 0 THEN 'Unverified' WHEN 1 THEN 'Verified' WHEN 2 THEN 'Rejected' END Status"
-             ' FROM record r JOIN employee e ON empl_id = e.id JOIN department d ON r.dept_id = d.id'
-             ' WHERE {} {}'
-             ' ORDER BY created DESC')
+    if action == 'Export':
+        query = ('SELECT d.dept_name Department, realname Realname, date Date,'
+                 " CASE r.type WHEN 1 THEN 'Overtime' WHEN 0 THEN 'Leave' END Type,"
+                 ' ABS(duration) Duration, describe Describe, created Created,'
+                 " CASE status WHEN 0 THEN 'Unverified' WHEN 1 THEN 'Verified' WHEN 2 THEN 'Rejected' END Status"
+                 ' FROM record r JOIN employee e ON empl_id = e.id JOIN department d ON r.dept_id = d.id'
+                 ' WHERE {} {}'
+                 ' ORDER BY created DESC')
+    elif action == '导出':
+        query = ('SELECT d.dept_name 部门, realname 姓名, date 日期,'
+                 " CASE r.type WHEN 1 THEN '加班' WHEN 0 THEN '休假' END 类型,"
+                 ' ABS(duration) 时长, describe 描述, created 创建日期,'
+                 " CASE status WHEN 0 THEN '未审核' WHEN 1 THEN '已通过' WHEN 2 THEN '已驳回' END 状态"
+                 ' FROM record r JOIN employee e ON empl_id = e.id JOIN department d ON r.dept_id = d.id'
+                 ' WHERE {} {}'
+                 ' ORDER BY created DESC')
+    else:
+        query = '{}{}'
     db = get_db()
     if filter and filter != '':
         if filter == 'dept' and dept_id and dept_id != '':
-            prefix = db.execute('SELECT dept_name FROM department'
-                                ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
+            prefix = '-' + db.execute('SELECT dept_name FROM department'
+                                      ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition1 = 'r.dept_id = {}'.format(dept_id)
         elif filter == 'empl' and empl_id and empl_id != '':
-            prefix = db.execute('SELECT realname FROM employee'
-                                ' WHERE id = ?', (empl_id,)).fetchone()['realname']
+            prefix = '-' + db.execute('SELECT realname FROM employee'
+                                      ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition1 = 'empl_id = {}'.format(empl_id)
     else:
         prefix = ''
@@ -100,10 +134,16 @@ def dept_records():
         condition2 += ' AND r.type = {}'.format(type)
     if status and status != '':
         condition2 += ' AND status = {}'.format(status)
-    fieldnames = ['Department', 'Realname', 'Date', 'Type',
-                  'Duration', 'Describe', 'Created', 'Status']
+    if action == '导出':
+        fieldnames = ['部门', '姓名', '日期', '类型', '时长', '描述', '创建日期', '状态']
+    else:
+        fieldnames = ['Department', 'Realname', 'Date', 'Type',
+                      'Duration', 'Describe', 'Created', 'Status']
     download_file = exportCSV(query.format(condition1, condition2), fieldnames)
-    filename = f'DeptRecords{prefix}{year}{month}.csv'.replace('None', '')
+    if action == '导出':
+        filename = f'部门员工记录{prefix}{year}{month}.csv'.replace('None', '')
+    else:
+        filename = f'DeptRecords{prefix}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -114,10 +154,18 @@ def empl_stats():
     period = request.args.get('period')
     year = request.args.get('year')
     month = request.args.get('month')
+    action = request.args.get('action')
     if not period or period == 'month':
-        query = ('SELECT period Period, dept_name Department, realname Realname,'
-                 ' overtime Overtime, leave Leave, summary Summary'
-                 ' FROM statistics WHERE empl_id = {} {}')
+        if action == 'Export':
+            query = ('SELECT period Period, dept_name Department, realname Realname,'
+                     ' overtime Overtime, leave Leave, summary Summary'
+                     ' FROM statistics WHERE empl_id = {} {}')
+        elif action == '导出':
+            query = ('SELECT period 周期, dept_name 部门, realname 姓名,'
+                     ' overtime 加班, leave 休假, summary 汇总'
+                     ' FROM statistics WHERE empl_id = {} {}')
+        else:
+            query = '{}{}'
         if not month or month == '':
             if not year or year == '':
                 condition = ''
@@ -126,21 +174,37 @@ def empl_stats():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
-                 ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
-                 ' FROM statistics WHERE empl_id = {} {}'
-                 ' GROUP BY Period, dept_id, empl_id'
-                 ' ORDER BY Period DESC')
+        if action == 'Export':
+            query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
+                     ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
+                     ' FROM statistics WHERE empl_id = {} {}'
+                     ' GROUP BY Period, dept_id, empl_id'
+                     ' ORDER BY Period DESC')
+        elif action == '导出':
+            query = ('SELECT substr(period,1,4) 周期, dept_name 部门, realname 姓名,'
+                     ' sum(overtime) 加班, sum(leave) 休假, sum(summary) 汇总'
+                     ' FROM statistics WHERE empl_id = {} {}'
+                     ' GROUP BY 周期, dept_id, empl_id'
+                     ' ORDER BY 周期 DESC')
+        else:
+            query = '{}{}'
         if not year or year == '':
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
-    fieldnames = ['Period', 'Department',
-                  'Realname', 'Overtime', 'Leave', 'Summary']
+    if action == '导出':
+        fieldnames = ['周期', '部门', '姓名', '加班', '休假', '汇总']
+    else:
+        fieldnames = ['Period', 'Department',
+                      'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(
         g.user['id'], condition), fieldnames)
     empl_name = g.user['realname']
-    filename = f'EmplStats{empl_name}{year}{month}.csv'.replace('None', '')
+    if action == '导出':
+        filename = f'员工统计-{empl_name}{year}{month}.csv'.replace('None', '')
+    else:
+        filename = f'EmplStats-{empl_name}{year}{month}.csv'.replace(
+            'None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)
 
 
@@ -154,14 +218,22 @@ def dept_stats():
     period = request.args.get('period')
     year = request.args.get('year')
     month = request.args.get('month')
+    action = request.args.get('action')
     try:
         permission_list = g.user['permission'].split(',')
     except ValueError:
         permission_list = []
     if not period or period == 'month':
-        query = ('SELECT period Period, dept_name Department, realname Realname,'
-                 ' overtime Overtime, leave Leave, summary Summary'
-                 ' FROM statistics WHERE 1=1 {}')
+        if action == 'Export':
+            query = ('SELECT period Period, dept_name Department, realname Realname,'
+                     ' overtime Overtime, leave Leave, summary Summary'
+                     ' FROM statistics WHERE 1=1 {}')
+        elif action == '导出':
+            query = ('SELECT period 周期, dept_name 部门, realname 姓名,'
+                     ' overtime 加班, leave 休假, summary 汇总'
+                     ' FROM statistics WHERE 1=1 {}')
+        else:
+            query = '{}'
         if not month or month == '':
             if not year or year == '':
                 condition = ''
@@ -170,12 +242,20 @@ def dept_stats():
         else:
             condition = "AND period = '{}'".format(year+'-'+month)
     elif period == 'year':
-        query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
-                 ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
-                 ' FROM statistics WHERE 1=1 {}'
-                 ' GROUP BY Period, dept_id, empl_id'
-                 ' ORDER BY Period DESC')
-        fieldnames = []
+        if action == 'Export':
+            query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
+                     ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
+                     ' FROM statistics WHERE 1=1 {}'
+                     ' GROUP BY Period, dept_id, empl_id'
+                     ' ORDER BY Period DESC')
+        elif action == '导出':
+            query = ('SELECT substr(period,1,4) Period, dept_name Department, realname Realname,'
+                     ' sum(overtime) Overtime, sum(leave) Leave, sum(summary) Summary'
+                     ' FROM statistics WHERE 1=1 {}'
+                     ' GROUP BY Period, dept_id, empl_id'
+                     ' ORDER BY Period DESC')
+        else:
+            query = '{}'
         if not year or year == '':
             condition = ''
         else:
@@ -183,18 +263,24 @@ def dept_stats():
     db = get_db()
     if filter and filter != '':
         if filter == 'dept' and dept_id and dept_id != '':
-            prefix = db.execute('SELECT dept_name FROM department'
-                                ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
+            prefix = '-' + db.execute('SELECT dept_name FROM department'
+                                      ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
             condition += 'AND dept_id = {}'.format(dept_id)
         elif filter == 'empl' and empl_id and empl_id != '':
-            prefix = db.execute('SELECT realname FROM employee'
-                                ' WHERE id = ?', (empl_id,)).fetchone()['realname']
+            prefix = '-' + db.execute('SELECT realname FROM employee'
+                                      ' WHERE id = ?', (empl_id,)).fetchone()['realname']
             condition += 'AND empl_id = {}'.format(empl_id)
     else:
         prefix = ''
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
-    fieldnames = ['Period', 'Department',
-                  'Realname', 'Overtime', 'Leave', 'Summary']
+    if action == '导出':
+        fieldnames = ['周期', '部门', '姓名', '加班', '休假', '汇总']
+    else:
+        fieldnames = ['Period', 'Department',
+                      'Realname', 'Overtime', 'Leave', 'Summary']
     download_file = exportCSV(query.format(condition), fieldnames)
-    filename = f'DeptStats{prefix}{year}{month}.csv'.replace('None', '')
+    if action == '导出':
+        filename = f'部门员工统计{prefix}{year}{month}.csv'.replace('None', '')
+    else:
+        filename = f'DeptStats{prefix}{year}{month}.csv'.replace('None', '')
     return send_file(download_file, attachment_filename=filename, as_attachment=True)

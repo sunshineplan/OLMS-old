@@ -155,7 +155,7 @@ All Records
     <div class='input-group'>
       <input class='btn btn-primary btn-sm' type='submit' value='Filter'>
       <a class='btn btn-primary btn-sm' href='{{ url_for(request.endpoint) }}'>Clear</a>
-      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" value='Export'>
+      <input class='btn btn-info btn-sm' type='submit' formaction="{% if mode == 'empl' %}{{ url_for('export.empl_records') }}{% else %}{{ url_for('export.dept_records') }}{% endif %}" name='action' value='Export'>
     </div>
   </div>
 </form>
