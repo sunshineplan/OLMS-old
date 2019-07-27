@@ -7,6 +7,13 @@ from flask import Flask
 from flask.logging import default_handler
 
 
+class localFlask(Flask):
+    def process_response(self, response):
+        response.headers['Server'] = 'webapp'
+        super(localFlask, self).process_response(response)
+        return(response)
+
+
 def create_app(mode=None):
     '''Create and configure an instance of the Flask application.'''
     if not mode:
@@ -21,8 +28,8 @@ def create_app(mode=None):
         static_folder = os.path.join(sys._MEIPASS, 'static')
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         instance_path = os.path.join(os.environ['LOCALAPPDATA'], 'webapp')
-        app = Flask('webapp', static_folder=static_folder,
-                    template_folder=template_folder, instance_path=instance_path)
+        app = localFlask('webapp', static_folder=static_folder,
+                         template_folder=template_folder, instance_path=instance_path)
         app.config.from_mapping(
             # a default secret that should be overridden by instance config
             SECRET_KEY='webapp',
