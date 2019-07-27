@@ -182,6 +182,8 @@ def create():
 
         if not date:
             error = 'Date is required.'
+        if g.user['id'] == 0:
+            error = 'Super Administrator cannot create personal record.'
 
         if error is not None:
             flash(error)
