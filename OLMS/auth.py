@@ -1,8 +1,8 @@
 import functools
-from datetime import timedelta
+from time import time
 
-from flask import (Blueprint, abort, current_app, flash, g, redirect,
-                   render_template, request, session, url_for)
+from flask import (Blueprint, abort, current_app, flash, g, make_response,
+                   redirect, render_template, request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from OLMS.db import get_db
@@ -55,12 +55,17 @@ def load_logged_in_user():
     '''If a user id is stored in the session, load the user object from
     the database into ``g.user``.'''
     user_id = session.get('user_id')
+    last = request.cookies.get('Last')
     db = get_db()
     if user_id is None:
         g.user = None
     else:
-        g.user = db.execute('SELECT * FROM employee WHERE id = ?',
-                            (user_id,)).fetchone()
+        if session.get('_permanent') or not last or time()-float(last) < 600:
+            g.user = db.execute('SELECT * FROM employee WHERE id = ?',
+                                (user_id,)).fetchone()
+        else:
+            session.clear()
+            return redirect(url_for('auth.login'))
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -93,17 +98,18 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             if rememberme == 'on':
-                current_app.permanent_session_lifetime = timedelta(days=365*10)
+                session.permanent = True
             else:
-                current_app.permanent_session_lifetime = timedelta(minutes=10)
-            session.permanent = True
+                session.permanent = False
             current_app.logger.info(
                 'UID:%s(%s)-%s log in', user['id'], user['realname'], ip)
             return redirect(url_for('index'))
 
         flash(error)
 
-    return render_template('auth/login.html')
+    response = make_response(render_template('auth/login.html'))
+    response.delete_cookie('Last')
+    return response
 
 
 @bp.route('/setting', methods=('GET', 'POST'))

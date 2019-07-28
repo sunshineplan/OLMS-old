@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask
@@ -23,6 +24,10 @@ def create_app(mode=None):
             SECRET_KEY='dev',
             # store the database in the instance folder
             DATABASE=os.path.join(app.instance_path, 'OLMS.db'),
+            # default expiration date of a permanent session
+            PERMANENT_SESSION_LIFETIME=timedelta(days=365*100),
+            # prevent sending the cookie every time
+            SESSION_REFRESH_EACH_REQUEST=False,
         )
     else:
         static_folder = os.path.join(sys._MEIPASS, 'static')
@@ -35,6 +40,10 @@ def create_app(mode=None):
             SECRET_KEY='webapp',
             # store the database in the instance folder
             DATABASE=os.path.join(app.instance_path, 'database'),
+            # default expiration date of a permanent session
+            PERMANENT_SESSION_LIFETIME=timedelta(days=365*100),
+            # prevent sending the cookie every time
+            SESSION_REFRESH_EACH_REQUEST=False,
         )
 
     # ensure the instance folder exists
