@@ -140,8 +140,8 @@ def setting():
             current_app.logger.info(
                 'UID:%s(%s)-%s change password', g.user['id'], g.user['realname'], ip)
             session.clear()
-            flash('Password Changed successfully. Please Re-login')
-            return render_template('auth/login.html')
+            flash('Password Changed. Please Re-login!')
+            return redirect(url_for('auth.login'))
 
         flash(error)
 
