@@ -46,6 +46,7 @@
 <div class='wrapper'>
   {% if g.user %}
   <nav class='nav flex-column navbar-light sidebar'>
+    {% if g.user['id'] != 0 %}
     <div>
       <a class='navbar-brand'>Employee Panel</a>
       <ul class='navbar-nav'>
@@ -53,6 +54,7 @@
         <li><a class="nav-link {% if request.endpoint == 'stats.empl_index' %}active{% endif %}" href="{{ url_for('stats.empl_index') }}">Employee Statistics</a></li>
       </ul>
     </div>
+    {% endif %}
     {% if g.user['type'] == 1 %}
     <div>
       <a class='navbar-brand'>Department Panel</a>
