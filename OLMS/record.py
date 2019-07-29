@@ -70,8 +70,12 @@ def admin_index(mode=None):
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if dept_id and not empl_id:
+        if dept_id not in permission_list:
+            abort(403)
         condition1 = 'r.dept_id = {}'.format(dept_id)
     elif empl_id:
+        if str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
+            abort(403)
         condition1 = 'empl_id = {}'.format(empl_id)
     else:
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))

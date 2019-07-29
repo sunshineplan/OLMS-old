@@ -1,7 +1,7 @@
 from csv import DictWriter
 from io import BytesIO, StringIO
 
-from flask import Blueprint, g, request, send_file
+from flask import Blueprint, abort, g, request, send_file
 
 from OLMS.auth import admin_required, login_required, super_required
 from OLMS.db import get_db
@@ -112,10 +112,14 @@ def dept_records():
         query = '{}{}'
     db = get_db()
     if dept_id and not empl_id:
+        if dept_id not in permission_list:
+            abort(403)
         prefix = '-' + db.execute('SELECT dept_name FROM department'
                                   ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
         condition1 = 'r.dept_id = {}'.format(dept_id)
     elif empl_id:
+        if str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
+            abort(403)
         prefix = '-' + db.execute('SELECT realname FROM employee'
                                   ' WHERE id = ?', (empl_id,)).fetchone()['realname']
         condition1 = 'empl_id = {}'.format(empl_id)
@@ -259,10 +263,14 @@ def dept_stats():
             condition = "AND year = '{}'".format(year)
     db = get_db()
     if dept_id and not empl_id:
+        if str(dept_id) not in permission_list:
+            abort(403)
         prefix = '-' + db.execute('SELECT dept_name FROM department'
                                   ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
         condition += 'AND dept_id = {}'.format(dept_id)
     elif empl_id:
+        if str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
+            abort(403)
         prefix = '-' + db.execute('SELECT realname FROM employee'
                                   ' WHERE id = ?', (empl_id,)).fetchone()['realname']
         condition += 'AND empl_id = {}'.format(empl_id)

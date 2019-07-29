@@ -27,7 +27,7 @@ def index():
         'SELECT * FROM department WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     condition = ''
     if dept_id:
-        if str(dept_id) not in permission_list:
+        if dept_id not in permission_list:
             abort(403)
         condition += 'e.dept_id = {}'.format(dept_id)
     else:

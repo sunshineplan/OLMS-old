@@ -1,4 +1,4 @@
-from flask import Blueprint, g, render_template, request
+from flask import Blueprint, abort, g, render_template, request
 
 from OLMS.auth import admin_required, login_required
 from OLMS.db import get_db
@@ -90,8 +90,12 @@ def dept_index():
         else:
             condition = "AND year = '{}'".format(year)
     if dept_id and not empl_id:
+        if dept_id not in permission_list:
+            abort(403)
         condition += 'AND dept_id = {}'.format(dept_id)
     elif empl_id:
+        if str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
+            abort(403)
         condition += 'AND empl_id = {}'.format(empl_id)
     else:
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
