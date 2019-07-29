@@ -81,9 +81,6 @@
       </div>
       <select class='custom-select' name='empl' id='empl'>
         <option value=''>All</option>
-        {% for empl in empls %}
-        <option value="{{ empl['id'] }}" {% if args['empl_id']|int() == empl['id'] %}selected{% endif %}>{{ empl['name'] }}</option>
-        {% endfor %}
       </select>
     </div>
   </div>
