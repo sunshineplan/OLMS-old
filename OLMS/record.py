@@ -51,7 +51,6 @@ def empl_index():
 
 def admin_index(mode=None):
     db = get_db()
-    filter = request.args.get('filter')
     dept_id = request.args.get('dept')
     empl_id = request.args.get('empl') or ''
     year = request.args.get('year')
@@ -60,8 +59,8 @@ def admin_index(mode=None):
     status = request.args.get('status')
     page = request.args.get('page') or 1
     per_page = request.args.get('per_page') or 10
-    args = dict(filter=filter, dept_id=dept_id, empl_id=empl_id, year=year,
-                month=month, type=type, status=status, page=page, per_page=per_page)
+    args = dict(dept_id=dept_id, empl_id=empl_id, year=year, month=month,
+                type=type, status=status, page=page, per_page=per_page)
     try:
         permission_list = g.user['permission'].split(',')
     except ValueError:
@@ -70,13 +69,10 @@ def admin_index(mode=None):
                        ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
-    if filter:
-        if (filter == 'dept' and dept_id) or (filter == 'empl' and dept_id and not empl_id):
-            condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id:
-            condition1 = 'empl_id = {}'.format(empl_id)
-        else:
-            condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
+    if dept_id and not empl_id:
+        condition1 = 'r.dept_id = {}'.format(dept_id)
+    elif empl_id:
+        condition1 = 'empl_id = {}'.format(empl_id)
     else:
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
     condition2 = ''

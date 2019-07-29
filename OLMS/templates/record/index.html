@@ -22,57 +22,21 @@ All Records
 <form class='toolbar'>
   {% if mode != 'empl' %}
   <div class='form-inline'>
-    <div class='input-group input-group-sm'>
-      <div class='input-group-prepend'>
-        <label class='input-group-text' for='filter'>Filter by</label> 
-      </div>
-      <select class='custom-select' name='filter' id='filter'>
-        <option value=''>All</option>
-        <option value='dept' {% if args['filter'] == 'dept' %}selected{% endif %}>Department</option>
-        <option value='empl' {% if args['filter'] == 'empl' %}selected{% endif %}>Employee</option>
-      </select>
-    </div>
     <script>
       $(function () {
-        if ($('#filter').val() == '') {
-          $('#dept-selector').prop('hidden', true);
-          $('#empl-selector').prop('hidden', true);
-        } else if ($('#filter').val() == 'dept') {
-          $('#dept-selector').prop('hidden', false);
-          $('#empl-selector').prop('hidden', true);
-        } else if ($('#filter').val() == 'empl') {
-          $('#dept-selector').prop('hidden', false);
-          $('#empl-selector').prop('hidden', false);
+        if ($('#dept').val() == '') {
+          $('#empl').prop('disabled', true);
+        } else {
+          init_selector('#empl');
+          show_empl('#empl', "{{ args['dept_id'] }}", "{{ args['empl_id'] }}");
+        };
+        $('#dept').on('change', function () {
+          init_selector('#empl');
           if ($('#dept').val() == '') {
             $('#empl').prop('disabled', true);
           } else {
-            init_selector('#empl');
-            show_empl('#empl', "{{ args['dept_id'] }}", "{{ args['empl_id'] }}");
-          };
-        };
-        $('#filter').on('change', function () {
-          init_selector('#dept', 'unselect');
-          init_selector('#empl');
-          if ($('#filter').val() == '') {
-            $('#dept-selector').prop('hidden', true);
-            $('#empl-selector').prop('hidden', true);
-          } else if ($('#filter').val() == 'dept') {
-            $('#dept-selector').prop('hidden', false);
-            $('#empl-selector').prop('hidden', true);
-          } else if ($('#filter').val() == 'empl') {
-            $('#dept-selector').prop('hidden', false);
-            $('#empl-selector').prop('hidden', false);
-          };
-        });
-        $('#dept').on('change', function () {
-          init_selector('#empl');
-          if ($('#filter').val() == 'empl') {
-            if ($('#dept').val() == '') {
-              $('#empl').prop('disabled', true);
-            } else {
-              $('#empl').prop('disabled', false);
-              show_empl('#empl', $('#dept').val());
-            };
+            $('#empl').prop('disabled', false);
+            show_empl('#empl', $('#dept').val());
           };
         });
       });

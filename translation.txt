@@ -26,7 +26,6 @@ Edit Department=修改部门
 New Record=新建记录
 Edit Record=修改记录
 Verify Record=审核记录
-Filter by=过滤方式
 General Employee=一般员工
 multiple choice=可多选
 Confirm acceptance?=确认通过？

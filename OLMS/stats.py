@@ -54,7 +54,6 @@ def empl_index():
 def dept_index():
     '''Show all the statistics match the filter and belong the departments which the Administrator has the permission.'''
     db = get_db()
-    filter = request.args.get('filter')
     dept_id = request.args.get('dept')
     empl_id = request.args.get('empl')
     period = request.args.get('period')
@@ -62,8 +61,8 @@ def dept_index():
     month = request.args.get('month')
     page = request.args.get('page') or 1
     per_page = request.args.get('per_page') or 10
-    args = dict(filter=filter, dept_id=dept_id, empl_id=empl_id,
-                period=period, year=year, month=month, page=page, per_page=per_page)
+    args = dict(dept_id=dept_id, empl_id=empl_id, period=period,
+                year=year, month=month, page=page, per_page=per_page)
     try:
         permission_list = g.user['permission'].split(',')
     except ValueError:
@@ -90,14 +89,10 @@ def dept_index():
             condition = ''
         else:
             condition = "AND year = '{}'".format(year)
-    if filter:
-        if (filter == 'dept' and dept_id) or (filter == 'empl' and dept_id and not empl_id):
-            condition += 'AND dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id:
-            condition += 'AND empl_id = {}'.format(empl_id)
-        else:
-            condition += 'AND dept_id IN ({})'.format(
-                ','.join(permission_list))
+    if dept_id and not empl_id:
+        condition += 'AND dept_id = {}'.format(dept_id)
+    elif empl_id:
+        condition += 'AND empl_id = {}'.format(empl_id)
     else:
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
     record = len(db.execute(query.format(condition)).fetchall())
