@@ -81,7 +81,6 @@ def empl_records():
 def dept_records():
     '''Export all the records match the filter and belong the departments which the Administrator has
     the permission, most recent first.'''
-    filter = request.args.get('filter')
     dept_id = request.args.get('dept')
     empl_id = request.args.get('empl')
     year = request.args.get('year')
@@ -112,15 +111,14 @@ def dept_records():
     else:
         query = '{}{}'
     db = get_db()
-    if filter:
-        if filter == 'dept' and dept_id:
-            prefix = '-' + db.execute('SELECT dept_name FROM department'
-                                      ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
-            condition1 = 'r.dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id:
-            prefix = '-' + db.execute('SELECT realname FROM employee'
-                                      ' WHERE id = ?', (empl_id,)).fetchone()['realname']
-            condition1 = 'empl_id = {}'.format(empl_id)
+    if dept_id and not empl_id:
+        prefix = '-' + db.execute('SELECT dept_name FROM department'
+                                  ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
+        condition1 = 'r.dept_id = {}'.format(dept_id)
+    elif empl_id:
+        prefix = '-' + db.execute('SELECT realname FROM employee'
+                                  ' WHERE id = ?', (empl_id,)).fetchone()['realname']
+        condition1 = 'empl_id = {}'.format(empl_id)
     else:
         prefix = ''
         condition1 = 'r.dept_id IN ({})'.format(','.join(permission_list))
@@ -212,7 +210,6 @@ def empl_stats():
 @admin_required
 def dept_stats():
     '''Export all the statistics match the filter and belong the departments which the Administrator has the permission.'''
-    filter = request.args.get('filter')
     dept_id = request.args.get('dept')
     empl_id = request.args.get('empl')
     period = request.args.get('period')
@@ -261,15 +258,14 @@ def dept_stats():
         else:
             condition = "AND year = '{}'".format(year)
     db = get_db()
-    if filter:
-        if filter == 'dept' and dept_id:
-            prefix = '-' + db.execute('SELECT dept_name FROM department'
-                                      ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
-            condition += 'AND dept_id = {}'.format(dept_id)
-        elif filter == 'empl' and empl_id:
-            prefix = '-' + db.execute('SELECT realname FROM employee'
-                                      ' WHERE id = ?', (empl_id,)).fetchone()['realname']
-            condition += 'AND empl_id = {}'.format(empl_id)
+    if dept_id and not empl_id:
+        prefix = '-' + db.execute('SELECT dept_name FROM department'
+                                  ' WHERE id = ?', (dept_id,)).fetchone()['dept_name']
+        condition += 'AND dept_id = {}'.format(dept_id)
+    elif empl_id:
+        prefix = '-' + db.execute('SELECT realname FROM employee'
+                                  ' WHERE id = ?', (empl_id,)).fetchone()['realname']
+        condition += 'AND empl_id = {}'.format(empl_id)
     else:
         prefix = ''
         condition += 'AND dept_id IN ({})'.format(','.join(permission_list))
