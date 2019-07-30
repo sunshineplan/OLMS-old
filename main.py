@@ -26,7 +26,8 @@ def cli(ctx):
         ctx.invoke(run)
 
 
-@cli.command(short_help='Initialize Database')
+@cli.command(hidden=True)
+@click.confirmation_option()
 def init_db():
     db = sqlite3.connect(app.config['DATABASE'])
     try:
