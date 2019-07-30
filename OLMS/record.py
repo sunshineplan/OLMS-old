@@ -207,13 +207,11 @@ def manage_create():
         permission_list = g.user['permission'].split(',')
     except ValueError:
         permission_list = []
-    empls = db.execute(
-        "SELECT e.id, dept_name || ' | ' || realname name"
-        ' FROM employee e JOIN department p ON e.dept_id = p.id'
-        ' WHERE p.id IN ({})'
-        ' ORDER BY p.id'.format(','.join(permission_list))).fetchall()
+    depts = db.execute('SELECT * FROM department'
+                       ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
+        dept_id = request.form.get('dept')
         empl_id = request.form.get('empl')
         date = request.form.get('date')
         error = None
@@ -236,18 +234,18 @@ def manage_create():
 
         if not date:
             error = 'Date is required.'
-        if not empl_id:
-            error = 'Employee is required.'
-        empls_id = []
-        for i in empls:
-            empls_id.append(str(i['id']))
-        if empl_id not in empls_id:
+        if not dept_id:
+            error = 'Department is required.'
+        elif dept_id not in permission_list:
             abort(403)
+        else:
+            if not empl_id:
+                error = 'Employee is required.'
+            elif str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
+                abort(403)
         if error:
             flash(error)
         else:
-            dept_id = db.execute('SELECT dept_id FROM employee WHERE id = ?',
-                                 (empl_id,)).fetchone()['dept_id']
             db.execute(
                 'INSERT INTO record (dept_id, empl_id, date, type, duration, describe, status, createdby, verifiedby)'
                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -258,7 +256,7 @@ def manage_create():
                                     g.user['id'], g.user['realname'], ip, empl_id, date, type, duration)
             return redirect(url_for('record.dept_index'))
 
-    return render_template('record/create.html', empls=empls, mode='admin')
+    return render_template('record/create.html', depts=depts, mode='admin')
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))

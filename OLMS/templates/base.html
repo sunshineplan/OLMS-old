@@ -23,11 +23,13 @@
       $(element).val(value)
     }, 'json');
   }
-  function init_selector(element, mode='init') {
+  function init_selector(element, mode='init', text='All') {
     if (mode == 'unselect') {
       $(element).val('');
+    } else if (mode == 'clear') {
+      $(element).empty().append($('<option>').text(text).prop('value', '').prop('disabled', true));
     } else if (mode == 'init') {
-      $(element).empty().append($('<option>').text('All').prop('value', ''));
+      $(element).empty().append($('<option>').text(text).prop('value', ''));
     }
   }
 </script>
