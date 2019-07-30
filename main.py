@@ -3,9 +3,11 @@
 import os
 import smtplib
 import sqlite3
+import subprocess
 import sys
 from datetime import datetime
 from email.message import EmailMessage
+from shutil import copy
 
 import click
 
@@ -60,6 +62,26 @@ def backup_db(location, email):
             s.send_message(msg)
         os.remove(bckf)
         click.echo('Email done.')
+
+
+@cli.command(short_help='Install Service')
+def install():
+    if os.path.splitext(sys.argv[0])[1] == '.exe':
+        binPath = copy(sys.executable, os.environ['windir'])
+        subprocess.run(['sc', 'create', 'webapp', 'binPath=', binPath,
+                        'start=', 'auto', 'depend=', 'tcpip'], shell=True)
+        init_db()
+        subprocess.run(['sc', 'start', 'webapp'], shell=True)
+        click.echo('Service installed successfully.')
+    else:
+        click.echo('Error.')
+
+
+@cli.command(short_help='Uninstall Service')
+def uninstall():
+    subprocess.run(['sc', 'stop', 'webapp'], shell=True)
+    subprocess.run(['sc', 'delete', 'webapp'], shell=True)
+    click.echo('Service uninstalled successfully.')
 
 
 @cli.command(short_help='Run Server')
