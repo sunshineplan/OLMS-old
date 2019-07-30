@@ -13,7 +13,7 @@
       <label for='dept'>Department</label>
       <select class='form-control' name='dept' id='dept'>
         {% for dept in depts %}
-          <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
+        <option value="{{ dept['id'] }}"{% if record['dept_id'] == dept['id'] %}selected{% endif %}>{{ dept['dept_name'] }}</option>
         {% endfor %}
       </select>
     </div>

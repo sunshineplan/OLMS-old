@@ -249,9 +249,9 @@ def manage_create():
             dept_id = db.execute('SELECT dept_id FROM employee WHERE id = ?',
                                  (empl_id,)).fetchone()['dept_id']
             db.execute(
-                'INSERT INTO record (date, type, duration, describe, dept_id, empl_id, status, createdby, verifiedby)'
+                'INSERT INTO record (dept_id, empl_id, date, type, duration, describe, status, createdby, verifiedby)'
                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                (date, type, duration, describe, dept_id, empl_id,
+                (dept_id, empl_id, date, type, duration, describe,
                  1, f"{g.user['id']}-{ip}", f"{g.user['id']}-{ip}"))
             db.commit()
             current_app.logger.info('UID:%s(%s)-%s manage create record for UID:%s{%s,%s,%s}',
@@ -317,12 +317,12 @@ def manage_update(id):
     '''Update a record by Super Administrator.'''
     record = get_record(id, mode='super')
     db = get_db()
-    empls = db.execute('SELECT * FROM employee WHERE id != 0').fetchall()
     depts = db.execute('SELECT * FROM department').fetchall()
+    empls = db.execute('SELECT * FROM employee WHERE id != 0').fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
-        empl_id = request.form.get('empl')
         dept_id = request.form.get('dept')
+        empl_id = request.form.get('empl')
         date = request.form.get('date')
         error = None
         try:
