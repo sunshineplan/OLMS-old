@@ -66,23 +66,28 @@ def backup_db(location, email):
 
 
 @cli.command(short_help='Install Service')
-def install():
+@click.pass_context
+def install(ctx):
     if os.path.splitext(sys.argv[0])[1] == '.exe':
-        binPath = copy(sys.executable, os.environ['windir'])
-        subprocess.run(['sc', 'create', 'webapp', 'binPath=', binPath,
-                        'start=', 'auto', 'depend=', 'tcpip'], shell=True)
-        init_db()
-        subprocess.run(['sc', 'start', 'webapp'], shell=True)
-        click.echo('Service installed successfully.')
+        try:
+            binPath = copy(sys.executable, os.environ['windir'])
+            subprocess.run(['schtasks', '/create', '/sc', 'onlogon',
+                            '/tr', binPath, '/tn', 'webapp'], shell=True)
+            ctx.invoke(init_db)
+            subprocess.run(['schtasks', '/run', '/tn', 'webapp'], shell=True)
+        except PermissionError:
+            click.echo('You need to be the administrator.')
     else:
         click.echo('Error.')
 
 
 @cli.command(short_help='Uninstall Service')
 def uninstall():
-    subprocess.run(['sc', 'stop', 'webapp'], shell=True)
-    subprocess.run(['sc', 'delete', 'webapp'], shell=True)
-    click.echo('Service uninstalled successfully.')
+    try:
+        subprocess.run(['schtasks', '/end', '/tn', 'webapp'], shell=True)
+        subprocess.run(['schtasks', '/delete', '/tn', 'webapp', '/f'], shell=True)
+    except PermissionError:
+            click.echo('You need to be the administrator.')
 
 
 @cli.command(short_help='Run Server')
