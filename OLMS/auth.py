@@ -106,7 +106,7 @@ def login():
             if user['id']:
                 return redirect(url_for('index'))
             else:
-                return redirect(url_for('dept.index'))
+                return redirect(url_for('record.dept'))
 
         flash(error)
 
