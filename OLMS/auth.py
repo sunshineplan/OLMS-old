@@ -103,7 +103,10 @@ def login():
                 session.permanent = False
             current_app.logger.info(
                 'UID:%s(%s)-%s log in', user['id'], user['realname'], ip)
-            return redirect(url_for('index'))
+            if user['id']:
+                return redirect(url_for('index'))
+            else:
+                return redirect(url_for('dept.index'))
 
         flash(error)
 
