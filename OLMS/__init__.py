@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import timedelta
 from logging.handlers import RotatingFileHandler
+from urllib.request import urlopen
 
 from flask import Flask
 from flask.logging import default_handler
@@ -45,6 +46,22 @@ def create_app(mode=None):
             # prevent sending the cookie every time
             SESSION_REFRESH_EACH_REQUEST=False,
         )
+
+    # ensure jquery.js and bootstrap.css exists
+    static_files = {
+        'jquery.js': 'https://code.jquery.com/jquery-3.4.1.min.js',
+        'bootstrap.css': 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
+        'bootstrap.min.css.map': 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map'
+    }
+    for i in static_files.keys():
+        static_file_path = os.path.join(app.static_folder, i)
+        if not os.path.isfile(static_file_path):
+            try:
+                static_file = urlopen(static_files[i], timeout=5)
+                with open(static_file_path, 'wb') as f:
+                    f.write(static_file.read())
+            except:
+                pass
 
     # ensure the instance folder exists
     try:
