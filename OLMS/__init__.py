@@ -49,9 +49,9 @@ def create_app(mode=None):
 
     # ensure jquery.js and bootstrap.css exists
     static_files = {
-        'jquery.js': 'https://code.jquery.com/jquery-3.4.1.min.js',
-        'bootstrap.css': 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-        'bootstrap.min.css.map': 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map'
+        'jquery.js': 'http://code.jquery.com/jquery-3.4.1.min.js',
+        'bootstrap.css': 'http://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
+        'bootstrap.min.css.map': 'http://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css.map'
     }
     for i in static_files.keys():
         static_file_path = os.path.join(app.static_folder, i)
