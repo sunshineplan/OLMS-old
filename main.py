@@ -72,22 +72,29 @@ def install(ctx):
         try:
             binPath = copy(sys.executable, os.environ['windir'])
             subprocess.run(['schtasks', '/create', '/sc', 'onlogon',
-                            '/tr', binPath, '/tn', 'webapp'], shell=True)
+                            '/tr', binPath, '/tn', 'webapp', '/f'], shell=True)
+            subprocess.run(['schtasks', '/create', '/sc', 'weekly', '/d', 'thu', '/st',
+                            '12:00', '/tr', binPath+' backup-db', '/tn', 'webapp-backup', '/f'], shell=True)
             ctx.invoke(init_db)
             subprocess.run(['schtasks', '/run', '/tn', 'webapp'], shell=True)
+            click.echo('Installation successful.')
         except PermissionError:
-            click.echo('You need to be the administrator.')
+            click.echo('Error! You need administrator permission to do this.')
     else:
-        click.echo('Error.')
+        click.echo('No action was taken. Must run it in exe mode.')
 
 
 @cli.command(short_help='Uninstall Service')
 def uninstall():
     try:
-        subprocess.run(['schtasks', '/end', '/tn', 'webapp'], shell=True)
-        subprocess.run(['schtasks', '/delete', '/tn', 'webapp', '/f'], shell=True)
+        subprocess.run(['schtasks', '/delete', '/tn',
+                        'webapp', '/f'], shell=True)
+        subprocess.run(['schtasks', '/delete', '/tn',
+                        'webapp-backup', '/f'], shell=True)
+        click.echo(
+            'Uninstallation successful. You can close application manually.')
     except PermissionError:
-            click.echo('You need to be the administrator.')
+        click.echo('Error! You need administrator permission to do this.')
 
 
 @cli.command(short_help='Run Server')
