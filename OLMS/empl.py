@@ -71,6 +71,11 @@ def get_empl(id):
 @bp.route('/get', methods=('POST',))
 @admin_required
 def get():
+    '''Get employee list by dept_id.
+
+    return json format
+    raise 403 if current user doesn't have the permission    
+    '''
     dept_id = request.form.get('dept')
     try:
         permission_list = g.user['permission'].split(',')
@@ -80,7 +85,7 @@ def get():
         abort(403)
     db = get_db()
     empl = db.execute(
-        'SELECT id, realname FROM employee where dept_id = ?', (dept_id,)).fetchall()
+        'SELECT id, realname FROM employee where dept_id = ? ORDER BY realname', (dept_id,)).fetchall()
     empl = dict((i['id'], i['realname']) for i in empl)
     return jsonify(empl)
 
