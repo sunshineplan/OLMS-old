@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 from urllib.request import urlopen
 
@@ -20,32 +19,21 @@ def create_app(mode=None):
     '''Create and configure an instance of the Flask application.'''
     if not mode:
         app = Flask(__name__, instance_relative_config=True)
-        app.config.from_mapping(
-            # a default secret that should be overridden by instance config
-            SECRET_KEY='dev',
-            # store the database in the instance folder
-            DATABASE=os.path.join(app.instance_path, 'OLMS.db'),
-            # default expiration date of a permanent session
-            PERMANENT_SESSION_LIFETIME=timedelta(days=365*100),
-            # prevent sending the cookie every time
-            SESSION_REFRESH_EACH_REQUEST=False,
-        )
+        # load config from config.py
+        app.config.from_object('OLMS.config')
+        # store the database in the instance folder
+        app.config['DATABASE'] = os.path.join(app.instance_path, 'OLMS.db')
+        # load custom config from instance/config.py
+        app.config.from_pyfile('config.py', silent=True)
     else:
         static_folder = os.path.join(sys._MEIPASS, 'static')
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         instance_path = os.path.join(os.environ['LOCALAPPDATA'], 'webapp')
-        app = localFlask('webapp', static_folder=static_folder,
-                         template_folder=template_folder, instance_path=instance_path)
-        app.config.from_mapping(
-            # a default secret that should be overridden by instance config
-            SECRET_KEY='webapp',
-            # store the database in the instance folder
-            DATABASE=os.path.join(app.instance_path, 'database'),
-            # default expiration date of a permanent session
-            PERMANENT_SESSION_LIFETIME=timedelta(days=365*100),
-            # prevent sending the cookie every time
-            SESSION_REFRESH_EACH_REQUEST=False,
-        )
+        app = localFlask('webapp', static_folder=static_folder, template_folder=template_folder,
+                         instance_path=instance_path, instance_relative_config=True)
+        app.config.from_object('OLMS.config')
+        app.config['DATABASE'] = os.path.join(app.instance_path, 'database')
+        app.config.from_pyfile('config.py', silent=True)
 
     # ensure jquery.js and bootstrap.css exists
     static_files = {
