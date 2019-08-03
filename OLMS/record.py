@@ -12,6 +12,8 @@ bp = Blueprint('record', __name__)
 @login_required
 def empl_index():
     '''Show all the records match the filter and belong the current user, most recent first.'''
+    if not g.user['id']:
+        return redirect(url_for('record.dept_index'))
     db = get_db()
     year = request.args.get('year')
     month = request.args.get('month')

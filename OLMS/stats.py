@@ -1,4 +1,5 @@
-from flask import Blueprint, abort, g, render_template, request
+from flask import (Blueprint, abort, g, redirect, render_template, request,
+                   url_for)
 
 from OLMS.auth import admin_required, login_required
 from OLMS.db import get_db
@@ -11,6 +12,8 @@ bp = Blueprint('stats', __name__, url_prefix='/stats')
 @login_required
 def empl_index():
     '''Show all the statistics match the filter and belong the current user.'''
+    if not g.user['id']:
+        return redirect(url_for('stats.dept_index'))
     db = get_db()
     period = request.args.get('period')
     year = request.args.get('year')
