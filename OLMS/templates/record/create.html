@@ -19,7 +19,7 @@
   <div class='form-row'>
     <div class='form-group'>
       <label for='dept'>Department</label>
-      <select class='form-control' name='dept' id='dept'>
+      <select class='form-control' name='dept' id='dept' required>
         <option disabled selected value> -- select an department -- </option>
         {% for dept in depts %}
         <option value="{{ dept['id'] }}">{{ dept['dept_name'] }}</option>
@@ -28,7 +28,7 @@
     </div>
     <div class='form-group'>
       <label for='empl'>Employee</label>
-      <select class='form-control' name='empl' id='empl'>
+      <select class='form-control' name='empl' id='empl' required>
         <option disabled selected value> -- select an employee -- </option>
       </select>
     </div>
