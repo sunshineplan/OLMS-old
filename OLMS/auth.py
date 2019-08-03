@@ -1,5 +1,5 @@
 import functools
-from time import time
+from time import localtime, strftime, time
 
 from flask import (Blueprint, abort, current_app, flash, g, make_response,
                    redirect, render_template, request, session, url_for)
@@ -56,6 +56,7 @@ def load_logged_in_user():
     the database into ``g.user``.'''
     user_id = session.get('user_id')
     last = request.cookies.get('Last')
+    ip = request.remote_addr
     db = get_db()
     if user_id is None:
         g.user = None
@@ -65,6 +66,8 @@ def load_logged_in_user():
                                 (user_id,)).fetchone()
         else:
             session.clear()
+            current_app.logger.info('UID:%s-%s time out at %s', user_id,
+                                    ip, strftime('%Y-%m-%d %H:%M:%S', localtime(float(last))))
             return redirect(url_for('auth.login'))
 
 
