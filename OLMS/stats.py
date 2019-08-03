@@ -55,7 +55,7 @@ def dept_index():
     '''Show all the statistics match the filter and belong the departments which the Administrator has the permission.'''
     db = get_db()
     dept_id = request.args.get('dept')
-    empl_id = request.args.get('empl')
+    empl_id = request.args.get('empl') or ''
     period = request.args.get('period')
     year = request.args.get('year')
     month = request.args.get('month')
