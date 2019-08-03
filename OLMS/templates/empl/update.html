@@ -45,10 +45,7 @@
       $('#type').on('change', function () {
         if ($('#type').val() == 0) {
           $('#permission-selector').prop('hidden', true);
-          var elements = document.getElementById('permission').options;
-          for (var i = 0; i < elements.length; i++) {
-            elements[i].selected = false;
-          };
+          init_selector('#permission', 'unselect');
         } else {
           $('#permission-selector').prop('hidden', false);
         };
