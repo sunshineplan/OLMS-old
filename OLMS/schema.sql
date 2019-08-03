@@ -48,7 +48,7 @@ CREATE VIEW statistics AS
   JOIN employee e ON e.id = empl_id
   WHERE status = 1
   GROUP BY period, r.dept_id, empl_id
-  ORDER BY period DESC;
+  ORDER BY period DESC, dept_name, realname;
 
 INSERT INTO employee (id, username, realname, type, dept_id)
   VALUES (0, 'admin', 'admin', 1, 0);

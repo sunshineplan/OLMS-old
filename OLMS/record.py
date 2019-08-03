@@ -66,7 +66,7 @@ def admin_index(mode=None):
     except ValueError:
         permission_list = []
     depts = db.execute('SELECT * FROM department'
-                       ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
+                       ' WHERE id IN ({}) ORDER BY dept_name'.format(','.join(permission_list))).fetchall()
     years = db.execute("SELECT DISTINCT strftime('%Y', date) year FROM record"
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if dept_id and not empl_id:
@@ -208,7 +208,7 @@ def manage_create():
     except ValueError:
         permission_list = []
     depts = db.execute('SELECT * FROM department'
-                       ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
+                       ' WHERE id IN ({}) ORDER BY dept_name'.format(','.join(permission_list))).fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         dept_id = request.form.get('dept')
@@ -315,8 +315,8 @@ def manage_update(id):
     '''Update a record by Super Administrator.'''
     record = get_record(id, mode='super')
     db = get_db()
-    depts = db.execute('SELECT * FROM department').fetchall()
-    empls = db.execute('SELECT * FROM employee WHERE id != 0').fetchall()
+    depts = db.execute('SELECT * FROM department ORDER BY dept_name').fetchall()
+    empls = db.execute('SELECT * FROM employee WHERE id != 0 ORDER BY realname').fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         dept_id = request.form.get('dept')

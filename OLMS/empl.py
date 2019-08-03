@@ -23,8 +23,8 @@ def index():
         permission_list = g.user['permission'].split(',')
     except ValueError:
         permission_list = []
-    depts = db.execute(
-        'SELECT * FROM department WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
+    depts = db.execute('SELECT * FROM department'
+                       ' WHERE id IN ({}) ORDER BY dept_name'.format(','.join(permission_list))).fetchall()
     condition = ''
     if dept_id:
         if dept_id not in permission_list:
@@ -44,7 +44,7 @@ def index():
     empls = db.execute(
         'SELECT e.*, dept_name FROM employee e'
         ' JOIN department d ON e.dept_id = d.id'
-        ' WHERE {} {}'.format(condition, limit)).fetchall()
+        ' WHERE {} ORDER BY dept_name, realname {}'.format(condition, limit)).fetchall()
     pagination = Pagination(per_page=int(per_page),
                             page=int(page), record=record)
     return render_template('empl/index.html', empls=empls, depts=depts, args=args, pagination=pagination)
@@ -104,8 +104,8 @@ def add():
         permission_list = g.user['permission'].split(',')
     except ValueError:
         permission_list = []
-    depts = db.execute(
-        'SELECT * FROM department where id IN ({})'.format(','.join(permission_list))).fetchall()
+    depts = db.execute('SELECT * FROM department'
+                       ' WHERE id IN ({}) ORDER BY dept_name'.format(','.join(permission_list))).fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         username = request.form.get('username').strip()
@@ -166,7 +166,7 @@ def update(id):
     except ValueError:
         permission_list = []
     db = get_db()
-    depts = db.execute('SELECT * from department').fetchall()
+    depts = db.execute('SELECT * from department ORDER BY dept_name').fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         username = request.form.get('username').strip()

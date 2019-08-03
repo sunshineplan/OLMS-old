@@ -68,7 +68,7 @@ def dept_index():
     except ValueError:
         permission_list = []
     depts = db.execute('SELECT * FROM department'
-                       ' WHERE id IN ({})'.format(','.join(permission_list))).fetchall()
+                       ' WHERE id IN ({}) ORDER BY dept_name'.format(','.join(permission_list))).fetchall()
     years = db.execute('SELECT DISTINCT substr(period,1,4) year FROM statistics'
                        ' WHERE dept_id IN ({}) ORDER BY year DESC'.format(','.join(permission_list))).fetchall()
     if not period or period == 'month':
