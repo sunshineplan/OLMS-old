@@ -70,6 +70,13 @@ def create_app(mode=None):
 
     db.init_app(app)
 
+    # inject google reCAPTCHA protection
+    from OLMS import recaptcha
+
+    @app.context_processor
+    def inject_recaptcha():
+        return dict(recaptcha=recaptcha.reCAPTCHA())
+
     # apply the blueprints to the app
     from OLMS import auth, dept, empl, export, record, stats
 

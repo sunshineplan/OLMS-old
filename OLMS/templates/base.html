@@ -6,11 +6,13 @@
 <!-- https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css-->
 <link rel='stylesheet' href="{{ url_for('static', filename='bootstrap.css') }}">
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
+{{ recaptcha.script }}
 <script>
   $(function () {
     {% if request.endpoint != 'auth.login' %}
     document.cookie = 'Last=' + Date.now()/1000 + '; Max-Age=86400; Path=/';
     {% endif %}
+    {{ recaptcha.ready }}
     $('form').submit(function() {
       $(this).find(":selected[value='']").prop('disabled', true);
     });
