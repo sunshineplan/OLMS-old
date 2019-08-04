@@ -81,9 +81,6 @@ def create_app(mode=None):
     app.register_blueprint(stats.bp)
 
     # make url_for('index') == url_for('record.empl_index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the record blueprint a url_prefix, but for
-    # the tutorial the record will be the main index
     app.add_url_rule('/', endpoint='index')
 
     return app
