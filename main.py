@@ -101,7 +101,10 @@ def uninstall():
 @click.option('--port', '-p', default=80, help='Listening Port')
 @click.option('--debug', is_flag=True, hidden=True)
 def run(port, debug):
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    if debug:
+        app.run(host='0.0.0.0', port=port, debug=debug)
+    else:
+        app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':
