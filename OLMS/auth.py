@@ -96,7 +96,8 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
-        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
             error = reCAPTCHA().failed
 
         if error is None:
@@ -108,7 +109,7 @@ def login():
             else:
                 session.permanent = False
             current_app.logger.info('UID:%s(%s)-%s log in(score:%s)',
-                                    user['id'], user['realname'], ip, reCAPTCHA().verify)
+                                    user['id'], user['realname'], ip, score)
             if user['id']:
                 return redirect(url_for('index'))
             else:
@@ -143,7 +144,8 @@ def setting():
             error = 'New password cannot be the same as your current password.'
         elif password1 is None or password1 == '':
             error = 'New password cannot be blank.'
-        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
             error = reCAPTCHA().failed
 
         if error is None:
@@ -155,7 +157,7 @@ def setting():
             )
             db.commit()
             current_app.logger.info('UID:%s(%s)-%s change password(score:%s)',
-                                    g.user['id'], g.user['realname'], ip, reCAPTCHA().verify)
+                                    g.user['id'], g.user['realname'], ip, score)
             session.clear()
             flash('Password Changed. Please Re-login!')
             return redirect(url_for('auth.login'))

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-{{ recaptcha.embed }}
+{{ recaptcha.interval }}
 <form class='login' method='POST'>
   <div class='form-group'>
     <label for='username'>Username</label>
@@ -20,7 +20,14 @@
     <input type='checkbox' class='form-check-input' name='rememberme' id='rememberme'>
     <label class='form-check-label' for='rememberme'>Remember Me</label>
   </div>
+  <small class='form-text text-muted'>
+    This site is protected by reCAPTCHA and the Google
+    <a href='https://policies.google.com/privacy'>Privacy Policy</a> and
+    <a href='https://policies.google.com/terms'>Terms of Service</a> apply.
+  </small>
+  <hr>
   <input type='submit' id='submit' value='Log In' class='btn btn-primary login'>
+  {{ recaptcha.input }}
 </form>
 <script>
   $(function() {

@@ -132,7 +132,8 @@ def add():
                 error = 'Type is required.'
             if type == '1' and permission == '':
                 error = 'At least one permission must be selected for Administrator.'
-        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
             error = reCAPTCHA().failed
 
         if error is None:
@@ -148,7 +149,7 @@ def add():
                     (username, realname, dept_id, type, permission))
             db.commit()
             current_app.logger.info(
-                'UID:%s(%s)-%s add user{%s,%s,%s}(score:%s)', g.user['id'], g.user['realname'], ip, username, realname, dept_id, reCAPTCHA().verify)
+                'UID:%s(%s)-%s add user{%s,%s,%s}(score:%s)', g.user['id'], g.user['realname'], ip, username, realname, dept_id, score)
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -194,7 +195,8 @@ def update(id):
             error = 'Type is required.'
         if type == '1' and permission == '':
             error = 'At least one permission must be selected for Administrator.'
-        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
             error = reCAPTCHA().failed
 
         if error is not None:
@@ -210,7 +212,7 @@ def update(id):
                            (generate_password_hash(password), id))
             db.commit()
             current_app.logger.info('UID:%s(%s)-%s update UID:%s{%s,%s,%s}(score:%s)',
-                                    g.user['id'], g.user['realname'], ip, id, username, realname, dept_id, reCAPTCHA().verify)
+                                    g.user['id'], g.user['realname'], ip, id, username, realname, dept_id, score)
             return redirect(url_for('empl.index'))
 
     return render_template('empl/update.html', empl=empl, permission=permission_list, depts=depts)
@@ -225,12 +227,13 @@ def delete(id):
     '''
     get_empl(id)
     ip = request.remote_addr
-    if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+    score = reCAPTCHA().verify
+    if not score or score < reCAPTCHA().level:
         flash(reCAPTCHA().failed)
         return redirect(url_for('empl.update', id=id))
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
     db.commit()
     current_app.logger.info('UID:%s(%s)-%s delete UID:%s(score:%s)',
-                            g.user['id'], g.user['realname'], ip, id, reCAPTCHA().verify)
+                            g.user['id'], g.user['realname'], ip, id, score)
     return redirect(url_for('empl.index'))

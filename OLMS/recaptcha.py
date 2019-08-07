@@ -2,8 +2,10 @@ import requests
 from flask import Markup, current_app, request, url_for
 
 SCRIPT = "<script src='https://www.recaptcha.net/recaptcha/api.js?render={}'></script>"
-#INPUT = "grecaptcha.ready(function() {{grecaptcha.execute('{}', {{action: '{}'}}).then(function(token) {{$('form').append($('<input>').prop('type', 'hidden').prop('name', 'g-recaptcha-response').val(token));}});}});"
-INPUT = '''<script>grecaptcha.ready(function() {{grecaptcha.execute('{}', {{action: '{}'}}).then(function(token) {{$('form').append("<input type='hidden' name='recaptcha' value='"+token+"'/>")}})}})</script>'''
+READY = '<script>grecaptcha.ready(function() {{{}}})</script>'
+EXECUTE = "grecaptcha.execute('{}', {{action: '{}'}}).then(function(token) {{$('.recaptcha').val(token)}})"
+INTERVAL = 'setInterval(function(){{{}}}, 100000)'
+INPUT = "<input type='hidden' class='recaptcha' name='recaptcha'>"
 
 
 class reCAPTCHA:
@@ -11,10 +13,6 @@ class reCAPTCHA:
         self.site_key = app.config.get('RECAPTCHA_SITE_KEY') or ''
         self.secret_key = app.config.get('RECAPTCHA_SECRET_KEY')
         self.VERIFY_URL = 'https://www.recaptcha.net/recaptcha/api/siteverify'
-        if self.site_key:
-            self.is_enabled = True
-        else:
-            self.is_enabled = False
 
     @property
     def script(self):
@@ -30,7 +28,25 @@ class reCAPTCHA:
                 action = url_for(request.endpoint)
             except:
                 action = request.endpoint.replace('.', '/').replace('_', '/')
-            return Markup(INPUT.format(self.site_key, action))
+            return Markup(READY.format(EXECUTE.format(self.site_key, action)))
+        else:
+            return ''
+
+    @property
+    def interval(self):
+        if self.site_key:
+            try:
+                action = url_for(request.endpoint)
+            except:
+                action = request.endpoint.replace('.', '/').replace('_', '/')
+            return Markup(READY.format(INTERVAL.format(EXECUTE.format(self.site_key, action))))
+        else:
+            return ''
+
+    @property
+    def input(self):
+        if self.site_key:
+            return Markup(INPUT)
         else:
             return ''
 
@@ -42,13 +58,17 @@ class reCAPTCHA:
                 'response': request.form.get('recaptcha'),
                 'remoteip': request.remote_addr
             }
-            r = requests.get(self.VERIFY_URL, params=data)
+            r = requests.get(self.VERIFY_URL, params=data).json()
             try:
                 action = url_for(request.endpoint)
             except:
                 action = request.endpoint.replace('.', '/').replace('_', '/')
-            return r.json()['score'] if r.json().get('action') == action else False
+            return r['score'] if r.get('action') == action or r.get('action') == action.replace('delete', 'update') else False
         return True
+
+    @property
+    def level(self):
+        return 0.5
 
     @property
     def failed(self):

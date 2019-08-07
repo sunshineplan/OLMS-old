@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-{{ recaptcha.embed }}
+{{ recaptcha.interval }}
 <form method='post'>
   <div class='form-group'>
     <label for='password'>Current Password</label>
@@ -22,5 +22,6 @@
   </div>
   <input type='submit' value='Change' class='btn btn-primary'>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  {{ recaptcha.input }}
 </form>
 {% endblock %}
