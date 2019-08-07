@@ -15,6 +15,7 @@ class reCAPTCHA:
     def __init__(self, app=current_app):
         self.site_key = app.config.get('RECAPTCHA_SITE_KEY') or ''
         self.secret_key = app.config.get('RECAPTCHA_SECRET_KEY')
+        self.level = app.config.get('RECAPTCHA_LEVEL') or 0.3
         self.VERIFY_URL = 'https://www.recaptcha.net/recaptcha/api/siteverify'
 
     @property
@@ -78,7 +79,7 @@ class reCAPTCHA:
 
     @property
     def level(self):
-        return 0.5
+        return self.level
 
     @property
     def failed(self):
