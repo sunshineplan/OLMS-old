@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{{ recaptcha.interval }}
 <form method='POST'>
   <div class='form-row'>
     <div class='form-group'>
@@ -20,7 +21,7 @@
   <div class='form-group'>
     <label for='password'>Password</label>
     <input class='form-control' name='password' id='password' value="{{ request.form['password'] }}">
-    <small id="passwordHelp" class="form-text text-muted">leave blank if you don't want to change it</small>
+    <small class='form-text text-muted'>leave blank if you don't want to change it</small>
   </div>
   <div class='form-group'>
     <label for='dept'>Department</label>
@@ -62,9 +63,11 @@
   </div>
   <input type='submit' value='Save' class='btn btn-primary'>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  {{ recaptcha.input }}
 </form>
 <hr>
 <form action="{{ url_for('empl.delete', id=empl['id']) }}" method='POST'>
   <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+  {{ recaptcha.input }}
 </form>
 {% endblock %}

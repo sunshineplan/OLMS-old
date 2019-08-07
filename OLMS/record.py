@@ -4,6 +4,7 @@ from flask import (Blueprint, abort, current_app, flash, g, redirect,
 from OLMS.auth import admin_required, login_required, super_required
 from OLMS.db import get_db
 from OLMS.pagination import Pagination
+from OLMS.recaptcha import reCAPTCHA
 
 bp = Blueprint('record', __name__)
 
@@ -181,6 +182,9 @@ def create():
             error = 'Date is required.'
         if g.user['id'] == 0:
             error = 'Super Administrator cannot create personal record.'
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
 
         if error:
             flash(error)
@@ -192,8 +196,8 @@ def create():
                 (date, type, duration, describe, g.user['dept_id'],
                  g.user['id'], f"{g.user['id']}-{ip}"))
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s create record{%s,%s,%s}',
-                                    g.user['id'], g.user['realname'], ip, date, type, duration)
+            current_app.logger.info('UID:%s(%s)-%s create record{%s,%s,%s}(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, date, type, duration, score)
             return redirect(url_for('record.empl_index'))
 
     return render_template('record/create.html')
@@ -245,6 +249,9 @@ def manage_create():
                 error = 'Employee is required.'
             elif str(db.execute('SELECT * FROM employee WHERE id = ?', (empl_id,)).fetchone()['dept_id']) != dept_id:
                 abort(403)
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
         if error:
             flash(error)
         else:
@@ -254,8 +261,8 @@ def manage_create():
                 (dept_id, empl_id, date, type, duration, describe,
                  1, f"{g.user['id']}-{ip}", f"{g.user['id']}-{ip}"))
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s manage create record for UID:%s{%s,%s,%s}',
-                                    g.user['id'], g.user['realname'], ip, empl_id, date, type, duration)
+            current_app.logger.info('UID:%s(%s)-%s manage create record for UID:%s{%s,%s,%s}(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, empl_id, date, type, duration, score)
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/create.html', depts=depts, mode='admin')
@@ -295,7 +302,9 @@ def update(id):
             error = 'Date is required.'
         if record['status'] != 0:
             error = 'You can only update record which is not verified.'
-
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
         if error:
             flash(error)
         else:
@@ -304,8 +313,8 @@ def update(id):
                 'UPDATE record SET date = ?, type = ?, duration = ?, describe = ? WHERE id = ?',
                 (date, type, duration, describe, id))
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s update RID:%s{%s,%s,%s}',
-                                    g.user['id'], g.user['realname'], ip, id, date, type, duration)
+            current_app.logger.info('UID:%s(%s)-%s update RID:%s{%s,%s,%s}(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, id, date, type, duration, score)
             return redirect(url_for('record.empl_index'))
 
     return render_template('record/update.html', record=record)
@@ -317,8 +326,10 @@ def manage_update(id):
     '''Update a record by Super Administrator.'''
     record = get_record(id, mode='super')
     db = get_db()
-    depts = db.execute('SELECT * FROM department ORDER BY dept_name').fetchall()
-    empls = db.execute('SELECT * FROM employee WHERE id != 0 ORDER BY realname').fetchall()
+    depts = db.execute(
+        'SELECT * FROM department ORDER BY dept_name').fetchall()
+    empls = db.execute(
+        'SELECT * FROM employee WHERE id != 0 ORDER BY realname').fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         dept_id = request.form.get('dept')
@@ -351,7 +362,9 @@ def manage_update(id):
             error = 'Date is required.'
         if not status:
             error = 'Status is required.'
-
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
         if error:
             flash(error)
         else:
@@ -359,8 +372,8 @@ def manage_update(id):
                 'UPDATE record SET empl_id = ?, dept_id = ?, date = ?, type = ?, duration = ?, status = ?, describe = ? WHERE id = ?',
                 (empl_id, dept_id, date, type, duration, status, describe, id))
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s manage update RID:%s{%s,%s,%s}',
-                                    g.user['id'], g.user['realname'], ip, id, date, type, duration)
+            current_app.logger.info('UID:%s(%s)-%s manage update RID:%s{%s,%s,%s}(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, id, date, type, duration, score)
             return redirect(url_for('record.super_index'))
 
     return render_template('record/update.html', record=record, empls=empls, depts=depts, mode='super')
@@ -387,6 +400,9 @@ def verify(id):
 
         if record['status'] != 0:
             error = 'The record is already verified.'
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
         if error:
             flash(error)
         else:
@@ -396,7 +412,7 @@ def verify(id):
                 (status, f"{g.user['id']}-{ip}", id))
             db.commit()
             current_app.logger.info(
-                'UID:%s(%s)-%s verify RID:%s{%s}', g.user['id'], g.user['realname'], ip, id, status)
+                'UID:%s(%s)-%s verify RID:%s{%s}(score:%s)', g.user['id'], g.user['realname'], ip, id, status, score)
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/verify.html', record=record)
@@ -414,17 +430,19 @@ def delete(id):
     error = None
     if record['status'] != 0:
         error = 'You can only delete record which is not verified.'
+    score = reCAPTCHA().verify
+    if not score or score < reCAPTCHA().level:
+        error = reCAPTCHA().failed
     if error:
         flash(error)
+        return redirect(url_for('record.update', id=id))
     else:
         db = get_db()
         db.execute('DELETE FROM record WHERE id = ?', (id,))
         db.commit()
-        current_app.logger.info(
-            'UID:%s(%s)-%s delete RID:%s', g.user['id'], g.user['realname'], ip, id)
+        current_app.logger.info('UID:%s(%s)-%s delete RID:%s(score:%s)',
+                                g.user['id'], g.user['realname'], ip, id, score)
         return redirect(url_for('record.empl_index'))
-
-    return render_template('record/update.html', record=record)
 
 
 @bp.route('/manage/<int:id>/delete', methods=('POST',))
@@ -433,9 +451,13 @@ def manage_delete(id):
     '''Delete a record by Super Administrator.'''
     get_record(id, mode='super')
     ip = request.remote_addr
+    score = reCAPTCHA().verify
+    if not score or score < reCAPTCHA().level:
+        flash(reCAPTCHA().failed)
+        return redirect(url_for('record.manage_update', id=id))
     db = get_db()
     db.execute('DELETE FROM record WHERE id = ?', (id,))
     db.commit()
-    current_app.logger.info(
-        'UID:%s(%s)-%s manage delete RID:%s', g.user['id'], g.user['realname'], ip, id)
+    current_app.logger.info('UID:%s(%s)-%s manage delete RID:%s(score:%s)',
+                            g.user['id'], g.user['realname'], ip, id, score)
     return redirect(url_for('record.super_index'))

@@ -6,6 +6,8 @@
 <!-- https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css-->
 <link rel='stylesheet' href="{{ url_for('static', filename='bootstrap.css') }}">
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
+{{ recaptcha.script }}
+{{ recaptcha.embed }}
 <script>
   $(function () {
     {% if request.endpoint != 'auth.login' %}

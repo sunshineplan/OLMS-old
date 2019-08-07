@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{{ recaptcha.interval }}
 <form method='POST'>
   {% if mode == 'super' %}
   <div class='form-row'>
@@ -60,9 +61,11 @@
   </div>
   <input type='submit' value='Save' class='btn btn-primary'>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  {{ recaptcha.input }}
 </form>
 <hr>
 <form action="{% if mode == 'super' %}{{ url_for('record.manage_delete', id=record['id']) }}{% else %}{{ url_for('record.delete', id=record['id']) }}{% endif %}" method='POST'>
   <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+  {{ recaptcha.input }}
 </form>
 {% endblock %}

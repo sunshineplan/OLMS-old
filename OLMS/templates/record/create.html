@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{{ recaptcha.interval }}
 <form method='POST'>
   {% if mode == 'admin' %}
   <script>
@@ -57,5 +58,6 @@
   </div>
   <input type='submit' value='Create' class='btn btn-primary'>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  {{ recaptcha.input }}
 </form>
 {% endblock %}

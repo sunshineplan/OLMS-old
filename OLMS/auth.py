@@ -6,6 +6,7 @@ from flask import (Blueprint, abort, current_app, flash, g, make_response,
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from OLMS.db import get_db
+from OLMS.recaptcha import reCAPTCHA
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -95,6 +96,9 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
 
         if error is None:
             # store the user id in a new session and return to the index
@@ -104,8 +108,8 @@ def login():
                 session.permanent = True
             else:
                 session.permanent = False
-            current_app.logger.info(
-                'UID:%s(%s)-%s log in', user['id'], user['realname'], ip)
+            current_app.logger.info('UID:%s(%s)-%s log in(score:%s)',
+                                    user['id'], user['realname'], ip, score)
             if user['id']:
                 return redirect(url_for('index'))
             else:
@@ -140,6 +144,9 @@ def setting():
             error = 'New password cannot be the same as your current password.'
         elif password1 is None or password1 == '':
             error = 'New password cannot be blank.'
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
 
         if error is None:
             # Store new password in the database and go to
@@ -149,8 +156,8 @@ def setting():
                 (generate_password_hash(password1), g.user['id']),
             )
             db.commit()
-            current_app.logger.info(
-                'UID:%s(%s)-%s change password', g.user['id'], g.user['realname'], ip)
+            current_app.logger.info('UID:%s(%s)-%s change password(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, score)
             session.clear()
             flash('Password Changed. Please Re-login!')
             return redirect(url_for('auth.login'))

@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{{ recaptcha.interval }}
 <form method='POST'>
   <div class='form-group'>
     <label for='date'>Date</label>
@@ -26,5 +27,6 @@
   <button type='submit' name='status' value='1' class='btn btn-success' onclick="return confirm('Confirm acceptance?');">Accept</button>
   <button type='submit' name='status' value='2' class='btn btn-danger' onclick="return confirm('Confirm rejection?');">Reject</button>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+  {{ recaptcha.input }}
 </form>
 {% endblock %}
