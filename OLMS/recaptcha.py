@@ -1,6 +1,9 @@
 import requests
 from flask import Markup, current_app, request, url_for
 
+BRANDING = '''<small class='form-text text-muted'>This site is protected by reCAPTCHA and the Google\n
+<a href='https://policies.google.com/privacy'>Privacy Policy</a> and\n
+<a href='https://policies.google.com/terms'>Terms of Service</a> apply.</small>'''
 SCRIPT = "<script src='https://www.recaptcha.net/recaptcha/api.js?render={}'></script>"
 READY = '<script>grecaptcha.ready(function() {{{}}})</script>'
 EXECUTE = "grecaptcha.execute('{}', {{action: '{}'}}).then(function(token) {{$('.recaptcha').val(token)}})"
@@ -13,6 +16,13 @@ class reCAPTCHA:
         self.site_key = app.config.get('RECAPTCHA_SITE_KEY') or ''
         self.secret_key = app.config.get('RECAPTCHA_SECRET_KEY')
         self.VERIFY_URL = 'https://www.recaptcha.net/recaptcha/api/siteverify'
+
+    @property
+    def branding(self):
+        if self.site_key:
+            return Markup(BRANDING)
+        else:
+            return ''
 
     @property
     def script(self):
