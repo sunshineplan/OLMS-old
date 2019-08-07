@@ -1,10 +1,11 @@
-from flask import (Blueprint, abort, current_app, flash, g, redirect,
-                   render_template, request, url_for, jsonify)
+from flask import (Blueprint, abort, current_app, flash, g, jsonify, redirect,
+                   render_template, request, url_for)
 from werkzeug.security import generate_password_hash
 
 from OLMS.auth import admin_required, super_required
 from OLMS.db import get_db
 from OLMS.pagination import Pagination
+from OLMS.recaptcha import reCAPTCHA
 
 bp = Blueprint('empl', __name__, url_prefix='/manage/empl')
 
@@ -131,6 +132,8 @@ def add():
                 error = 'Type is required.'
             if type == '1' and permission == '':
                 error = 'At least one permission must be selected for Administrator.'
+        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+            error = reCAPTCHA().failed
 
         if error is None:
             # the name is available, store it in the database
@@ -145,7 +148,7 @@ def add():
                     (username, realname, dept_id, type, permission))
             db.commit()
             current_app.logger.info(
-                'UID:%s(%s)-%s add user{%s,%s,%s}', g.user['id'], g.user['realname'], ip, username, realname, dept_id)
+                'UID:%s(%s)-%s add user{%s,%s,%s}(score:%s)', g.user['id'], g.user['realname'], ip, username, realname, dept_id, reCAPTCHA().verify)
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -166,7 +169,8 @@ def update(id):
     except ValueError:
         permission_list = []
     db = get_db()
-    depts = db.execute('SELECT * from department ORDER BY dept_name').fetchall()
+    depts = db.execute(
+        'SELECT * from department ORDER BY dept_name').fetchall()
     if request.method == 'POST':
         ip = request.remote_addr
         username = request.form.get('username').strip()
@@ -190,6 +194,8 @@ def update(id):
             error = 'Type is required.'
         if type == '1' and permission == '':
             error = 'At least one permission must be selected for Administrator.'
+        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+            error = reCAPTCHA().failed
 
         if error is not None:
             flash(error)
@@ -203,8 +209,8 @@ def update(id):
                 db.execute('UPDATE employee SET password = ? WHERE id = ?',
                            (generate_password_hash(password), id))
             db.commit()
-            current_app.logger.info(
-                'UID:%s(%s)-%s update UID:%s{%s,%s,%s}', g.user['id'], g.user['realname'], ip, id, username, realname, dept_id)
+            current_app.logger.info('UID:%s(%s)-%s update UID:%s{%s,%s,%s}(score:%s)',
+                                    g.user['id'], g.user['realname'], ip, id, username, realname, dept_id, reCAPTCHA().verify)
             return redirect(url_for('empl.index'))
 
     return render_template('empl/update.html', empl=empl, permission=permission_list, depts=depts)
@@ -219,9 +225,12 @@ def delete(id):
     '''
     get_empl(id)
     ip = request.remote_addr
+    if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        flash(reCAPTCHA().failed)
+        return redirect(url_for('empl.update', id=id))
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
     db.commit()
-    current_app.logger.info('UID:%s(%s)-%s delete UID:%s',
-                            g.user['id'], g.user['realname'], ip, id)
+    current_app.logger.info('UID:%s(%s)-%s delete UID:%s(score:%s)',
+                            g.user['id'], g.user['realname'], ip, id, reCAPTCHA().verify)
     return redirect(url_for('empl.index'))

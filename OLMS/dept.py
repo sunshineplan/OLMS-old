@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 
 from OLMS.auth import super_required
 from OLMS.db import get_db
+from OLMS.recaptcha import reCAPTCHA
 
 bp = Blueprint('dept', __name__, url_prefix='/manage/dept')
 
@@ -50,6 +51,8 @@ def add():
         if db.execute('SELECT id FROM department WHERE dept_name = ?',
                       (department,)).fetchone() is not None:
             error = 'Department {0} is already existed.'.format(department)
+        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+            error = reCAPTCHA().failed
 
         if error is not None:
             flash(error)
@@ -61,7 +64,7 @@ def add():
                 'UPDATE employee SET permission = (SELECT group_concat(id) FROM department) WHERE id = 0')
             db.commit()
             current_app.logger.info(
-                'UID:%s(%s)-%s add department{%s}', g.user['id'], g.user['realname'], ip, department)
+                'UID:%s(%s)-%s add department{%s}(score:%s)', g.user['id'], g.user['realname'], ip, department, reCAPTCHA().verify)
             return redirect(url_for('dept.index'))
 
     return render_template('dept/add.html')
@@ -87,6 +90,8 @@ def update(id):
             'SELECT id FROM department WHERE dept_name = ? and id != ?',
                 (department, id)).fetchone() is not None:
             error = 'Department {0} is already existed.'.format(department)
+        if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+            error = reCAPTCHA().failed
 
         if error is not None:
             flash(error)
@@ -95,7 +100,7 @@ def update(id):
                        (department, id))
             db.commit()
             current_app.logger.info(
-                'UID:%s(%s)-%s update DID:%s{%s}', g.user['id'], g.user['realname'], ip, id, department)
+                'UID:%s(%s)-%s update DID:%s{%s}(score:%s)', g.user['id'], g.user['realname'], ip, id, department, reCAPTCHA().verify)
             return redirect(url_for('dept.index'))
 
     return render_template('dept/update.html', dept=dept)
@@ -110,9 +115,12 @@ def delete(id):
     '''
     get_dept(id)
     ip = request.remote_addr
+    if not reCAPTCHA().verify or reCAPTCHA().verify < 0.5:
+        flash(reCAPTCHA().failed)
+        return redirect(url_for('dept.update', id=id))
     db = get_db()
     db.execute('DELETE FROM department WHERE id = ?', (id,))
     db.commit()
-    current_app.logger.info('UID:%s(%s)-%s delete DID:%s',
-                            g.user['id'], g.user['realname'], ip, id)
+    current_app.logger.info('UID:%s(%s)-%s delete DID:%s(score:%s)',
+                            g.user['id'], g.user['realname'], ip, id, reCAPTCHA().verify)
     return redirect(url_for('dept.index'))
