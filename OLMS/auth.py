@@ -96,6 +96,8 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
+            current_app.logger.info(
+                'UID:%s(%s)-%s password failed', user['id'], user['realname'], ip)
         score = reCAPTCHA().verify
         if not score or score < reCAPTCHA().level:
             error = reCAPTCHA().failed
