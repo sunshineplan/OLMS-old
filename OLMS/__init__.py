@@ -19,21 +19,19 @@ def create_app(mode=None):
     '''Create and configure an instance of the Flask application.'''
     if not mode:
         app = Flask(__name__, instance_relative_config=True)
-        # load config from config.py
-        app.config.from_object('OLMS.config')
         # store the database in the instance folder
         app.config['DATABASE'] = os.path.join(app.instance_path, 'OLMS.db')
-        # load custom config from instance/config.py
-        app.config.from_pyfile('config.py', silent=True)
     else:
         static_folder = os.path.join(sys._MEIPASS, 'static')
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         instance_path = os.path.join(os.environ['LOCALAPPDATA'], 'webapp')
         app = localFlask('webapp', static_folder=static_folder, template_folder=template_folder,
                          instance_path=instance_path, instance_relative_config=True)
-        app.config.from_object('OLMS.config')
         app.config['DATABASE'] = os.path.join(app.instance_path, 'database')
-        app.config.from_pyfile('config.py', silent=True)
+    # load config from config.py
+    app.config.from_object('OLMS.config')
+    # load custom config from instance/config.py
+    app.config.from_pyfile('config.py', silent=True)
 
     # ensure jquery.js and bootstrap.css exists
     static_files = {
