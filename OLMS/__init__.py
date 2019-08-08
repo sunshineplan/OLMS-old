@@ -68,7 +68,7 @@ def create_app(mode=None):
 
     db.init_app(app)
 
-    # inject google reCAPTCHA protection
+    # embed google reCAPTCHA protection
     from OLMS.recaptcha import reCAPTCHA
 
     @app.context_processor
