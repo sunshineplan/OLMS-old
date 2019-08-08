@@ -76,7 +76,10 @@ def load_logged_in_user():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     '''Log in a user by adding the user id to the session.'''
+    last_visit = request.cookies.get('LastVisit')
     if g.user:
+        if last_visit:
+            return redirect(last_visit)
         return redirect(url_for('index'))
 
     if request.method == 'POST':
@@ -113,6 +116,8 @@ def login():
                 session.permanent = False
             current_app.logger.info('UID:%s(%s)-%s log in(score:%s)',
                                     user['id'], user['realname'], ip, score)
+            if last_visit:
+                return redirect(last_visit)
             if user['id']:
                 return redirect(url_for('index'))
             else:

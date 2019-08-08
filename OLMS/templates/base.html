@@ -12,6 +12,7 @@
   $(function () {
     {% if request.endpoint != 'auth.login' %}
     document.cookie = 'Last=' + Date.now()/1000 + '; Max-Age=86400; Path=/';
+    document.cookie = 'LastVisit=' + window.location.pathname + '; Path=/';
     {% endif %}
     $('form').submit(function() {
       $(this).find(":selected[value='']").prop('disabled', true);
