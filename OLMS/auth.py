@@ -67,6 +67,7 @@ def load_logged_in_user():
                                 (user_id,)).fetchone()
         else:
             session.clear()
+            flash('Session timeout. Please re-login!')
             current_app.logger.info('UID:%s-%s time out at %s', user_id,
                                     ip, strftime('%Y-%m-%d %H:%M:%S', localtime(float(last))))
             return redirect(url_for('auth.login'))
