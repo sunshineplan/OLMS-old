@@ -7,4 +7,4 @@ PERMANENT_SESSION_LIFETIME = timedelta(days=365*100)
 # prevent sending the cookie every time
 SESSION_REFRESH_EACH_REQUEST = False
 # default expiration time of one-time session
-app.config['SESSION_COOKIE_LIFETIME'] = 600
+SESSION_COOKIE_LIFETIME = 600
