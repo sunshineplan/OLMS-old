@@ -16,6 +16,7 @@ class reCAPTCHA:
         self.site_key = app.config.get('RECAPTCHA_SITE_KEY') or ''
         self.secret_key = app.config.get('RECAPTCHA_SECRET_KEY')
         self.level = app.config.get('RECAPTCHA_LEVEL') or 0.3
+        self.failed = 'reCAPTCHA validation failed.'
         self.VERIFY_URL = 'https://www.recaptcha.net/recaptcha/api/siteverify'
 
     @property
@@ -76,11 +77,3 @@ class reCAPTCHA:
                 action = request.endpoint.replace('.', '/').replace('_', '/')
             return r['score'] if r.get('action') == action or r.get('action') == action.replace('delete', 'update') else False
         return True
-
-    @property
-    def level(self):
-        return self.level
-
-    @property
-    def failed(self):
-        return 'reCAPTCHA validation failed.'
