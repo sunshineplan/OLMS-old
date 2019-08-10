@@ -11,12 +11,12 @@ from shutil import copy
 
 import click
 
-import OLMS
+from OLMS import create_app, db
 
 if getattr(sys, 'frozen', False):
-    app = OLMS.create_app(mode='exe')
+    app = create_app(mode='exe')
 else:
-    app = OLMS.create_app()
+    app = create_app()
 
 
 @click.group(invoke_without_command=True)
@@ -29,13 +29,7 @@ def cli(ctx):
 @cli.command(hidden=True)
 @click.confirmation_option()
 def init_db():
-    db = sqlite3.connect(app.config['DATABASE'])
-    try:
-        with open(os.path.join(sys._MEIPASS, 'templates', 'schema.sql')) as f:
-            db.executescript(f.read())
-    except:
-        with app.open_resource('schema.sql') as f:
-            db.executescript(f.read().decode('utf8'))
+    db.init_db()
     click.echo('Initialized the database.')
 
 
@@ -43,12 +37,12 @@ def init_db():
 @click.option('--location', '-l', default=app.instance_path, help='Backup file location')
 @click.option('--email', '-e', default=None, help='Send backup file as mail attachment to specified account')
 def backup_db(location, email):
-    db = sqlite3.connect(app.config['DATABASE'])
+    datebase = sqlite3.connect(app.config['DATABASE'])
     bckfn = 'backup' + datetime.today().strftime('%Y%m%d')
     bckf = os.path.join(location, bckfn)
     bck = sqlite3.connect(bckf)
-    db.backup(bck)
-    db.close()
+    datebase.backup(bck)
+    datebase.close()
     bck.close()
     click.echo('Backup done.')
     if email:

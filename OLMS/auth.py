@@ -5,7 +5,7 @@ from flask import (Blueprint, abort, current_app, flash, g, make_response,
                    redirect, render_template, request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from OLMS.db import get_db
+from OLMS.db import get_db, init_db
 from OLMS.recaptcha import reCAPTCHA
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -93,7 +93,12 @@ def login():
             user = db.execute('SELECT * FROM employee WHERE username = ?',
                               (username,)).fetchone()
         except:
-            flash('Critical Error! Please contact your system administrator.')
+            tables = db.execute('SELECT name FROM sqlite_master').fetchall()
+            if tables == []:
+                init_db()
+                flash('Detected first time running. Initialized the database.')
+            else:
+                flash('Critical Error! Please contact your system administrator.')
             return render_template('auth/login.html')
 
         if user is None:
