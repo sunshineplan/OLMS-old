@@ -29,7 +29,8 @@ def create_app(mode=None):
                          instance_path=instance_path, instance_relative_config=True)
         app.config['DATABASE'] = os.path.join(app.instance_path, 'database')
     # load config from config.py
-    app.config.from_object('OLMS.config')
+    from OLMS import config
+    app.config.from_object(config)
     # load custom config from instance/config.py
     app.config.from_pyfile('config.py', silent=True)
 
