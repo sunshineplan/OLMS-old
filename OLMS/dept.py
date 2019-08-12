@@ -64,7 +64,7 @@ def add():
             db.execute(
                 'UPDATE employee SET permission = (SELECT group_concat(id) FROM department) WHERE id = 0')
             db.commit()
-            current_app.logger.info(
+            current_app.log.info(
                 'UID:%s(%s)-%s add department{%s}(score:%s)', g.user['id'], g.user['realname'], ip, department, score)
             return redirect(url_for('dept.index'))
 
@@ -101,7 +101,7 @@ def update(id):
             db.execute('UPDATE department SET dept_name = ? WHERE id = ?',
                        (department, id))
             db.commit()
-            current_app.logger.info(
+            current_app.log.info(
                 'UID:%s(%s)-%s update DID:%s{%s}(score:%s)', g.user['id'], g.user['realname'], ip, id, department, score)
             return redirect(url_for('dept.index'))
 
@@ -124,6 +124,6 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM department WHERE id = ?', (id,))
     db.commit()
-    current_app.logger.info('UID:%s(%s)-%s delete DID:%s(score:%s)',
+    current_app.log.info('UID:%s(%s)-%s delete DID:%s(score:%s)',
                             g.user['id'], g.user['realname'], ip, id, score)
     return redirect(url_for('dept.index'))

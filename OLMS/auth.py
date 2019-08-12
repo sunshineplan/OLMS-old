@@ -68,7 +68,7 @@ def load_logged_in_user():
         else:
             session.clear()
             flash('Session timeout. Please re-login!')
-            current_app.logger.info('UID:%s-%s time out at %s', user_id,
+            current_app.log.info('UID:%s-%s time out at %s', user_id,
                                     ip, strftime('%Y-%m-%d %H:%M:%S', localtime(float(last))))
             return redirect(url_for('auth.login'))
 
@@ -105,7 +105,7 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
-            current_app.logger.info(
+            current_app.log.info(
                 'UID:%s(%s)-%s password failed', user['id'], user['realname'], ip)
         score = reCAPTCHA().verify
         if not score or score < reCAPTCHA().level:
@@ -119,7 +119,7 @@ def login():
                 session.permanent = True
             else:
                 session.permanent = False
-            current_app.logger.info('UID:%s(%s)-%s log in(score:%s)',
+            current_app.log.info('UID:%s(%s)-%s log in(score:%s)',
                                     user['id'], user['realname'], ip, score)
             if last_visit:
                 return redirect(last_visit)
@@ -169,7 +169,7 @@ def setting():
                 (generate_password_hash(password1), g.user['id']),
             )
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s change password(score:%s)',
+            current_app.log.info('UID:%s(%s)-%s change password(score:%s)',
                                     g.user['id'], g.user['realname'], ip, score)
             session.clear()
             flash('Password Changed. Please Re-login!')
@@ -185,7 +185,7 @@ def setting():
 def logout():
     '''Clear the current session, including the stored user id.'''
     ip = request.remote_addr
-    current_app.logger.info('UID:%s(%s)-%s log out',
+    current_app.log.info('UID:%s(%s)-%s log out',
                             g.user['id'], g.user['realname'], ip)
     session.clear()
     return redirect(url_for('auth.login'))

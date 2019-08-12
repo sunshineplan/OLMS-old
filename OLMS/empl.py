@@ -148,7 +148,7 @@ def add():
                     ' VALUES (?, ?, ?, ?, ?)',
                     (username, realname, dept_id, type, permission))
             db.commit()
-            current_app.logger.info(
+            current_app.log.info(
                 'UID:%s(%s)-%s add user{%s,%s,%s}(score:%s)', g.user['id'], g.user['realname'], ip, username, realname, dept_id, score)
             return redirect(url_for('empl.index'))
 
@@ -211,7 +211,7 @@ def update(id):
                 db.execute('UPDATE employee SET password = ? WHERE id = ?',
                            (generate_password_hash(password), id))
             db.commit()
-            current_app.logger.info('UID:%s(%s)-%s update UID:%s{%s,%s,%s}(score:%s)',
+            current_app.log.info('UID:%s(%s)-%s update UID:%s{%s,%s,%s}(score:%s)',
                                     g.user['id'], g.user['realname'], ip, id, username, realname, dept_id, score)
             return redirect(url_for('empl.index'))
 
@@ -234,6 +234,6 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
     db.commit()
-    current_app.logger.info('UID:%s(%s)-%s delete UID:%s(score:%s)',
+    current_app.log.info('UID:%s(%s)-%s delete UID:%s(score:%s)',
                             g.user['id'], g.user['realname'], ip, id, score)
     return redirect(url_for('empl.index'))
