@@ -148,8 +148,8 @@ def add():
                     ' VALUES (?, ?, ?, ?, ?)',
                     (username, realname, dept_id, type, permission))
             db.commit()
-            current_app.log.info(
-                'UID:%s(%s)-%s add user{%s,%s,%s}(score:%s)', g.user['id'], g.user['realname'], ip, username, realname, dept_id, score)
+            current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'add employee', 'data': {'username': username, 'realname': realname, 'dept_id': dept_id}, 'score': score})
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -211,8 +211,8 @@ def update(id):
                 db.execute('UPDATE employee SET password = ? WHERE id = ?',
                            (generate_password_hash(password), id))
             db.commit()
-            current_app.log.info('UID:%s(%s)-%s update UID:%s{%s,%s,%s}(score:%s)',
-                                    g.user['id'], g.user['realname'], ip, id, username, realname, dept_id, score)
+            current_app.log.info('UID:%s(%s)-%s %s%s}(score:%s)',
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'aciton': 'update employee', 'data': {'id': id, 'username': username, 'realname': realname, 'dept_id': dept_id}, 'score': score})
             return redirect(url_for('empl.index'))
 
     return render_template('empl/update.html', empl=empl, permission=permission_list, depts=depts)
@@ -234,6 +234,6 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
     db.commit()
-    current_app.log.info('UID:%s(%s)-%s delete UID:%s(score:%s)',
-                            g.user['id'], g.user['realname'], ip, id, score)
+    current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
+                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'delete employee', 'data': {'id': id}, 'score': score})
     return redirect(url_for('empl.index'))
