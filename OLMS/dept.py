@@ -64,8 +64,8 @@ def add():
             db.execute(
                 'UPDATE employee SET permission = (SELECT group_concat(id) FROM department) WHERE id = 0')
             db.commit()
-            current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'add department', 'data': {'dept_name': department}, 'score': score})
+            current_app.log.info('UID:%s(%s) %s%s(score:%s)',
+                                 {'UID': g.user['id'], 'IP': ip, 'action': 'add department', 'data': {'dept_name': department}, 'score': score})
             return redirect(url_for('dept.index'))
 
     return render_template('dept/add.html')
@@ -101,8 +101,8 @@ def update(id):
             db.execute('UPDATE department SET dept_name = ? WHERE id = ?',
                        (department, id))
             db.commit()
-            current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'update department', 'data': {'id': id, 'dept_name': department}, 'score': score})
+            current_app.log.info('UID:%s(%s) %s%s(score:%s)',
+                                 {'UID': g.user['id'], 'IP': ip, 'action': 'update department', 'data': {'id': id, 'dept_name': department}, 'score': score})
             return redirect(url_for('dept.index'))
 
     return render_template('dept/update.html', dept=dept)
@@ -124,6 +124,6 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM department WHERE id = ?', (id,))
     db.commit()
-    current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                         {'UID':  g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'delete department', 'data': {'id': id}, 'score': score})
+    current_app.log.info('UID:%s(%s) %s%s(score:%s)',
+                         {'UID':  g.user['id'], 'IP': ip, 'action': 'delete department', 'data': {'id': id}, 'score': score})
     return redirect(url_for('dept.index'))

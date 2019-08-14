@@ -67,8 +67,8 @@ def load_logged_in_user():
         if not session.get('_permanent') and last and time()-float(last) > current_app.config.get('SESSION_COOKIE_LIFETIME'):
             session.clear()
             flash('Session timeout. Please re-login!')
-            current_app.log.info('UID:%s(%s)-%s %s at %s',
-                                 {'UID': user_id, 'realname': g.user['realname'], 'IP': ip, 'action': 'time out', 'when': strftime('%Y-%m-%d %H:%M:%S', localtime(float(last)))})
+            current_app.log.info('UID:%s(%s) %s at %s',
+                                 {'UID': user_id, 'IP': ip, 'action': 'time out', 'when': strftime('%Y-%m-%d %H:%M:%S', localtime(float(last)))})
             return redirect(url_for('auth.login'))
 
 
@@ -107,8 +107,8 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
-            current_app.log.info('UID:%s(%s)-%s %s(score:%s)',
-                                 {'UID': user['id'], 'realname': user['realname'], 'IP': ip, 'action': 'password failed', 'score': score})
+            current_app.log.info('UID:%s(%s) %s(score:%s)',
+                                 {'UID': user['id'], 'IP': ip, 'action': 'password failed', 'score': score})
 
         if error is None:
             # store the user id in a new session and return to the index
@@ -118,8 +118,8 @@ def login():
                 session.permanent = True
             else:
                 session.permanent = False
-            current_app.log.info('UID:%s(%s)-%s %s(score:%s)',
-                                 {'UID': user['id'], 'realname': user['realname'], 'IP': ip, 'action': 'log in', 'score': score})
+            current_app.log.info('UID:%s(%s) %s(score:%s)',
+                                 {'UID': user['id'], 'IP': ip, 'action': 'log in', 'score': score})
             if last_visit:
                 return redirect(last_visit)
             if user['id']:
@@ -168,8 +168,8 @@ def setting():
                 (generate_password_hash(password1), g.user['id']),
             )
             db.commit()
-            current_app.log.info('UID:%s(%s)-%s %s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'change password', 'score': score})
+            current_app.log.info('UID:%s(%s) %s(score:%s)',
+                                 {'UID': g.user['id'], 'IP': ip, 'action': 'change password', 'score': score})
             session.clear()
             flash('Password Changed. Please Re-login!')
             return redirect(url_for('auth.login'))
@@ -184,7 +184,7 @@ def setting():
 def logout():
     '''Clear the current session, including the stored user id.'''
     ip = request.remote_addr
-    current_app.log.info('UID:%s(%s)-%s %s',
-                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'log out'})
+    current_app.log.info('UID:%s(%s) %s',
+                         {'UID': g.user['id'], 'IP': ip, 'action': 'log out'})
     session.clear()
     return redirect(url_for('auth.login'))
