@@ -11,10 +11,6 @@ except ImportError:
     MONGO = False
 
 
-def getLogger(app):
-    return Logger(app)
-
-
 def FileLogger(app):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -33,9 +29,9 @@ class Logger:
         self.mongo_port = app.config.get('MONGO_PORT') or 27017
         self.mongo_database = app.config.get('MONGO_DATABASE') or 'OLMS'
         self.mongo_collection = app.config.get('MONGO_COLLECTION') or 'log'
-        self.test()
+        self.test_mongo()
 
-    def test(self):
+    def test_mongo(self):
         if MONGO and self.mongo_enable:
             try:
                 with MongoClient(self.mongo_server, self.mongo_port, serverSelectionTimeoutMS=1000) as client:
@@ -49,6 +45,6 @@ class Logger:
         self.filelogger.info(msg, *data.values())
         if self.mongo_enable:
             with MongoClient(self.mongo_server, self.mongo_port) as client:
-                c = client[self.mongo_database][self.mongo_collection]
+                collection = client[self.mongo_database][self.mongo_collection]
                 data['timestamp'] = datetime.utcnow()
-                c.insert_one(data).inserted_id
+                collection.insert_one(data).inserted_id

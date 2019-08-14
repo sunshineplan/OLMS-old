@@ -54,9 +54,9 @@ def create_app(mode=None):
         pass
 
     # Add custom logger
-    from OLMS import log
+    from OLMS.log import Logger
 
-    app.log = log.getLogger(app)
+    app.log = Logger(app)
 
     # register the database commands
     from OLMS import db
