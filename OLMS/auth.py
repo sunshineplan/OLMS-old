@@ -62,14 +62,13 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        if session.get('_permanent') or not last or time()-float(last) < current_app.config.get('SESSION_COOKIE_LIFETIME'):
-            g.user = db.execute('SELECT * FROM employee WHERE id = ?',
-                                (user_id,)).fetchone()
-        else:
+        g.user = db.execute(
+            'SELECT * FROM employee WHERE id = ?', (user_id,)).fetchone()
+        if not session.get('_permanent') and last and time()-float(last) > current_app.config.get('SESSION_COOKIE_LIFETIME'):
             session.clear()
             flash('Session timeout. Please re-login!')
-            current_app.log.info('UID:%s-%s %s at %s',
-                                 {'UID': user_id, 'IP': ip, 'action': 'time out', 'when': strftime('%Y-%m-%d %H:%M:%S', localtime(float(last)))})
+            current_app.log.info('UID:%s(%s)-%s %s at %s',
+                                 {'UID': user_id, 'realname': g.user['realname'], 'IP': ip, 'action': 'time out', 'when': strftime('%Y-%m-%d %H:%M:%S', localtime(float(last)))})
             return redirect(url_for('auth.login'))
 
 
