@@ -23,16 +23,20 @@ def get_db():
         g.db = sqlite3.connect(
             current_app.config['DATABASE'], detect_types=sqlite3.PARSE_DECLTYPES)
         g.db.row_factory = dict_factory
+        g.cursor = g.db.cursor()
 
-    return g.db
+    return g.cursor
 
 
 def close_db(e=None):
     '''If this request connected to the database, close the
     connection.
     '''
-    db = g.pop('db', None)
+    cursor = g.pop('cursor', None)
+    if cursor is not None:
+        cursor.close()
 
+    db = g.pop('db', None)
     if db is not None:
         db.close()
 

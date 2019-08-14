@@ -195,9 +195,9 @@ def create():
                 ' VALUES (?, ?, ?, ?, ?, ?, ?)',
                 (date, type, duration, describe, g.user['dept_id'],
                  g.user['id'], f"{g.user['id']}-{ip}"))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'IP': ip, 'action': 'create record', 'data': {'date': date, 'type': type, 'duration': duration}, 'score': score})
+                                 {'UID': g.user['id'], 'IP': ip, 'action': 'create record', 'data': {'id': db.lastrowid, 'date': date, 'type': type, 'duration': duration}, 'score': score})
             return redirect(url_for('record.empl_index'))
 
     return render_template('record/create.html')
@@ -260,10 +260,10 @@ def manage_create():
                 ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 (dept_id, empl_id, date, type, duration, describe,
                  1, f"{g.user['id']}-{ip}", f"{g.user['id']}-{ip}"))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'manage create record',
-                                  'data': {'dept_id': int(dept_id), 'empl_id': int(empl_id), 'date': date, 'type': type, 'duration': duration}, 'score': score})
+                                  'data': {'id': db.lastrowid, 'dept_id': int(dept_id), 'empl_id': int(empl_id), 'date': date, 'type': type, 'duration': duration}, 'score': score})
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/create.html', depts=depts, mode='admin')
@@ -313,7 +313,7 @@ def update(id):
             db.execute(
                 'UPDATE record SET date = ?, type = ?, duration = ?, describe = ? WHERE id = ?',
                 (date, type, duration, describe, id))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'update record', 'data': {'id': id, 'date': date, 'type': type, 'duration': duration}, 'score': score})
             return redirect(url_for('record.empl_index'))
@@ -372,7 +372,7 @@ def manage_update(id):
             db.execute(
                 'UPDATE record SET empl_id = ?, dept_id = ?, date = ?, type = ?, duration = ?, status = ?, describe = ? WHERE id = ?',
                 (empl_id, dept_id, date, type, duration, status, describe, id))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'manage update record',
                                   'data': {'id': id, 'empl_id': int(empl_id), 'dept_id': int(dept_id), 'date': date, 'type': type, 'duration': duration, 'status': int(status)}, 'score': score})
@@ -412,7 +412,7 @@ def verify(id):
             db.execute(
                 'UPDATE record SET status = ?, verifiedby = ? WHERE id = ?',
                 (status, f"{g.user['id']}-{ip}", id))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'verify record', 'data': {'id': id, 'status': status}, 'score': score})
             return redirect(url_for('record.dept_index'))
@@ -441,7 +441,7 @@ def delete(id):
     else:
         db = get_db()
         db.execute('DELETE FROM record WHERE id = ?', (id,))
-        db.commit()
+        g.db.commit()
         current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                              {'UID': g.user['id'], 'IP': ip, 'action': 'delete record', 'data': {'id': id}, 'score': score})
         return redirect(url_for('record.empl_index'))
@@ -459,7 +459,7 @@ def manage_delete(id):
         return redirect(url_for('record.manage_update', id=id))
     db = get_db()
     db.execute('DELETE FROM record WHERE id = ?', (id,))
-    db.commit()
+    g.db.commit()
     current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                          {'UID': g.user['id'], 'IP': ip, 'action': 'manage delete record', 'data': {'id': id}, 'score': score})
     return redirect(url_for('record.super_index'))

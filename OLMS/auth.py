@@ -167,7 +167,7 @@ def setting():
                 'UPDATE employee SET password = ? WHERE id = ?',
                 (generate_password_hash(password1), g.user['id']),
             )
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'change password', 'score': score})
             session.clear()

@@ -147,9 +147,9 @@ def add():
                     'INSERT INTO employee (username, realname, dept_id, type, permission)'
                     ' VALUES (?, ?, ?, ?, ?)',
                     (username, realname, dept_id, type, permission))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'IP': ip, 'action': 'add employee', 'data': {'username': username, 'realname': realname, 'dept_id': int(dept_id)}, 'score': score})
+                                 {'UID': g.user['id'], 'IP': ip, 'action': 'add employee', 'data': {'id': db.lastrowid, 'username': username, 'realname': realname, 'dept_id': int(dept_id)}, 'score': score})
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -210,7 +210,7 @@ def update(id):
             if password != '':
                 db.execute('UPDATE employee SET password = ? WHERE id = ?',
                            (generate_password_hash(password), id))
-            db.commit()
+            g.db.commit()
             current_app.log.info('UID:%s(%s) %s%s}(score:%s)',
                                  {'UID': g.user['id'], 'IP': ip, 'action': 'update employee', 'data': {'id': id, 'username': username, 'realname': realname, 'dept_id': int(dept_id)}, 'score': score})
             return redirect(url_for('empl.index'))
@@ -233,7 +233,7 @@ def delete(id):
         return redirect(url_for('empl.update', id=id))
     db = get_db()
     db.execute('DELETE FROM employee WHERE id = ?', (id,))
-    db.commit()
+    g.db.commit()
     current_app.log.info('UID:%s(%s) %s%s(score:%s)',
                          {'UID': g.user['id'], 'IP': ip, 'action': 'delete employee', 'data': {'id': id}, 'score': score})
     return redirect(url_for('empl.index'))
