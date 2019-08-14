@@ -1,11 +1,8 @@
-import logging
 import os
 import sys
-from logging.handlers import RotatingFileHandler
 from urllib.request import urlopen
 
 from flask import Flask
-from flask.logging import default_handler
 
 
 class localFlask(Flask):
