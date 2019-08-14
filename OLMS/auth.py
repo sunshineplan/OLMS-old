@@ -186,6 +186,6 @@ def logout():
     '''Clear the current session, including the stored user id.'''
     ip = request.remote_addr
     current_app.log.info('UID:%s(%s)-%s %s',
-                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'aciton': 'log out'})
+                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'log out'})
     session.clear()
     return redirect(url_for('auth.login'))
