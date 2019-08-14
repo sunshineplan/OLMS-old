@@ -149,7 +149,7 @@ def add():
                     (username, realname, dept_id, type, permission))
             db.commit()
             current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'add employee', 'data': {'username': username, 'realname': realname, 'dept_id': dept_id}, 'score': score})
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'add employee', 'data': {'username': username, 'realname': realname, 'dept_id': int(dept_id)}, 'score': score})
             return redirect(url_for('empl.index'))
 
         flash(error)
@@ -212,7 +212,7 @@ def update(id):
                            (generate_password_hash(password), id))
             db.commit()
             current_app.log.info('UID:%s(%s)-%s %s%s}(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'update employee', 'data': {'id': id, 'username': username, 'realname': realname, 'dept_id': dept_id}, 'score': score})
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'update employee', 'data': {'id': id, 'username': username, 'realname': realname, 'dept_id': int(dept_id)}, 'score': score})
             return redirect(url_for('empl.index'))
 
     return render_template('empl/update.html', empl=empl, permission=permission_list, depts=depts)

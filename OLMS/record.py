@@ -262,7 +262,8 @@ def manage_create():
                  1, f"{g.user['id']}-{ip}", f"{g.user['id']}-{ip}"))
             db.commit()
             current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'manage create record', 'data': {'empl_id': empl_id, 'date': date, 'type': type, 'duration': duration}, 'score': score})
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'manage create record',
+                                  'data': {'dept_id': int(dept_id), 'empl_id': int(empl_id), 'date': date, 'type': type, 'duration': duration}, 'score': score})
             return redirect(url_for('record.dept_index'))
 
     return render_template('record/create.html', depts=depts, mode='admin')
@@ -373,7 +374,8 @@ def manage_update(id):
                 (empl_id, dept_id, date, type, duration, status, describe, id))
             db.commit()
             current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
-                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'manage update record', 'data': {'id': id, 'date': date, 'type': type, 'duration': duration}, 'score': score})
+                                 {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'manage update record',
+                                  'data': {'id': id, 'empl_id': int(empl_id), 'dept_id': int(dept_id), 'date': date, 'type': type, 'duration': duration, 'status': int(status)}, 'score': score})
             return redirect(url_for('record.super_index'))
 
     return render_template('record/update.html', record=record, empls=empls, depts=depts, mode='super')
