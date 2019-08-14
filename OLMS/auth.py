@@ -101,15 +101,15 @@ def login():
                 flash('Critical Error! Please contact your system administrator.')
             return render_template('auth/login.html')
 
+        score = reCAPTCHA().verify
+        if not score or score < reCAPTCHA().level:
+            error = reCAPTCHA().failed
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
-            current_app.log.info('UID:%s(%s)-%s %s',
-                                 {'UID': user['id'], 'realname': user['realname'], 'IP': ip, 'action': 'password failed'})
-        score = reCAPTCHA().verify
-        if not score or score < reCAPTCHA().level:
-            error = reCAPTCHA().failed
+            current_app.log.info('UID:%s(%s)-%s %s(score:%s)',
+                                 {'UID': user['id'], 'realname': user['realname'], 'IP': ip, 'action': 'password failed', 'score': score})
 
         if error is None:
             # store the user id in a new session and return to the index
