@@ -32,12 +32,11 @@ def close_db(e=None):
     '''If this request connected to the database, close the
     connection.
     '''
-    cursor = g.pop('cursor', None)
-    if cursor is not None:
-        cursor.close()
-
     db = g.pop('db', None)
     if db is not None:
+        cursor = g.pop('cursor', None)
+        if cursor is not None:
+            cursor.close()
         db.close()
 
 
