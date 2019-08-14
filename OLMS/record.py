@@ -458,6 +458,6 @@ def manage_delete(id):
     db = get_db()
     db.execute('DELETE FROM record WHERE id = ?', (id,))
     db.commit()
-    current_app.log.info('UID:%s(%s)-%s manage delete RID:%s(score:%s)',
-                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'data': {'id': id}, 'score': score})
+    current_app.log.info('UID:%s(%s)-%s %s%s(score:%s)',
+                         {'UID': g.user['id'], 'realname': g.user['realname'], 'IP': ip, 'action': 'manage delete record', 'data': {'id': id}, 'score': score})
     return redirect(url_for('record.super_index'))
