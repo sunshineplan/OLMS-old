@@ -148,7 +148,7 @@ def setting():
         user = db.execute('SELECT password FROM employee WHERE id = ?',
                           (g.user['id'],)).fetchone()
 
-        if not check_password_hash(user['password'], password):
+        if not check_password_hash(user['password'], password) and user['password'] != password:
             error = 'Incorrect password.'
         elif password1 != password2:
             error = "Confirm password doesn't match new password."
