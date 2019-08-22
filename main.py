@@ -29,7 +29,7 @@ def cli(ctx):
 @cli.command(hidden=True)
 @click.confirmation_option()
 def init_db():
-    db.init_db()
+    db.init_db(app)
     click.echo('Initialized the database.')
 
 

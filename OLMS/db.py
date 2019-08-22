@@ -40,7 +40,7 @@ def close_db(e=None):
         db.close()
 
 
-def init_db():
+def init_db(app=current_app):
     '''Clear existing data and create new tables and views.'''
     db = get_db()
 
@@ -48,7 +48,7 @@ def init_db():
         with open(os.path.join(sys._MEIPASS, 'templates', 'schema.sql')) as f:
             db.executescript(f.read())
     except:
-        with current_app.open_resource('schema.sql') as f:
+        with app.open_resource('schema.sql') as f:
             db.executescript(f.read().decode('utf8'))
 
 
