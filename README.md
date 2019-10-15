@@ -1,7 +1,6 @@
 Overtime and Leave Management System 
 ======
 
-[Link](https://olms.shlib.cf)
 
 
 Install
